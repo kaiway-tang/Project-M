@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
-    static KeyCode UpKey, UpKey1, DownKey, DownKey1, LeftKey, LeftKey1, RightKey, RightKey1;
+    static KeyCode JumpKey, JumpKey1, UpKey, UpKey1, DownKey, DownKey1, LeftKey, LeftKey1, RightKey, RightKey1;
     static KeyCode AttackKey, DashRollKey;
 
     static bool firstLoad;
 
+    [SerializeField] KeyCode bindKey;
+
     private void Start()
     {
         if (firstLoad) { return; }
+
+        JumpKey = KeyCode.Space;
+        //JumpKey1 = KeyCode.W;
 
         UpKey = KeyCode.W;
         UpKey1 = KeyCode.UpArrow;
@@ -32,6 +37,33 @@ public class PlayerInput : MonoBehaviour
 
 
         firstLoad = true;
+    }
+
+    public void RebindKey(KeyCode key)
+    {
+        if (Input.anyKeyDown)
+        {
+            for (int i = 0; i < 510; i++)
+            {
+                if (Input.GetKeyDown((KeyCode)i))
+                {
+                    key = (KeyCode)i;
+                }
+            }
+        }
+    }
+
+    public static bool JumpPressed()
+    {
+        return Input.GetKeyDown(JumpKey) || Input.GetKeyDown(JumpKey1);
+    }
+    public static bool JumpHeld()
+    {
+        return Input.GetKey(JumpKey) || Input.GetKey(JumpKey1);
+    }
+    public static bool JumpReleased()
+    {
+        return Input.GetKeyUp(JumpKey) || Input.GetKeyUp(JumpKey1);
     }
 
     public static bool UpPressed()
@@ -102,5 +134,65 @@ public class PlayerInput : MonoBehaviour
     public static bool DashRollPressed()
     {
         return Input.GetKeyDown(DashRollKey);
+    }
+
+    static Vector2 vect2;
+    public static Vector2 GetVectorInput()
+    {
+        if (UpHeld())
+        {
+            if (LeftHeld())
+            {
+                vect2.x = -.707f;
+                vect2.y = .707f;
+            }
+            else if (RightHeld())
+            {
+                vect2.x = .707f;
+                vect2.y = .707f;
+            }
+            else
+            {
+                vect2.x = 0;
+                vect2.y = 1;
+            }
+        }
+        else if (DownHeld())
+        {
+            if (LeftHeld())
+            {
+                vect2.x = -.707f;
+                vect2.y = -.707f;
+            }
+            else if (RightHeld())
+            {
+                vect2.x = .707f;
+                vect2.y = -.707f;
+            }
+            else
+            {
+                vect2.x = 0;
+                vect2.y = -1;
+            }
+        }
+        else
+        {
+            if (LeftHeld())
+            {
+                vect2.x = -1;
+                vect2.y = 0;
+            }
+            else if (RightHeld())
+            {
+                vect2.x = 1;
+                vect2.y = 0;
+            }
+            else
+            {
+                return Vector2.zero;
+            }
+        }
+
+        return vect2;
     }
 }

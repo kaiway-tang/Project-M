@@ -6,9 +6,15 @@ public class PlayerMovement : MobileEntity
 {
     [SerializeField] Vector2 velocity;
 
-    [SerializeField] float acceleration, maxSpd, friction, airAcceleration, airMaxSpd, airFriction, jumpPower, wallKickVelocity;
+    [SerializeField] float acceleration, maxSpd, friction, airAcceleration, airMaxSpd, airFriction, jumpPower, wallKickVelocity, dashRollVelocity;
 
-    int jumps, wallKickCooldown, wallKickWindow;
+    [SerializeField] int jumps;
+
+    int wallKickCooldown, wallKickWindow, dashRollCooldown;
+    bool refundJump;
+
+    Vector2 vect2;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,13 +26,16 @@ public class PlayerMovement : MobileEntity
         velocity = rb.velocity;
 
         JumpHandling();
+
+        AbilityHandling();
+
+        WallKickWindowHandling();
     }
 
     private void FixedUpdate()
     {
-        if (jumps < 1 && IsTouchingGround()) { jumps = 2; }
 
-        AbilityHandling();
+        if (jumps < 2 && IsTouchingGround()) { jumps = 2; }
 
         MovementHandling();
 
@@ -38,7 +47,24 @@ public class PlayerMovement : MobileEntity
     void Clocks()
     {
         if (wallKickCooldown > 0) { wallKickCooldown--; }
-        if (wallKickWindow > 0) { wallKickWindow--; }
+        if (wallKickWindow > 0) 
+        {
+            wallKickWindow--; 
+            if (wallKickWindow == 0) { refundJump = false; }
+        }
+        if (dashRollCooldown > 0)
+        {
+            dashRollCooldown--;
+            if (dashRollCooldown > 24)
+            {
+                ApplyDirectionalFriction(friction);
+
+                if (dashRollCooldown == 25)
+                {
+                    EnableGravity();
+                }
+            }
+        }
     }
 
     void MovementHandling()
@@ -78,18 +104,23 @@ public class PlayerMovement : MobileEntity
                 }
             }
 
-            if (wallKickWindow > 0)
+            
+        }
+    }
+
+    void WallKickWindowHandling()
+    {
+        if (wallKickWindow > 0)
+        {
+            if (IsTouchingLeftWall() && PlayerInput.RightHeld())
             {
-                if (IsTouchingLeftWall() && PlayerInput.RightHeld())
-                {
-                    DoWallKick(wallKickVelocity);
-                    jumps++;
-                }
-                else if (IsTouchingRightWall() && PlayerInput.LeftHeld())
-                {
-                    DoWallKick(-wallKickVelocity);
-                    jumps++;
-                }
+                DoWallKick(wallKickVelocity);
+                if (refundJump) { jumps++; }
+            }
+            else if (IsTouchingRightWall() && PlayerInput.LeftHeld())
+            {
+                DoWallKick(-wallKickVelocity);
+                if (refundJump) { jumps++; }
             }
         }
     }
@@ -110,13 +141,31 @@ public class PlayerMovement : MobileEntity
     {
         if (PlayerInput.DashRollPressed())
         {
+            if (dashRollCooldown < 1)
+            {
+                vect2 = PlayerInput.GetVectorInput();
 
+                if (vect2.y == 0)
+                {
+                    vect2.y = .1f;
+                    if (vect2.x == 0)
+                    {
+                        if (IsFacingLeft()) { vect2.x = -1; }
+                        else { vect2.x = 1; }
+                    }
+                }
+
+                DisableGravity();
+
+                rb.velocity = vect2 * dashRollVelocity;
+                dashRollCooldown = 50;
+            }
         }
     }
 
     void JumpHandling()
     {
-        if (PlayerInput.UpPressed())
+        if (PlayerInput.JumpPressed())
         {
             if (IsTouchingLeftWall() && PlayerInput.RightHeld())
             {
@@ -127,20 +176,27 @@ public class PlayerMovement : MobileEntity
                 DoWallKick(-wallKickVelocity);
             } else
             {
-                wallKickWindow = 5;
                 if (IsTouchingGround())
                 {
                     DoJump(jumpPower);
                 }
-                else if (jumps == 2)
+                else
                 {
-                    jumps--;
-                    DoJump(jumpPower * .8f);
-                }
-                else if (jumps == 1)
-                {
-                    jumps--;
-                    DoJump(jumpPower * .6f);
+                    wallKickWindow = 5;
+
+                    if (jumps == 2)
+                    {
+
+                        jumps--;
+                        refundJump = true;
+                        DoJump(jumpPower * .8f);
+                    }
+                    else if (jumps == 1)
+                    {
+                        jumps--;
+                        refundJump = true;
+                        DoJump(jumpPower * .6f);
+                    }
                 }
             }
         }
@@ -152,8 +208,10 @@ public class PlayerMovement : MobileEntity
         {
             DoJump(jumpPower);
             SetXVelocity(velocity);
+            wallKickWindow = 0;
+
             //jumps = 1;
-            wallKickCooldown = 10;
+            //wallKickCooldown = 10;
         }
     }
 

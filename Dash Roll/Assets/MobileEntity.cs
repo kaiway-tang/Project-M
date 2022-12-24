@@ -10,6 +10,8 @@ public class MobileEntity : HPEntity
     protected bool facing;
     protected const bool FACING_LEFT = false, FACING_RIGHT = true;
 
+    int gravityDisable; float defaultGravity;
+
     Vector2 vect2;
     
     protected void AddXVelocity(float amount, float max)
@@ -126,6 +128,11 @@ public class MobileEntity : HPEntity
         rb.velocity = vect2;
     }
 
+    protected void ApplyDirectionalFriction(float amount)
+    {
+        //TODO
+    }
+
     protected void SetVelocity(float x, float y)
     {
         vect2.x = x; vect2.y = y;
@@ -152,5 +159,23 @@ public class MobileEntity : HPEntity
     protected bool IsTouchingRightWall()
     {
         return touchingTerrain[2];
+    }
+
+    protected void DisableGravity()
+    {
+        if (gravityDisable < 1)
+        {
+            defaultGravity = rb.gravityScale;
+            rb.gravityScale = 0;
+        }
+        gravityDisable++;
+    }
+    protected void EnableGravity()
+    {
+        gravityDisable--;
+        if (gravityDisable < 1)
+        {
+            rb.gravityScale = defaultGravity;
+        }
     }
 }
