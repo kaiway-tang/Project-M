@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OnGround : MonoBehaviour
+public class TerrainContact : MonoBehaviour
 {
     [SerializeField] MobileEntity mobileEntity;
+    enum ContactType { ground, leftWall, rightWall, ceiling }
+    [SerializeField] ContactType contactType;
     void Start()
     {
         
@@ -15,7 +17,7 @@ public class OnGround : MonoBehaviour
     {
         if (col.gameObject.layer == 7)
         {
-            mobileEntity.isOnGround = true;
+            mobileEntity.touchingTerrain[(int)contactType] = true;
         }
     }
 
@@ -23,7 +25,7 @@ public class OnGround : MonoBehaviour
     {
         if (col.gameObject.layer == 7)
         {
-            mobileEntity.isOnGround = false;
+            mobileEntity.touchingTerrain[(int)contactType] = false;
         }
     }
 }

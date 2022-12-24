@@ -6,9 +6,9 @@ public class PlayerMovement : MobileEntity
 {
     [SerializeField] Vector2 velocity;
 
-    [SerializeField] float acceleration, maxSpd, airAcceleration, airMaxSpd, jumpPower, friction;
+    [SerializeField] float acceleration, maxSpd, friction, airAcceleration, airMaxSpd, airFriction, jumpPower, wallKickVelocity;
 
-    int jumps;
+    int jumps, wallKickCooldown, wallKickWindow;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,50 +19,93 @@ public class PlayerMovement : MobileEntity
     {
         velocity = rb.velocity;
 
-        if (PlayerInput.UpPressed())
-        {
-            if (isOnGround)
-            {
-                DoJump();
-            }
-            else if (jumps > 0)
-            {
-                jumps--;
-                DoJump();
-            }
-        }
+        JumpHandling();
     }
 
     private void FixedUpdate()
     {
-        if (jumps < 1 && isOnGround) { jumps = 1; }
+        if (jumps < 1 && IsTouchingGround()) { jumps = 2; }
 
         AbilityHandling();
 
         MovementHandling();
 
-        ApplyXFriction(friction);
+        FrictionHandling();
+
+        Clocks();
+    }
+
+    void Clocks()
+    {
+        if (wallKickCooldown > 0) { wallKickCooldown--; }
+        if (wallKickWindow > 0) { wallKickWindow--; }
     }
 
     void MovementHandling()
     {
         if (movementLocked < 1)
         {
-            if (PlayerInput.RightHeld())
+            if (IsTouchingGround())
             {
-                if (!PlayerInput.LeftHeld())
+                if (PlayerInput.RightHeld())
                 {
-                    facing = FACING_RIGHT;
-                    AddXVelocity(acceleration, maxSpd);
+                    if (!PlayerInput.LeftHeld())
+                    {
+                        facing = FACING_RIGHT;
+                        AddXVelocity(acceleration, maxSpd);
+                    }
+                }
+                else if (PlayerInput.LeftHeld())
+                {
+                    facing = FACING_LEFT;
+                    AddXVelocity(-acceleration, -maxSpd);
                 }
             }
-            else if (PlayerInput.LeftHeld())
+            else
             {
-                facing = FACING_LEFT;
-                AddXVelocity(-acceleration, -maxSpd);
+                if (PlayerInput.RightHeld())
+                {
+                    if (!PlayerInput.LeftHeld())
+                    {
+                        facing = FACING_RIGHT;
+                        AddXVelocity(airAcceleration, airMaxSpd);
+                    }
+                }
+                else if (PlayerInput.LeftHeld())
+                {
+                    facing = FACING_LEFT;
+                    AddXVelocity(-airAcceleration, -airMaxSpd);
+                }
+            }
+
+            if (wallKickWindow > 0)
+            {
+                if (IsTouchingLeftWall() && PlayerInput.RightHeld())
+                {
+                    DoWallKick(wallKickVelocity);
+                    jumps++;
+                }
+                else if (IsTouchingRightWall() && PlayerInput.LeftHeld())
+                {
+                    DoWallKick(-wallKickVelocity);
+                    jumps++;
+                }
             }
         }
     }
+
+    void FrictionHandling()
+    {
+        if (IsTouchingGround())
+        {
+            ApplyXFriction(friction);
+        }
+        else
+        {
+            ApplyXFriction(airFriction);
+        }
+    }
+
     void AbilityHandling()
     {
         if (PlayerInput.DashRollPressed())
@@ -71,9 +114,51 @@ public class PlayerMovement : MobileEntity
         }
     }
 
-    void DoJump()
+    void JumpHandling()
     {
-        if (rb.velocity.y < 0) { SetYVelocity(0); }
-        AddYVelocity(jumpPower, jumpPower * 3);
+        if (PlayerInput.UpPressed())
+        {
+            if (IsTouchingLeftWall() && PlayerInput.RightHeld())
+            {
+                DoWallKick(wallKickVelocity);
+            }
+            else if (IsTouchingRightWall() && PlayerInput.LeftHeld())
+            {
+                DoWallKick(-wallKickVelocity);
+            } else
+            {
+                wallKickWindow = 5;
+                if (IsTouchingGround())
+                {
+                    DoJump(jumpPower);
+                }
+                else if (jumps == 2)
+                {
+                    jumps--;
+                    DoJump(jumpPower * .8f);
+                }
+                else if (jumps == 1)
+                {
+                    jumps--;
+                    DoJump(jumpPower * .6f);
+                }
+            }
+        }
+    }
+
+    void DoWallKick(float velocity)
+    {
+        if (wallKickCooldown < 1)
+        {
+            DoJump(jumpPower);
+            SetXVelocity(velocity);
+            //jumps = 1;
+            wallKickCooldown = 10;
+        }
+    }
+
+    void DoJump(float pJumpPower)
+    {
+        if (rb.velocity.y < pJumpPower) { SetYVelocity(pJumpPower); }
     }
 }

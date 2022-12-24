@@ -6,7 +6,7 @@ public class MobileEntity : HPEntity
 {
     [SerializeField] protected Transform trfm;
     [SerializeField] protected Rigidbody2D rb;
-    public bool isOnGround;
+    public bool[] touchingTerrain; //0: touching floor, 1: touching left wall, 2: touching right wall
     protected bool facing;
     protected const bool FACING_LEFT = false, FACING_RIGHT = true;
 
@@ -139,5 +139,18 @@ public class MobileEntity : HPEntity
     public bool IsFacingLeft()
     {
         return !facing;
+    }
+
+    protected bool IsTouchingGround()
+    {
+        return touchingTerrain[0];
+    }
+    protected bool IsTouchingLeftWall()
+    {
+        return touchingTerrain[1];
+    }
+    protected bool IsTouchingRightWall()
+    {
+        return touchingTerrain[2];
     }
 }
