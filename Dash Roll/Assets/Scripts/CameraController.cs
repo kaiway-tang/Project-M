@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] Transform cameraTrfm, trackingTrfm;
-    [SerializeField] Transform plyrTrfm;
+    [SerializeField] Transform cameraTrfm, trackingTrfm, targetTrfm;
     [SerializeField] float trackingRate, rotationRate, moveIntensity, rotationIntensity;
 
     static CameraController self;
@@ -18,6 +17,7 @@ public class CameraController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        trackingTrfm.parent = null;
         self = GetComponent<CameraController>();
     }
 
@@ -39,8 +39,8 @@ public class CameraController : MonoBehaviour
     {
         if (mode == TRACK_PLAYER)
         {
-            vect3.x = (plyrTrfm.position.x - trackingTrfm.position.x) * trackingRate;
-            vect3.y = (plyrTrfm.position.y - trackingTrfm.position.y) * trackingRate;
+            vect3.x = (targetTrfm.position.x - trackingTrfm.position.x) * trackingRate;
+            vect3.y = (targetTrfm.position.y - trackingTrfm.position.y) * trackingRate;
 
             trackingTrfm.position += vect3;
         }

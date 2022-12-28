@@ -5,10 +5,11 @@ using UnityEngine;
 public class PlayerMovement : MobileEntity
 {
     [SerializeField] Vector2 velocity;
-
     [SerializeField] float acceleration, maxSpd, friction, airAcceleration, airMaxSpd, airFriction, jumpPower, wallKickVelocity, dashRollVelocity, dashRollFriction;
-
     [SerializeField] int jumps;
+    [SerializeField] Animator animator;
+    [SerializeField] int animatorState;
+    const int IDLE = 0, RUN = 1, JUMP = 2, FALL = 3;
 
     int wallKickCooldown, wallKickWindow, wallKickScreenShakeCooldown;
     int attackCooldown, dashRollCooldown;
@@ -86,12 +87,22 @@ public class PlayerMovement : MobileEntity
                     {
                         FaceRight();
                         AddXVelocity(acceleration, maxSpd);
+                        SetAnimatorState(RUN);
+                    }
+                    else
+                    {
+                        SetAnimatorState(IDLE);
                     }
                 }
                 else if (PlayerInput.LeftHeld())
                 {
                     FaceLeft();
                     AddXVelocity(-acceleration, -maxSpd);
+                    SetAnimatorState(RUN);
+                }
+                else
+                {
+                    SetAnimatorState(IDLE);
                 }
             }
             else
@@ -108,6 +119,11 @@ public class PlayerMovement : MobileEntity
                 {
                     FaceLeft();
                     AddXVelocity(-airAcceleration, -airMaxSpd);
+                }
+
+                if (rb.velocity.y < 0)
+                {
+                    SetAnimatorState(FALL);
                 }
             }
         }
@@ -188,7 +204,7 @@ public class PlayerMovement : MobileEntity
                 }
 
                 //DisableGravity();
-                CameraController.SetTrauma(12);
+                if (!IsTouchingGround()) { CameraController.SetTrauma(12); }
 
                 rb.velocity = vect2 * dashRollVelocity;
                 dashRollCooldown = 50;
@@ -262,6 +278,18 @@ public class PlayerMovement : MobileEntity
 
     void DoJump(float pJumpPower)
     {
-        if (rb.velocity.y < pJumpPower) { SetYVelocity(pJumpPower); }
+        SetAnimatorState(JUMP);
+        if (rb.velocity.y < pJumpPower) 
+        {
+            SetYVelocity(pJumpPower);
+        }
+    }
+    void SetAnimatorState(int state)
+    {
+        if (animatorState != state)
+        {
+            animator.SetInteger("State", state);
+            animatorState = state;
+        }
     }
 }
