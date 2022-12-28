@@ -7,22 +7,21 @@ public class PlayerMovement : MobileEntity
     [SerializeField] Vector2 velocity;
     [SerializeField] float acceleration, maxSpd, friction, airAcceleration, airMaxSpd, airFriction, jumpPower, wallKickVelocity, dashRollVelocity, dashRollFriction;
     [SerializeField] int jumps;
-    [SerializeField] Animator animator;
-    [SerializeField] int animatorState;
-    const int IDLE = 0, RUN = 1, JUMP = 2, FALL = 3;
+    [SerializeField] PlayerAnimator animator;
 
-    int wallKickCooldown, wallKickWindow, wallKickScreenShakeCooldown;
-    int attackCooldown, dashRollCooldown;
+    int wallKickCooldown, wallKickWindow, wallKickScreenShakeCooldown, hover;
+    int attackCooldown, attackReset, dashRollCooldown;
     bool refundJump;
 
     [SerializeField] GameObject attackSlash;
 
-    Vector2 vect2;
-    Vector3 vect3;
+    Vector2 vect2; //passive vect2 to avoid declaring new Vector2 repeatedly
+    Vector3 vect3; // ^^
 
     // Start is called before the first frame update
     void Start()
     {
+
     }
 
     // Update is called once per frame
@@ -37,8 +36,9 @@ public class PlayerMovement : MobileEntity
         WallKickWindowHandling();
     }
 
-    private void FixedUpdate()
+    private new void FixedUpdate()
     {
+        base.FixedUpdate();
 
         if (jumps < 2 && IsTouchingGround()) { jumps = 2; }
 
@@ -60,18 +60,22 @@ public class PlayerMovement : MobileEntity
             if (wallKickWindow == 0) { refundJump = false; }
         }
 
+        if (attackReset > 0)
+        {
+            attackReset--;
+        }
+
         if (attackCooldown > 0)
         {
-            if (attackCooldown == 20)
-            {
-                attackSlash.SetActive(false);
-            }
             attackCooldown--;
         }
 
-        if (dashRollCooldown > 0)
+        if (dashRollCooldown > 0) { dashRollCooldown--; }
+
+        if (hover > 0)
         {
-            dashRollCooldown--;
+            hover--;
+            SetYVelocity(0);
         }
     }
 
@@ -87,22 +91,22 @@ public class PlayerMovement : MobileEntity
                     {
                         FaceRight();
                         AddXVelocity(acceleration, maxSpd);
-                        SetAnimatorState(RUN);
+                        animator.RequestAnimatorState(PlayerAnimator.RUN);
                     }
                     else
                     {
-                        SetAnimatorState(IDLE);
+                        animator.RequestAnimatorState(PlayerAnimator.IDLE);
                     }
                 }
                 else if (PlayerInput.LeftHeld())
                 {
                     FaceLeft();
                     AddXVelocity(-acceleration, -maxSpd);
-                    SetAnimatorState(RUN);
+                    animator.RequestAnimatorState(PlayerAnimator.RUN);
                 }
                 else
                 {
-                    SetAnimatorState(IDLE);
+                    animator.RequestAnimatorState(PlayerAnimator.IDLE);
                 }
             }
             else
@@ -123,7 +127,11 @@ public class PlayerMovement : MobileEntity
 
                 if (rb.velocity.y < 0)
                 {
-                    SetAnimatorState(FALL);
+                    animator.RequestAnimatorState(PlayerAnimator.FALL);
+                }
+                else
+                {
+                    animator.RequestAnimatorState(PlayerAnimator.JUMP);
                 }
             }
         }
@@ -182,8 +190,25 @@ public class PlayerMovement : MobileEntity
         {
             if (attackCooldown < 1)
             {
-                attackSlash.SetActive(true);
-                attackCooldown = 25;
+                if (attackReset > 0)
+                {
+                    animator.QueAnimation(PlayerAnimator.ATTACK_2, 30);
+                    LockMovement(30);
+                    attackCooldown = 30;
+                    attackReset = 0;
+
+                    if (!IsTouchingGround()) { SetYVelocity(-25); }
+                }
+                else
+                {
+                    animator.QueAnimation(PlayerAnimator.ATTACK_1, 18);
+                    LockMovement(18);
+                    attackCooldown = 18;
+                    attackReset = 50;
+
+                    hover = 18;
+                }
+                //attackSlash.SetActive(true);
             }
         }
 
@@ -278,18 +303,10 @@ public class PlayerMovement : MobileEntity
 
     void DoJump(float pJumpPower)
     {
-        SetAnimatorState(JUMP);
+        animator.RequestAnimatorState(PlayerAnimator.JUMP);
         if (rb.velocity.y < pJumpPower) 
         {
             SetYVelocity(pJumpPower);
-        }
-    }
-    void SetAnimatorState(int state)
-    {
-        if (animatorState != state)
-        {
-            animator.SetInteger("State", state);
-            animatorState = state;
         }
     }
 }

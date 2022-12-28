@@ -9,7 +9,12 @@ public class HPEntity : MonoBehaviour
 
     public enum EntityTypes { Enemy, Player, None }
 
-    // Start is called before the first frame update
+    protected void FixedUpdate()
+    {
+        if (stunned > 0) { stunned--; }
+        if (movementLocked > 0) { movementLocked--; }
+    }
+
     public void TakeDamage(int amount, EntityTypes ignoreEntity)
     {
         if (ignoreEntity == entityID) { return; }
@@ -38,5 +43,15 @@ public class HPEntity : MonoBehaviour
                 HP = maxHP;
             }
         }
+    }
+
+    public void Stun(int duration)
+    {
+        if (stunned < duration) { stunned = duration; }
+    }
+
+    public void LockMovement(int duration)
+    {
+        if (movementLocked < duration) { movementLocked = duration; }
     }
 }

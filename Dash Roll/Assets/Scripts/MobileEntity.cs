@@ -14,7 +14,12 @@ public class MobileEntity : HPEntity
     int gravityDisable; float defaultGravity;
 
     Vector2 vect2;
-    
+
+    protected new void FixedUpdate()
+    {
+        base.FixedUpdate();
+    }
+
     protected void AddXVelocity(float amount, float max)
     {
         vect2 = rb.velocity;

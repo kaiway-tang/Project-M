@@ -7,7 +7,8 @@ public class Parallaxer : MonoBehaviour
     [SerializeField] Transform cameraTrfm;
     [SerializeField] Vector3 referencePoint;
     [SerializeField] Transform[] backgrounds;
-    [SerializeField] float[] rates;
+    [SerializeField] float rate;
+    [SerializeField] Vector2[] ratios;
 
     Vector2 vect2;
 
@@ -22,7 +23,9 @@ public class Parallaxer : MonoBehaviour
     {
         for (int i = 0; i < backgrounds.Length; i++)
         {
-            backgrounds.
+            //vect2.x = initPos[i].x + ratios[i].x * (cameraTrfm.position.x - camInitPos.x) * rate;
+            //vect2.y = initPos[i].y + ratios[i].y * (cameraTrfm.position.y - camInitPos.y) * rate;
+            backgrounds[i].position = vect2;
         }
     }
 }
