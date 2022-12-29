@@ -20,6 +20,12 @@ public class MobileEntity : HPEntity
         base.FixedUpdate();
     }
 
+    public void TakeDamage(int amount, EntityTypes ignoreEntity, Vector2 vect2)
+    {
+        TakeDamage(amount, ignoreEntity);
+        if (ignoreEntity != entityID) { TakeKnockback(vect2); }
+    }
+
     protected void AddXVelocity(float amount, float max)
     {
         vect2 = rb.velocity;
@@ -62,6 +68,11 @@ public class MobileEntity : HPEntity
         vect2 = rb.velocity;
         vect2.x = value;
         rb.velocity = vect2;
+    }
+    protected void AddForwardXVelocity(float amount, float max)
+    {
+        if (IsFacingLeft()) { AddXVelocity(-amount, -max); }
+        else { AddXVelocity(amount, max); }
     }
 
     protected void AddYVelocity(float amount, float max)

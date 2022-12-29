@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Attack : MonoBehaviour
 {
-    [SerializeField] int damage, knockback;
-    [SerializeField] HPEntity.EntityTypes EntityTypes;
+    [SerializeField] protected int damage;
+    [SerializeField] protected HPEntity.EntityTypes entityType;
+    [SerializeField] protected Transform trfm;
+    protected MobileEntity mobileEntity;
     // Start is called before the first frame update
 
-    private void OnTriggerEnter2D(Collider2D col)
+    protected void OnTriggerEnter2D(Collider2D col)
     {
-        col.GetComponent<HPEntity>().TakeDamage(damage, EntityTypes);
+        col.GetComponent<HPEntity>().TakeDamage(damage, entityType);
     }
 }

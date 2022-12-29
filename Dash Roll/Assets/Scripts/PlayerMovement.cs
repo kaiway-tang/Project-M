@@ -13,7 +13,7 @@ public class PlayerMovement : MobileEntity
     int attackCooldown, attackReset, dashRollCooldown;
     bool refundJump;
 
-    [SerializeField] GameObject attackSlash;
+    [SerializeField] GameObject attack1, attack2;
 
     Vector2 vect2; //passive vect2 to avoid declaring new Vector2 repeatedly
     Vector3 vect3; // ^^
@@ -63,11 +63,31 @@ public class PlayerMovement : MobileEntity
         if (attackReset > 0)
         {
             attackReset--;
+            if (attackReset == 17)
+            {
+                attack1.SetActive(true);
+            }
+            if (attackReset == 9)
+            {
+                attack1.SetActive(false);
+            }
+            if (attackReset == 0)
+            {
+                attackCooldown = 10;
+            }
         }
 
         if (attackCooldown > 0)
         {
             attackCooldown--;
+            if (attackCooldown == 21)
+            {
+                attack2.SetActive(true);
+            }
+            if (attackCooldown == 12)
+            {
+                attack2.SetActive(false);
+            }
         }
 
         if (dashRollCooldown > 0) { dashRollCooldown--; }
@@ -125,13 +145,30 @@ public class PlayerMovement : MobileEntity
                     AddXVelocity(-airAcceleration, -airMaxSpd);
                 }
 
-                if (rb.velocity.y < 0)
+                if (rb.velocity.y < -15)
                 {
                     animator.RequestAnimatorState(PlayerAnimator.FALL);
                 }
                 else
                 {
-                    animator.RequestAnimatorState(PlayerAnimator.JUMP);
+                    //left:
+                    //front && left || back && right
+
+                    //right:
+                    //back && left || front && right
+
+                    if (touchingTerrain[1])
+                    {
+                        animator.RequestAnimatorState(PlayerAnimator.CLING_FRONT);
+                    }
+                    else if (touchingTerrain[3])
+                    {
+                        animator.RequestAnimatorState(PlayerAnimator.CLING_BACK);
+                    }
+                    else
+                    {
+                        ApplyAirAnimation();
+                    }
                 }
             }
         }
@@ -186,27 +223,29 @@ public class PlayerMovement : MobileEntity
 
     void AbilityHandling()
     {
-        if (PlayerInput.AttackPressed())
+        if (PlayerInput.AttackHeld())
         {
             if (attackCooldown < 1)
             {
                 if (attackReset > 0)
                 {
-                    animator.QueAnimation(PlayerAnimator.ATTACK_2, 30);
-                    LockMovement(30);
+                    animator.QueAnimation(PlayerAnimator.ATTACK_2, 27);
+                    LockMovement(27);
                     attackCooldown = 30;
                     attackReset = 0;
 
-                    if (!IsTouchingGround()) { SetYVelocity(-25); }
+                    if (!IsTouchingGround()) { SetYVelocity(-30); }
+                    AddForwardXVelocity(16,16);
                 }
                 else
                 {
-                    animator.QueAnimation(PlayerAnimator.ATTACK_1, 18);
-                    LockMovement(18);
-                    attackCooldown = 18;
-                    attackReset = 50;
+                    animator.QueAnimation(PlayerAnimator.ATTACK_1, 15);
+                    LockMovement(12);
+                    attackCooldown = 15;
+                    attackReset = 20;
+                    AddForwardXVelocity(12, 12);
 
-                    hover = 18;
+                    hover = 12;
                 }
                 //attackSlash.SetActive(true);
             }
@@ -276,6 +315,18 @@ public class PlayerMovement : MobileEntity
             }
 
             wallKickWindow = 5;
+        }
+    }
+
+    void ApplyAirAnimation()
+    {
+        if (rb.velocity.y < 0)
+        {
+            animator.RequestAnimatorState(PlayerAnimator.FALL);
+        }
+        else
+        {
+            animator.RequestAnimatorState(PlayerAnimator.JUMP);
         }
     }
 

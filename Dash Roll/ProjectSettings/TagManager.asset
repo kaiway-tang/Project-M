@@ -14,7 +14,7 @@ TagManager:
   - OnGround
   - Terrain
   - Attack
-  - Hitbox
+  - Hurtbox
   - 
   - 
   - 

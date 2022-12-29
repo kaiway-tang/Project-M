@@ -21,7 +21,7 @@ public class HPEntity : MonoBehaviour
 
         HP -= amount;
 
-        if (HP < 0)
+        if (HP <= 0)
         {
             Die();
         }
@@ -29,7 +29,7 @@ public class HPEntity : MonoBehaviour
 
     public virtual void Die()
     {
-        Destroy(gameObject);
+        Destroy(transform.root.gameObject);
     }
 
     public void Heal(int amount, bool allowOverheal)

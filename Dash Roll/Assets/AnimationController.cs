@@ -60,7 +60,7 @@ public class AnimationController : MonoBehaviour
         {
             firstEmptyQueSlot = -1;
 
-            for (int i = 0; i < activeAnimations; i++)
+            for (int i = 0; i < animationQueID.Length; i++)
             {
                 if (firstEmptyQueSlot == -1 && animationQueID[i] == -1) //no empty que slot found && found empty que slot
                 {
@@ -92,6 +92,20 @@ public class AnimationController : MonoBehaviour
         RequestAnimatorState(animationID);
 
         activeAnimations++;
+    }
+
+    public void DeQueAnimation(int animationID)
+    {
+        for (int i = 0; i < animationQueID.Length; i++)
+        {
+            if (animationQueID[i] == animationID)
+            {
+                animationQueID[i] = -1;
+                animationQueDuration[i] = 0;
+                activeAnimations--;
+                return;
+            }
+        }
     }
 
     int indexGreatest;
