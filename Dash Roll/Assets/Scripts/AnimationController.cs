@@ -4,8 +4,20 @@ using UnityEngine;
 
 public class AnimationController : MonoBehaviour
 {
+    public struct State
+    {
+        public int ID, priority;
+
+        public State(int pID, int pPriority)
+        {
+            ID = pID;
+            priority = pPriority;
+        }
+    }
+
     [SerializeField] Animator animator;
     [SerializeField] int animatorState, firstEmptyQueSlot, activeAnimations, defaultAnimation;
+
     [SerializeField] protected int[] animationQueID, animationQueDuration, animationPriority;
 
     protected void FixedUpdate()
@@ -36,25 +48,25 @@ public class AnimationController : MonoBehaviour
         }
     }
 
-    public bool RequestAnimatorState(int state) //returns true if requested animation is set
+    public bool RequestAnimatorState(State state) //returns true if requested animation is set
     {
-        if (animatorState != state)
+        if (animatorState != state.ID)
         {
-            if (animatorState < 0 || animationPriority[state] >= animationPriority[animatorState])
+            if (animatorState < 0 || animationPriority[state.ID] >= animationPriority[animatorState])
             {
-                animator.SetInteger("State", state);
-                animatorState = state;
+                animator.SetInteger("State", state.ID);
+                animatorState = state.ID;
                 return true;
             }
             else
             {
-                defaultAnimation = state;
+                defaultAnimation = state.ID;
             }
         }
         return false;
     }
 
-    public void QueAnimation(int animationID, int duration)
+    public void QueAnimation(State state, int duration)
     {
         if (activeAnimations > 0)
         {
@@ -66,7 +78,7 @@ public class AnimationController : MonoBehaviour
                 {
                     firstEmptyQueSlot = i;
                 }
-                if (animationQueID[i] == animationID)
+                if (animationQueID[i] == state.ID)
                 {
                     if (animationQueDuration[i] < duration)
                     {
@@ -87,9 +99,9 @@ public class AnimationController : MonoBehaviour
             firstEmptyQueSlot = 0;
         }
 
-        animationQueID[firstEmptyQueSlot] = animationID;
+        animationQueID[firstEmptyQueSlot] = state.ID;
         animationQueDuration[firstEmptyQueSlot] = duration;
-        RequestAnimatorState(animationID);
+        RequestAnimatorState(state);
 
         activeAnimations++;
     }
@@ -109,7 +121,7 @@ public class AnimationController : MonoBehaviour
     }
 
     int indexGreatest;
-    int IndexOfGreatestValue(int[] input)
+    int IndexOfGreatestValue(State[] input)
     {
         indexGreatest = 0;
         for (int i = 1; i < input.Length; i++)
