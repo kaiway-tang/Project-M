@@ -5,9 +5,9 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] Transform cameraTrfm, trackingTrfm, targetTrfm;
-    [SerializeField] float trackingRate, rotationRate, moveIntensity, rotationIntensity;
+    public float trackingRate, rotationRate, moveIntensity, rotationIntensity;
 
-    static CameraController self;
+    public static CameraController self;
 
     int mode;
     const int TRACK_PLAYER = 0;

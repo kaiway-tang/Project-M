@@ -9,11 +9,24 @@ public class PlayerMovement : MobileEntity
     [SerializeField] int jumps;
     [SerializeField] PlayerAnimator animator;
 
-    int wallKickCooldown, wallKickWindow, wallKickScreenShakeCooldown, hover;
-    int attackCooldown, attackReset, dashRollCooldown;
+    [SerializeField] ParticleSystem dashPtclFX;
+    [SerializeField] TrailRenderer[] dashTrailFX;
+    [SerializeField] Collider2D hurtbox;
+    [SerializeField] ObjectPooler dashShadowFXPooler;
+    [SerializeField] Vector3 dashShadowFXOffset;
+    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] Color dashBlack;
+
+    int wallKickFXTimer, wallKickWindow, wallKickScreenShakeCooldown, hover;
+    int attackCooldown, attackReset;
+    int dashRollCooldown;
     bool refundJump;
 
-    [SerializeField] GameObject attack1, attack2;
+    int dodgeFXActive;
+
+    bool cameraTrackingIncreased;
+
+    [SerializeField] DirectionalAttack attack1, attack2;
 
     Vector2 vect2; //passive vect2 to avoid declaring new Vector2 repeatedly
     Vector3 vect3; // ^^
@@ -40,7 +53,15 @@ public class PlayerMovement : MobileEntity
     {
         base.FixedUpdate();
 
-        if (jumps < 2 && IsTouchingGround()) { jumps = 2; }
+        if (IsTouchingGround())
+        {
+            if (jumps < 2) { jumps = 2; }
+            if (cameraTrackingIncreased)
+            {
+                CameraController.self.trackingRate /= 2;
+                cameraTrackingIncreased = false;
+            }
+        }
 
         MovementHandling();
 
@@ -51,12 +72,17 @@ public class PlayerMovement : MobileEntity
 
     void Clocks()
     {
-        if (wallKickCooldown > 0) { wallKickCooldown--; }
+        if (wallKickFXTimer > 0) 
+        {
+            wallKickFXTimer--; 
+            if (wallKickFXTimer == 4) { DisableDodgeFX(); }
+            if (wallKickFXTimer == 0) { hurtbox.enabled = true; }
+        }
         if (wallKickScreenShakeCooldown > 0) { wallKickScreenShakeCooldown--; }
 
-        if (wallKickWindow > 0) 
+        if (wallKickWindow > 0)
         {
-            wallKickWindow--; 
+            wallKickWindow--;
             if (wallKickWindow == 0) { refundJump = false; }
         }
 
@@ -65,11 +91,11 @@ public class PlayerMovement : MobileEntity
             attackReset--;
             if (attackReset == 17)
             {
-                attack1.SetActive(true);
+                attack1.Activate(IsFacingRight());
             }
             if (attackReset == 9)
             {
-                attack1.SetActive(false);
+                attack1.Deactivate();
             }
             if (attackReset == 0)
             {
@@ -82,15 +108,33 @@ public class PlayerMovement : MobileEntity
             attackCooldown--;
             if (attackCooldown == 21)
             {
-                attack2.SetActive(true);
+                attack2.Activate(IsFacingRight());
             }
             if (attackCooldown == 12)
             {
-                attack2.SetActive(false);
+                attack2.Deactivate();
             }
         }
 
-        if (dashRollCooldown > 0) { dashRollCooldown--; }
+        if (dashRollCooldown > 0)
+        {
+            dashRollCooldown--;
+
+            if (dashRollCooldown > 34 && dashRollCooldown % 2 == 0)
+            {
+                //dashShadowFXPooler.Instantiate(trfm.position + dashShadowFXOffset, (50-dashRollCooldown)/2 * -45);
+                //dashShadowFXPooler.Instantiate(trfm.position + dashShadowFXOffset);
+            }
+
+            if (dashRollCooldown == 34)
+            {
+                DisableDodgeFX();
+            }
+            if (dashRollCooldown == 30)
+            {
+                hurtbox.enabled = true;
+            }
+        }
 
         if (hover > 0)
         {
@@ -148,6 +192,16 @@ public class PlayerMovement : MobileEntity
                 if (rb.velocity.y < -15)
                 {
                     animator.RequestAnimatorState(PlayerAnimator.FALL);
+
+                    if (rb.velocity.y < -30)
+                    {
+                        SetYVelocity(-30);
+                        if (false && !cameraTrackingIncreased)
+                        {
+                            CameraController.self.trackingRate *= 2;
+                            cameraTrackingIncreased = true;
+                        }
+                    }
                 }
                 else
                 {
@@ -202,11 +256,6 @@ public class PlayerMovement : MobileEntity
             {
                 ApplyDirectionalFriction(dashRollFriction);
             }
-
-            if (dashRollCooldown == 40)
-            {
-                //EnableGravity();
-            }
         }
         else
         {
@@ -235,7 +284,7 @@ public class PlayerMovement : MobileEntity
                     attackReset = 0;
 
                     if (!IsTouchingGround()) { SetYVelocity(-30); }
-                    AddForwardXVelocity(16,16);
+                    AddForwardXVelocity(16, 16);
                 }
                 else
                 {
@@ -267,12 +316,39 @@ public class PlayerMovement : MobileEntity
                     }
                 }
 
-                //DisableGravity();
+                animator.QueAnimation(PlayerAnimator.ROLL, 16);
+                EnableDodgeFX();
+                hurtbox.enabled = false;
+
                 if (!IsTouchingGround()) { CameraController.SetTrauma(12); }
 
                 rb.velocity = vect2 * dashRollVelocity;
                 dashRollCooldown = 50;
             }
+        }
+    }
+
+    void EnableDodgeFX()
+    {
+        if (dodgeFXActive < 1)
+        {
+            dashPtclFX.Play();
+            dashTrailFX[0].emitting = true;
+            dashTrailFX[1].emitting = true;
+            spriteRenderer.color = dashBlack;
+        }
+        dodgeFXActive++;
+    }
+
+    void DisableDodgeFX()
+    {
+        dodgeFXActive--;
+        if (dodgeFXActive < 1)
+        {
+            dashPtclFX.Stop();
+            dashTrailFX[0].emitting = false;
+            dashTrailFX[1].emitting = false;
+            spriteRenderer.color = Color.white;
         }
     }
 
@@ -332,19 +408,17 @@ public class PlayerMovement : MobileEntity
 
     void DoWallKick(float velocity)
     {
-        if (wallKickCooldown < 1)
-        {
-            DoJump(jumpPower);
-            SetXVelocity(velocity);
-            wallKickWindow = 0;
+        DoJump(jumpPower);
+        SetXVelocity(velocity);
+        wallKickWindow = 0;
 
-            if (wallKickScreenShakeCooldown < 1) { CameraController.SetTrauma(12); }
-            else { CameraController.SetTrauma(8); }
-            wallKickScreenShakeCooldown = 30;
+        if (wallKickScreenShakeCooldown < 1) { CameraController.SetTrauma(12); }
+        else { CameraController.SetTrauma(8); }
+        wallKickScreenShakeCooldown = 30;
 
-            //jumps = 1;
-            //wallKickCooldown = 10;
-        }
+        if (wallKickFXTimer < 5) { EnableDodgeFX(); }
+        hurtbox.enabled = false;
+        wallKickFXTimer = 20;
     }
 
     bool CanWallKick()
@@ -354,7 +428,14 @@ public class PlayerMovement : MobileEntity
 
     void DoJump(float pJumpPower)
     {
-        animator.RequestAnimatorState(PlayerAnimator.JUMP);
+        if (IsTouchingGround())
+        {
+            animator.RequestAnimatorState(PlayerAnimator.JUMP);
+        }
+        else
+        {
+            animator.QueAnimation(PlayerAnimator.ROLL, 16);
+        }
         if (rb.velocity.y < pJumpPower) 
         {
             SetYVelocity(pJumpPower);
