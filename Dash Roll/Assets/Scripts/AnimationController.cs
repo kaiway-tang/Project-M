@@ -4,85 +4,140 @@ using UnityEngine;
 
 public class AnimationController : MonoBehaviour
 {
-    public struct State
+    public class ReferenceState
     {
-        public int ID, priority;
+        int ID, priority;
 
-        public State(int pID, int pPriority)
+        public ReferenceState(int pID, int pPriority)
         {
             ID = pID;
             priority = pPriority;
         }
+
+        public int getID() { return ID; }
+        public int getPriority() { return priority; }
+    }
+    public class ActiveState
+    {
+        public bool hasReference;
+        public int duration;
+        public ReferenceState referenceState;
+
+        public ActiveState()
+        {
+            hasReference = false;
+            duration = 0;
+        }
+        public ActiveState(ReferenceState pReferenceState)
+        {
+            referenceState = pReferenceState;
+            hasReference = true;
+        }
+
+        public void SetReferenceState(ReferenceState pReferenceState)
+        {
+            referenceState = pReferenceState;
+            hasReference = true;
+        }
+        public void SetReferenceState(ReferenceState pReferenceState, int pDuration)
+        {
+            referenceState = pReferenceState;
+            duration = pDuration;
+            hasReference = true;
+        }
+
+        public int getID() 
+        {
+            if (hasReference) { return referenceState.getID(); }
+            return -1;
+        }
+        public int getPriority()
+        {
+            if (hasReference) { return referenceState.getPriority(); }
+            return -1;
+        }
     }
 
     [SerializeField] Animator animator;
-    [SerializeField] int animatorState, firstEmptyQueSlot, activeAnimations, defaultAnimation;
+    //[SerializeField] int animatorState, firstEmptyQueSlot, activeAnimations, defaultAnimation;
+    int firstEmptyQueSlot, activeAnimations;
 
-    [SerializeField] protected int[] animationQueID, animationQueDuration, animationPriority;
+    protected ActiveState currentState, defaultState;
+
+    //[SerializeField] protected int[] animationQueID, animationQueDuration, animationPriority;
+    protected ActiveState[] animationQue;
+
+    protected void Start()
+    {
+        currentState = new ActiveState();
+        defaultState = new ActiveState();
+
+        //declare animationQue
+    }
 
     protected void FixedUpdate()
     {
-        for (int i = 0; i < animationQueDuration.Length; i++)
+        for (int i = 0; i < animationQue.Length; i++)
         {
-            if (animationQueDuration[i] > 0)
+            if (animationQue[i].duration > 0)
             {
-                animationQueDuration[i]--;
+                animationQue[i].duration--;
 
-                if (animationQueDuration[i] < 1)
+                if (animationQue[i].duration < 1)
                 {
-                    animationQueID[i] = -1;
+                    animationQue[i].hasReference = false;
                     activeAnimations--;
 
-                    animatorState = -1;
+                    currentState.hasReference = false;
 
                     if (activeAnimations > 0)
                     {
-                        RequestAnimatorState(animationQueID[IndexOfGreatestValue(animationQueID)]);
+                        RequestAnimatorState(animationQue[IndexOfGreatestActivePriority()].referenceState);
                     }
                     else
                     {
-                        RequestAnimatorState(defaultAnimation);
+                        RequestAnimatorState(defaultState.referenceState);
                     }
                 }
             }
         }
     }
 
-    public bool RequestAnimatorState(State state) //returns true if requested animation is set
+    public bool RequestAnimatorState(ReferenceState referenceState) //returns true if requested animation is set
     {
-        if (animatorState != state.ID)
+        if (currentState.getID() != referenceState.getID())
         {
-            if (animatorState < 0 || animationPriority[state.ID] >= animationPriority[animatorState])
+            if (referenceState.getPriority() >= currentState.getPriority())
             {
-                animator.SetInteger("State", state.ID);
-                animatorState = state.ID;
+                animator.SetInteger("State", referenceState.getID());
+                currentState.SetReferenceState(referenceState);
                 return true;
             }
             else
             {
-                defaultAnimation = state.ID;
+                defaultState.SetReferenceState(referenceState);
             }
         }
         return false;
     }
 
-    public void QueAnimation(State state, int duration)
+    public void QueAnimation(ReferenceState referenceState, int duration)
     {
         if (activeAnimations > 0)
         {
             firstEmptyQueSlot = -1;
 
-            for (int i = 0; i < animationQueID.Length; i++)
+            for (int i = 0; i < animationQue.Length; i++)
             {
-                if (firstEmptyQueSlot == -1 && animationQueID[i] == -1) //no empty que slot found && found empty que slot
+                if (firstEmptyQueSlot == -1 && !animationQue[i].hasReference) //no empty que slot found && found empty que slot
                 {
                     firstEmptyQueSlot = i;
                 }
-                if (animationQueID[i] == state.ID)
+                if (animationQue[i].getID() == referenceState.getID())
                 {
-                    if (animationQueDuration[i] < duration)
+                    if (animationQue[i].duration < duration)
                     {
-                        animationQueDuration[i] = duration;
+                        animationQue[i].duration = duration;
                     }
                     return;
                 }
@@ -99,21 +154,20 @@ public class AnimationController : MonoBehaviour
             firstEmptyQueSlot = 0;
         }
 
-        animationQueID[firstEmptyQueSlot] = state.ID;
-        animationQueDuration[firstEmptyQueSlot] = duration;
-        RequestAnimatorState(state);
+        animationQue[firstEmptyQueSlot].SetReferenceState(referenceState, duration);
+        RequestAnimatorState(referenceState);
 
         activeAnimations++;
     }
 
-    public void DeQueAnimation(int animationID)
+    public void DeQueAnimation(ReferenceState referenceState)
     {
-        for (int i = 0; i < animationQueID.Length; i++)
+        for (int i = 0; i < animationQue.Length; i++)
         {
-            if (animationQueID[i] == animationID)
+            if (animationQue[i].getID() == referenceState.getID())
             {
-                animationQueID[i] = -1;
-                animationQueDuration[i] = 0;
+                animationQue[i].hasReference = false;
+                animationQue[i].duration = 0;
                 activeAnimations--;
                 return;
             }
@@ -121,12 +175,12 @@ public class AnimationController : MonoBehaviour
     }
 
     int indexGreatest;
-    int IndexOfGreatestValue(State[] input)
+    int IndexOfGreatestActivePriority()
     {
         indexGreatest = 0;
-        for (int i = 1; i < input.Length; i++)
+        for (int i = 1; i < animationQue.Length; i++)
         {
-            if (input[i] > input[indexGreatest])
+            if (animationQue[i].getPriority() > animationQue[indexGreatest].getPriority())
             {
                 indexGreatest = i;
             }

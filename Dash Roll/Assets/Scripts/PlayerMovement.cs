@@ -89,17 +89,28 @@ public class PlayerMovement : MobileEntity
         if (attackReset > 0)
         {
             attackReset--;
-            if (attackReset == 17)
+
+            switch (attackReset) 
             {
-                attack1.Activate(IsFacingRight());
-            }
-            if (attackReset == 9)
-            {
-                attack1.Deactivate();
-            }
-            if (attackReset == 0)
-            {
-                attackCooldown = 10;
+                case 38:
+                    attack1.Activate(IsFacingRight());
+                    break;
+                case 30:
+                    attack1.Deactivate();
+                    break;
+                case 21:
+                    attackReset = 0;
+                    break;
+                case 17:
+                    attack1.Activate(IsFacingRight());
+                    break;
+                case 9:
+                    attack1.Deactivate();
+                    break;
+                case 0: attackCooldown = 10;
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -155,22 +166,22 @@ public class PlayerMovement : MobileEntity
                     {
                         FaceRight();
                         AddXVelocity(acceleration, maxSpd);
-                        animator.RequestAnimatorState(PlayerAnimator.RUN);
+                        animator.RequestAnimatorState(animator.Run);
                     }
                     else
                     {
-                        animator.RequestAnimatorState(PlayerAnimator.IDLE);
+                        animator.RequestAnimatorState(animator.Idle);
                     }
                 }
                 else if (PlayerInput.LeftHeld())
                 {
                     FaceLeft();
                     AddXVelocity(-acceleration, -maxSpd);
-                    animator.RequestAnimatorState(PlayerAnimator.RUN);
+                    animator.RequestAnimatorState(animator.Run);
                 }
                 else
                 {
-                    animator.RequestAnimatorState(PlayerAnimator.IDLE);
+                    animator.RequestAnimatorState(animator.Idle);
                 }
             }
             else
@@ -191,7 +202,7 @@ public class PlayerMovement : MobileEntity
 
                 if (rb.velocity.y < -15)
                 {
-                    animator.RequestAnimatorState(PlayerAnimator.FALL);
+                    animator.RequestAnimatorState(animator.Fall);
 
                     if (rb.velocity.y < -30)
                     {
@@ -213,11 +224,11 @@ public class PlayerMovement : MobileEntity
 
                     if (touchingTerrain[1])
                     {
-                        animator.RequestAnimatorState(PlayerAnimator.CLING_FRONT);
+                        animator.RequestAnimatorState(animator.ClingFront);
                     }
                     else if (touchingTerrain[3])
                     {
-                        animator.RequestAnimatorState(PlayerAnimator.CLING_BACK);
+                        animator.RequestAnimatorState(animator.ClingBack);
                     }
                     else
                     {
@@ -276,9 +287,19 @@ public class PlayerMovement : MobileEntity
         {
             if (attackCooldown < 1)
             {
-                if (attackReset > 0)
+                if (attackReset > 20)
                 {
-                    animator.QueAnimation(PlayerAnimator.ATTACK_2, 27);
+                    animator.QueAnimation(animator.LightAttack1, 15);
+                    LockMovement(12);
+                    attackCooldown = 15;
+                    attackReset = 21;
+                    AddForwardXVelocity(12, 12);
+
+                    hover = 12;
+                }
+                else if (attackReset > 0)
+                {
+                    animator.QueAnimation(animator.HeavyAttack, 27);
                     LockMovement(27);
                     attackCooldown = 30;
                     attackReset = 0;
@@ -288,10 +309,10 @@ public class PlayerMovement : MobileEntity
                 }
                 else
                 {
-                    animator.QueAnimation(PlayerAnimator.ATTACK_1, 15);
+                    animator.QueAnimation(animator.LightAttack2, 15);
                     LockMovement(12);
                     attackCooldown = 15;
-                    attackReset = 20;
+                    attackReset = 41;
                     AddForwardXVelocity(12, 12);
 
                     hover = 12;
@@ -316,7 +337,7 @@ public class PlayerMovement : MobileEntity
                     }
                 }
 
-                animator.QueAnimation(PlayerAnimator.ROLL, 16);
+                animator.QueAnimation(animator.Roll, 16);
                 EnableDodgeFX();
                 hurtbox.enabled = false;
 
@@ -398,11 +419,11 @@ public class PlayerMovement : MobileEntity
     {
         if (rb.velocity.y < 0)
         {
-            animator.RequestAnimatorState(PlayerAnimator.FALL);
+            animator.RequestAnimatorState(animator.Fall);
         }
         else
         {
-            animator.RequestAnimatorState(PlayerAnimator.JUMP);
+            animator.RequestAnimatorState(animator.Jump);
         }
     }
 
@@ -430,11 +451,11 @@ public class PlayerMovement : MobileEntity
     {
         if (IsTouchingGround())
         {
-            animator.RequestAnimatorState(PlayerAnimator.JUMP);
+            animator.RequestAnimatorState(animator.Jump);
         }
         else
         {
-            animator.QueAnimation(PlayerAnimator.ROLL, 16);
+            animator.QueAnimation(animator.Roll, 16);
         }
         if (rb.velocity.y < pJumpPower) 
         {
