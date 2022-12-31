@@ -12,12 +12,12 @@ public class PlayerMovement : MobileEntity
     [SerializeField] ParticleSystem dashPtclFX;
     [SerializeField] TrailRenderer[] dashTrailFX;
     [SerializeField] Collider2D hurtbox;
-    [SerializeField] ObjectPooler dashShadowFXPooler;
-    [SerializeField] Vector3 dashShadowFXOffset;
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Color dashBlack;
 
-    int wallKickFXTimer, wallKickWindow, wallKickScreenShakeCooldown, hover;
+    [SerializeField] GameObject kickFX;
+
+    int wallKickFXTimer, wallKickWindow, wallKickScreenShakeCooldown, attackKickTimer, hover;
     int attackCooldown, attackReset;
     int dashRollCooldown;
     bool refundJump;
@@ -26,15 +26,15 @@ public class PlayerMovement : MobileEntity
 
     bool cameraTrackingIncreased;
 
-    [SerializeField] DirectionalAttack attack1, attack2;
+    [SerializeField] DirectionalAttack lightAttack, heavyAttack, kickAttack;
 
     Vector2 vect2; //passive vect2 to avoid declaring new Vector2 repeatedly
     Vector3 vect3; // ^^
 
-    // Start is called before the first frame update
-    void Start()
+    public new static Transform trfm;
+    void Awake()
     {
-
+        trfm = transform;
     }
 
     // Update is called once per frame
@@ -44,7 +44,7 @@ public class PlayerMovement : MobileEntity
 
         JumpHandling();
 
-        AbilityHandling();
+        UpdateAbilityHandling();
 
         WallKickWindowHandling();
     }
@@ -62,6 +62,8 @@ public class PlayerMovement : MobileEntity
                 cameraTrackingIncreased = false;
             }
         }
+
+        FixedUpdateAbilityHandling();
 
         MovementHandling();
 
@@ -93,19 +95,19 @@ public class PlayerMovement : MobileEntity
             switch (attackReset) 
             {
                 case 38:
-                    attack1.Activate(IsFacingRight());
+                    lightAttack.Activate(IsFacingRight());
                     break;
                 case 30:
-                    attack1.Deactivate();
+                    lightAttack.Deactivate();
                     break;
                 case 21:
                     attackReset = 0;
                     break;
                 case 17:
-                    attack1.Activate(IsFacingRight());
+                    lightAttack.Activate(IsFacingRight());
                     break;
                 case 9:
-                    attack1.Deactivate();
+                    lightAttack.Deactivate();
                     break;
                 case 0: attackCooldown = 10;
                     break;
@@ -119,11 +121,11 @@ public class PlayerMovement : MobileEntity
             attackCooldown--;
             if (attackCooldown == 21)
             {
-                attack2.Activate(IsFacingRight());
+                heavyAttack.Activate(IsFacingRight());
             }
             if (attackCooldown == 12)
             {
-                attack2.Deactivate();
+                heavyAttack.Deactivate();
             }
         }
 
@@ -144,6 +146,15 @@ public class PlayerMovement : MobileEntity
             if (dashRollCooldown == 30)
             {
                 hurtbox.enabled = true;
+            }
+        }
+
+        if (attackKickTimer > 0)
+        {
+            attackKickTimer--;
+            if (attackKickTimer == 0)
+            {
+                kickAttack.Deactivate();
             }
         }
 
@@ -281,9 +292,9 @@ public class PlayerMovement : MobileEntity
         }
     }
 
-    void AbilityHandling()
+    void FixedUpdateAbilityHandling()
     {
-        if (PlayerInput.AttackHeld())
+        if (PlayerInput.AttackHeld() && dodgeFXActive < 1)
         {
             if (attackCooldown < 1)
             {
@@ -299,7 +310,7 @@ public class PlayerMovement : MobileEntity
                 }
                 else if (attackReset > 0)
                 {
-                    animator.QueAnimation(animator.HeavyAttack, 27);
+                    animator.QueAnimation(animator.HeavyAttack, 26);
                     LockMovement(27);
                     attackCooldown = 30;
                     attackReset = 0;
@@ -317,8 +328,18 @@ public class PlayerMovement : MobileEntity
 
                     hover = 12;
                 }
-                //attackSlash.SetActive(true);
             }
+        }
+    }
+
+    void UpdateAbilityHandling()
+    {
+        if (dodgeFXActive > 0 && PlayerInput.AttackPressed())
+        {
+            animator.QueAnimation(animator.Kick, 8);
+            Instantiate(kickFX, trfm.position, trfm.rotation);
+            kickAttack.Activate(IsFacingRight());
+            attackKickTimer = 8;
         }
 
         if (PlayerInput.DashRollPressed())

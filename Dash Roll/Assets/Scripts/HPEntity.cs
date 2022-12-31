@@ -15,16 +15,18 @@ public class HPEntity : MonoBehaviour
         if (movementLocked > 0) { movementLocked--; }
     }
 
-    public void TakeDamage(int amount, EntityTypes ignoreEntity)
+    public bool TakeDamage(int amount, EntityTypes ignoreEntity) //returns true if entity killed
     {
-        if (ignoreEntity == entityID) { return; }
+        if (ignoreEntity == entityID) { return false; }
 
         HP -= amount;
 
         if (HP <= 0)
         {
             Die();
+            return true;
         }
+        return false;
     }
 
     public virtual void Die()

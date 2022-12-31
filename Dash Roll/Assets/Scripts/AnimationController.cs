@@ -72,7 +72,7 @@ public class AnimationController : MonoBehaviour
         currentState = new ActiveState();
         defaultState = new ActiveState();
 
-        //declare animationQue
+        animationQue = new ActiveState[] { new ActiveState(), new ActiveState(), new ActiveState() };
     }
 
     protected void FixedUpdate()

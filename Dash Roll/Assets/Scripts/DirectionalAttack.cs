@@ -5,8 +5,8 @@ using UnityEngine;
 public class DirectionalAttack : Attack
 {
     public const int RIGHT = 0, LEFT = 1, DOWN = 2, UP = 3;
-    int direction;
-    [SerializeField] Vector2[] knockbackDirections;
+    protected int direction;
+    [SerializeField] protected Vector2[] knockbackDirections;
     // Start is called before the first frame update
 
     public void Activate(int pDirection) //attacks with > 2 directions

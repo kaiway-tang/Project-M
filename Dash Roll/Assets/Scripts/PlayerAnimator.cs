@@ -16,21 +16,16 @@ public class PlayerAnimator : AnimationController
         HeavyAttack = new ReferenceState(5, 150),
         ClingBack = new ReferenceState(6, 1),
         ClingFront = new ReferenceState(7, 1),
-        Roll = new ReferenceState(8, 50);
+        Roll = new ReferenceState(8, 50),
+        Kick = new ReferenceState(10, 60);
 
     // Start is called before the first frame update
     new void Start()
     {
-        /*
-        animationQueID = new int[3] { -1, -1, -1 };
-        animationQueDuration = new int[3];
-        animationPriority = new int[9] {1, 1, 1, 1, 10, 11, 1, 1, 6};
-        */
-
         currentState = new ActiveState(Idle);
         defaultState = new ActiveState(Idle);
 
-        animationQue = new ActiveState[3] { new ActiveState(), new ActiveState(), new ActiveState() };
+        animationQue = new ActiveState[] { new ActiveState(), new ActiveState(), new ActiveState() };
     }
 
     new void FixedUpdate()

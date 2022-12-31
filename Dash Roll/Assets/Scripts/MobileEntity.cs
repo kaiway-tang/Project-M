@@ -20,10 +20,10 @@ public class MobileEntity : HPEntity
         base.FixedUpdate();
     }
 
-    public void TakeDamage(int amount, EntityTypes ignoreEntity, Vector2 vect2)
+    public bool TakeDamage(int amount, EntityTypes ignoreEntity, Vector2 vect2)
     {
-        TakeDamage(amount, ignoreEntity);
         if (ignoreEntity != entityID) { TakeKnockback(vect2); }
+        return TakeDamage(amount, ignoreEntity);
     }
 
     protected void AddXVelocity(float amount, float max)
