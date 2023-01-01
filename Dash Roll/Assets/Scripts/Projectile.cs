@@ -8,21 +8,41 @@ public class Projectile : MonoBehaviour
     [SerializeField] protected float speed;
     [SerializeField] protected HPEntity.EntityTypes entityType;
     [SerializeField] protected Transform trfm;
+    [SerializeField] GameObject DestroyFX;
+    [SerializeField] int life;
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected void FixedUpdate()
     {
         trfm.position += trfm.up * speed;
+
+        life--;
+        if (life == 0) { End(); }
+    }
+
+    void End()
+    {
+        Instantiate(DestroyFX, trfm.position, trfm.rotation);
+        Destroy(gameObject);
     }
 
     protected void OnTriggerEnter2D(Collider2D col)
     {
-        col.GetComponent<MobileEntity>().TakeDamage(damage, entityType, trfm.up * knockback);
-        Destroy(gameObject);
+        if (col.gameObject.layer > 10 && col.gameObject.layer < 14)
+        {
+            if (col.GetComponent<MobileEntity>().TakeDamage(damage, entityType, trfm.up * knockback) != HPEntity.IGNORED)
+            {
+                End();
+            }
+        }
+        else
+        {
+            End();
+        }
     }
 }

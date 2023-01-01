@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MobileEntity : HPEntity
 {
-    [SerializeField] protected Transform trfm, reflectionTrfm;
+    [SerializeField] protected Transform reflectionTrfm;
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] float knockbackFactor = 1;
     public bool[] touchingTerrain; //0-4: ground, front, ceiling, backLow, backHigh
@@ -13,20 +13,21 @@ public class MobileEntity : HPEntity
 
     int gravityDisable; float defaultGravity;
 
-    Vector2 vect2;
+    protected static Vector2 vect2; //passive vect2 to avoid declaring new Vector2 repeatedly
+    protected static Vector3 vect3; // ^^
 
     protected new void FixedUpdate()
     {
         base.FixedUpdate();
+
+        if (tookKnockback)
+        {
+            TakeKnockback(lastKnockback);
+            tookKnockback = false;
+        }
     }
 
-    public bool TakeDamage(int amount, EntityTypes ignoreEntity, Vector2 vect2)
-    {
-        if (ignoreEntity != entityID) { TakeKnockback(vect2); }
-        return TakeDamage(amount, ignoreEntity);
-    }
-
-    protected void AddXVelocity(float amount, float max)
+    public void AddXVelocity(float amount, float max)
     {
         vect2 = rb.velocity;
 
@@ -69,10 +70,19 @@ public class MobileEntity : HPEntity
         vect2.x = value;
         rb.velocity = vect2;
     }
-    protected void AddForwardXVelocity(float amount, float max)
+    public void AddForwardXVelocity(float amount, float max)
     {
         if (IsFacingLeft()) { AddXVelocity(-amount, -max); }
         else { AddXVelocity(amount, max); }
+    }
+
+    public void AddForwardVelocity(float x, float y)
+    {
+        if (IsFacingRight()) { vect2.x = x; }
+        else { vect2.x = -x; }
+        vect2.y = y;
+
+        rb.velocity = vect2;
     }
 
     protected void AddYVelocity(float amount, float max)
@@ -139,6 +149,30 @@ public class MobileEntity : HPEntity
             if (vect2.x > 0)
             {
                 vect2.x = 0;
+            }
+        }
+
+        rb.velocity = vect2;
+    }
+
+    protected void ApplyYFriction(float amount)
+    {
+        vect2 = rb.velocity;
+
+        if (vect2.y > 0)
+        {
+            vect2.y -= amount;
+            if (vect2.y < 0)
+            {
+                vect2.y = 0;
+            }
+        }
+        else
+        {
+            vect2.y += amount;
+            if (vect2.y > 0)
+            {
+                vect2.y = 0;
             }
         }
 
@@ -229,9 +263,9 @@ public class MobileEntity : HPEntity
         }
     }
 
-    public void TakeKnockback(Transform source, int power)
+    public void TakeKnockback(Vector3 source, int power)
     {
-        rb.velocity = (trfm.position - source.position).normalized * power * knockbackFactor;
+        rb.velocity = (trfm.position - source).normalized * power * knockbackFactor;
     }
     public void TakeKnockback(Vector2 knockback)
     {

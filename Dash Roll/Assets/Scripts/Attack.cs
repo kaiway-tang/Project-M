@@ -7,21 +7,20 @@ public class Attack : MonoBehaviour
     [SerializeField] protected int damage;
     [SerializeField] protected HPEntity.EntityTypes entityType;
     [SerializeField] protected Transform trfm;
-    [SerializeField] Collider2D collider;
-    protected MobileEntity mobileEntity;
+    [SerializeField] Collider2D hitbox;
     
     public void Activate()
     {
-        collider.enabled = true;
+        hitbox.enabled = true;
     }
 
     public void Deactivate()
     {
-        collider.enabled = false;
+        hitbox.enabled = false;
     }
 
     protected void OnTriggerEnter2D(Collider2D col)
     {
-        col.GetComponent<HPEntity>().TakeDamage(damage, entityType);
+        if (col.gameObject.layer > 10 && col.gameObject.layer < 14) { col.GetComponent<HPEntity>().TakeDamage(damage, entityType); }
     }
 }

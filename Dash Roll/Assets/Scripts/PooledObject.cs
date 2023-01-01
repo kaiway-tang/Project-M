@@ -8,7 +8,7 @@ public class PooledObject : MonoBehaviour
     [SerializeField] int objectID, life;
     int timer;
 
-    private void Start()
+    protected void Start()
     {
         timer = life;
     }

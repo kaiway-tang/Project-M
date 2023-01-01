@@ -17,19 +17,18 @@ public class PlayerMovement : MobileEntity
 
     [SerializeField] GameObject kickFX;
 
-    int wallKickFXTimer, wallKickWindow, wallKickScreenShakeCooldown, attackKickTimer, hover;
+    int wallKickFXTimer, wallKickWindow, wallKickScreenShakeCooldown, attackKickTimer, dodgeFXActive;
     int attackCooldown, attackReset;
     int dashRollCooldown;
     bool refundJump;
 
-    int dodgeFXActive;
+    public int hover;
 
     bool cameraTrackingIncreased;
 
     [SerializeField] DirectionalAttack lightAttack, heavyAttack, kickAttack;
-
-    Vector2 vect2; //passive vect2 to avoid declaring new Vector2 repeatedly
-    Vector3 vect3; // ^^
+    [SerializeField] Transform cameraTargetPoint;
+    int cameraTargetResetTimer;
 
     public new static Transform trfm;
     void Awake()
@@ -56,11 +55,6 @@ public class PlayerMovement : MobileEntity
         if (IsTouchingGround())
         {
             if (jumps < 2) { jumps = 2; }
-            if (cameraTrackingIncreased)
-            {
-                CameraController.self.trackingRate /= 2;
-                cameraTrackingIncreased = false;
-            }
         }
 
         FixedUpdateAbilityHandling();
@@ -74,6 +68,15 @@ public class PlayerMovement : MobileEntity
 
     void Clocks()
     {
+        if (cameraTargetResetTimer > 0)
+        {
+            if (cameraTargetResetTimer == 1)
+            {
+                cameraTargetPoint.localPosition = new Vector2(2, 4);
+            }
+            cameraTargetResetTimer--;
+        }
+
         if (wallKickFXTimer > 0) 
         {
             wallKickFXTimer--; 
@@ -161,7 +164,7 @@ public class PlayerMovement : MobileEntity
         if (hover > 0)
         {
             hover--;
-            SetYVelocity(0);
+            if (rb.velocity.y < 0) { SetYVelocity(0); }
         }
     }
 
@@ -215,24 +218,20 @@ public class PlayerMovement : MobileEntity
                 {
                     animator.RequestAnimatorState(animator.Fall);
 
-                    if (rb.velocity.y < -30)
+                    if (rb.velocity.y < -40)
                     {
-                        SetYVelocity(-30);
-                        if (false && !cameraTrackingIncreased)
+                        cameraTargetResetTimer = 5;
+                        vect2.x = 1; vect2.y = 44 + rb.velocity.y;
+                        cameraTargetPoint.localPosition = vect2;
+
+                        if (rb.velocity.y < -50)
                         {
-                            CameraController.self.trackingRate *= 2;
-                            cameraTrackingIncreased = true;
+                            SetYVelocity(-50);
                         }
                     }
                 }
                 else
                 {
-                    //left:
-                    //front && left || back && right
-
-                    //right:
-                    //back && left || front && right
-
                     if (touchingTerrain[1])
                     {
                         animator.RequestAnimatorState(animator.ClingFront);
@@ -306,7 +305,7 @@ public class PlayerMovement : MobileEntity
                     attackReset = 21;
                     AddForwardXVelocity(12, 12);
 
-                    hover = 12;
+                    //hover = 12;
                 }
                 else if (attackReset > 0)
                 {
@@ -315,7 +314,7 @@ public class PlayerMovement : MobileEntity
                     attackCooldown = 30;
                     attackReset = 0;
 
-                    if (!IsTouchingGround()) { SetYVelocity(-30); }
+                    if (!IsTouchingGround()) { SetYVelocity(-40); }
                     AddForwardXVelocity(16, 16);
                 }
                 else
@@ -326,7 +325,7 @@ public class PlayerMovement : MobileEntity
                     attackReset = 41;
                     AddForwardXVelocity(12, 12);
 
-                    hover = 12;
+                    //hover = 12;
                 }
             }
         }

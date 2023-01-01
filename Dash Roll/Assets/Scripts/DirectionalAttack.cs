@@ -24,6 +24,6 @@ public class DirectionalAttack : Attack
 
     new void OnTriggerEnter2D(Collider2D col)
     {
-        col.GetComponent<MobileEntity>().TakeDamage(damage, entityType, knockbackDirections[direction]);
+        if (col.gameObject.layer > 10 && col.gameObject.layer < 14) { col.GetComponent<HPEntity>().TakeDamage(damage, entityType, knockbackDirections[direction]); }
     }
 }
