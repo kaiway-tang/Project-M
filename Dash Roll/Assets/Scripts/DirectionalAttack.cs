@@ -22,8 +22,13 @@ public class DirectionalAttack : Attack
         Activate();
     }
 
-    new void OnTriggerEnter2D(Collider2D col)
+    protected new void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.layer > 10 && col.gameObject.layer < 14) { col.GetComponent<HPEntity>().TakeDamage(damage, entityType, knockbackDirections[direction]); }
+        if (col.gameObject.layer > 10 && col.gameObject.layer < 14) 
+        {
+            takeDamageResult = col.GetComponent<HPEntity>().TakeDamage(damage, entityType, knockbackDirections[direction]);
+            return;
+        }
+        takeDamageResult = HPEntity.IGNORED;
     }
 }

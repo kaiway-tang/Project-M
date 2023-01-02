@@ -28,7 +28,7 @@ public class SkullEnemy : Enemy
 
         if (InBoxDistanceToPlayer(trackingRange))
         {
-            if (rb.velocity.y < -25) { SetYVelocity(-25); }
+            if (rb.velocity.y < -15) { SetYVelocity(-15); }
 
             if (timer > 0)
             {
@@ -59,9 +59,9 @@ public class SkullEnemy : Enemy
             {
                 if (Mathf.Abs(PlayerMovement.trfm.position.x - trfm.position.x) < 6 && Mathf.Abs(PlayerMovement.trfm.position.y - trfm.position.y - .2f) < .2f)
                 {
-                    telegraphPooler.Instantiate(trfm.position, 0);
+                    telegraphPooler.Instantiate(trfm.position);
                     spriteRenderer.sprite = attackSprite;
-                    timer = 90;
+                    timer = 86;
                 }
                 else
                 {

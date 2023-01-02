@@ -2,18 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LightAttack : DirectionalAttack
+public class LightAttack : SlashAttack
 {
     [SerializeField] PlayerMovement playerMovement;
-    Vector2 hover;
     private new void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.layer > 10 && col.gameObject.layer < 14)
+        base.OnTriggerEnter2D(col);
+        if (takeDamageResult != HPEntity.IGNORED)
         {
-            if (col.GetComponent<HPEntity>().TakeDamage(damage, entityType, knockbackDirections[direction]) != HPEntity.IGNORED)
-            {
-                playerMovement.hover = 12;
-            }
+            playerMovement.hover = 12;
+            if (!playerMovement.IsTouchingGround()) { playerMovement.TakeKnockback(new Vector2(0, 17)); }
         }
     }
 }

@@ -13,9 +13,11 @@ public class Enemy : MobileEntity
     int hurtTimer;
     public int kicked;
 
+    static int terrainLayerMask = 1 << 7; //layer mask to only test for terrain collisions
+
     protected void Start()
     {
-
+        //terrainLayerMask = 1 << 7;
     }
 
     // Update is called once per frame
@@ -69,5 +71,15 @@ public class Enemy : MobileEntity
         if (kicked > 0) { return; }
         TakeDamage(10, HPEntity.EntityTypes.Player, velocity);
         kicked = 35;
+    }
+
+    protected bool PlayerInSight()
+    {
+        return !Physics2D.Linecast(trfm.position, PlayerMovement.trfm.position, terrainLayerMask);
+    }
+
+    protected bool ObstructedSightLine(Vector2 start, Vector2 end)
+    {
+        return Physics2D.Linecast(start, end, terrainLayerMask);
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class Toolbox : MonoBehaviour
 {
     [SerializeField] static Transform trfm;
-    Vector2 vect2;
+    static Vector2 vect2;
     // Start is called before the first frame update
     void Awake()
     {

@@ -4,24 +4,19 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    [SerializeField] SpriteRenderer spriteRenderer;
-    [SerializeField] Material flash, normal;
+    [SerializeField] int layerMask = 1 << 7;
+    [SerializeField] bool playerVisible;
 
     bool everyTwo;
     // Start is called before the first frame update
     void Start()
     {
-        spriteRenderer.material = flash;
+        
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        
-    }
-
-    void EveryTwo()
-    {
-        
+        playerVisible = !Physics2D.Linecast(transform.position, PlayerMovement.trfm.position, layerMask);
     }
 }

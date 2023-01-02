@@ -8,6 +8,8 @@ public class Attack : MonoBehaviour
     [SerializeField] protected HPEntity.EntityTypes entityType;
     [SerializeField] protected Transform trfm;
     [SerializeField] Collider2D hitbox;
+
+    protected int takeDamageResult;
     
     public void Activate()
     {
@@ -21,6 +23,11 @@ public class Attack : MonoBehaviour
 
     protected void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.layer > 10 && col.gameObject.layer < 14) { col.GetComponent<HPEntity>().TakeDamage(damage, entityType); }
+        if (col.gameObject.layer > 10 && col.gameObject.layer < 14) 
+        {
+            takeDamageResult = col.GetComponent<HPEntity>().TakeDamage(damage, entityType);
+            return;
+        }
+        takeDamageResult = HPEntity.IGNORED;
     }
 }

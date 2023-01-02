@@ -4,13 +4,20 @@ using UnityEngine;
 
 public class PooledObject : MonoBehaviour
 {
-    [SerializeField] ObjectPooler objectPooler;
-    [SerializeField] int objectID, life;
-    int timer;
+    ObjectPooler objectPooler;
+    [SerializeField] int life;
+    public Transform trfm;
+    int timer, objectID;
 
-    protected void Start()
+    protected void OnEnable()
     {
         timer = life;
+    }
+
+    public void Setup(ObjectPooler pObjectPooler, int pObjectID)
+    {
+        objectPooler = pObjectPooler;
+        objectID = pObjectID;
     }
 
     protected void Destantiate()
@@ -21,7 +28,7 @@ public class PooledObject : MonoBehaviour
             return;
         }
 
-        objectPooler.objectReady[objectID - 1] = true;
+        objectPooler.SetReady(objectID - 1);
         gameObject.SetActive(false);
     }
     protected void FixedUpdate()

@@ -45,7 +45,8 @@ public class CameraController : MonoBehaviour
             trackingTrfm.position += vect3;
         }
 
-        processTrauma();
+        ProcessTrauma();
+        ProcessSleep();
     }
 
     [SerializeField] int trauma;
@@ -65,9 +66,9 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    [SerializeField] float processedTrauma;
+    float processedTrauma;
     Vector3 zVect3;
-    void processTrauma()
+    void ProcessTrauma()
     {
         //rotational recovery
         if (cameraTrfm.localEulerAngles.z < .1f || cameraTrfm.localEulerAngles.z > 359.9f) 
@@ -112,5 +113,20 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    int sleepTimer;
+    public static void Sleep(int amount)
+    {
+        if (amount < 1) { return; }
+        if (self.sleepTimer < 1) { Time.timeScale = .5f; }
+        if (self.sleepTimer < amount) { self.sleepTimer = amount; }
+    }
 
+    void ProcessSleep()
+    {
+        if (sleepTimer > 0)
+        {
+            if (sleepTimer == 1) { Time.timeScale = 1; }
+            sleepTimer--;
+        }
+    }
 }

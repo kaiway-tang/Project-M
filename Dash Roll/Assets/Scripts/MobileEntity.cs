@@ -239,7 +239,7 @@ public class MobileEntity : HPEntity
         facing = FACING_LEFT;
     }
 
-    protected bool IsTouchingGround()
+    public bool IsTouchingGround()
     {
         return touchingTerrain[0];
     }

@@ -9,15 +9,17 @@ public class NecromancerEnemy : Enemy
     [SerializeField] float speed;
     [SerializeField] NecromancerAnimator animator;
     [SerializeReference] Transform firepoint;
-    [SerializeField] TrailRenderer teleportTrail;
+    [SerializeField] ParticleSystem teleportIn, teleportOut, teleportReady;
 
-    Vector3 meteorOffset;
-    bool inRange;
+    static Vector3 meteorOffset;
+    Vector2 teleportDestination;
+    bool inRangeAndSight;
     
     new void Start()
     {
         base.Start();
         meteorOffset.y = 20;
+        teleportCooldown = 140;
     }
 
 
@@ -26,7 +28,7 @@ public class NecromancerEnemy : Enemy
     {
         base.FixedUpdate();
 
-        if (inRange)
+        if (inRangeAndSight)
         {
             if (attackTimer < 1) //at timer == 0, select next attack
             {
@@ -56,33 +58,15 @@ public class NecromancerEnemy : Enemy
                 attackTimer = Random.Range(70, 80);
             }
 
-            if (teleportCooldown > 0)
-            {
-                if (teleportCooldown == 149) { teleportTrail.emitting = false; }
-                teleportCooldown--;
-            }
-            else if (InBoxDistanceToPlayer(4))
-            {
-                teleportTrail.emitting = true;
-                teleportCooldown = 150;
-                vect3.y = 0; vect3.z = 0;
-                if (IsFacingRight())
-                {
-                    vect3.x = 10;
-                    trfm.position += vect3;
-                }
-                else
-                {
-                    vect3.x = -10;
-                    trfm.position += vect3;
-                }
-            }
-
             attackTimer--;
         }
 
         if (castTime > 0)
         {
+            if (castTime == 25)
+            {
+                telegraphPooler.Instantiate(trfm.position + Vector3.up * 3);
+            }
             if (castTime == 1)
             {
                 if (attack == 0) //explosive fireball
@@ -107,6 +91,31 @@ public class NecromancerEnemy : Enemy
             castTime--;
         }
 
+        if (teleportCooldown > 0)
+        {
+            if (teleportCooldown == 145)
+            {
+                trfm.position = teleportDestination;
+                teleportIn.Play();
+            }
+            if (teleportCooldown == 1)
+            {
+                teleportReady.Play();
+            }
+            teleportCooldown--;
+        }
+        else if (InBoxDistanceToPlayer(4))
+        {
+            if (IsFacingRight())
+            {
+                Teleport(trfm.position + Vector3.right * 10);
+            }
+            else
+            {
+                Teleport(trfm.position + Vector3.right * -10);
+            }
+        }
+
         if (tookDamage)
         {
             FlashWhite();
@@ -122,8 +131,6 @@ public class NecromancerEnemy : Enemy
         ApplyXFriction(friction);
         ApplyYFriction(friction * 2);
 
-        inRange = InBoxDistanceToPlayer(attackRange);
-
         if (attackTimer > 0) { Kite(); }
 
         everyFour = !everyFour;
@@ -132,7 +139,33 @@ public class NecromancerEnemy : Enemy
 
     void EveryFour()
     {
-        
+        if (PlayerInSight())
+        {
+            inRangeAndSight = InBoxDistanceToPlayer(attackRange);
+        }
+        else
+        {
+            inRangeAndSight = false;
+
+            if (teleportCooldown == 0)
+            {
+                vect3.x = (Random.Range(0, 2) * 2 - 1) * 7;
+                vect3.y = 6;
+                vect3.z = 0;
+                if (!ObstructedSightLine(PlayerMovement.trfm.position + vect3, PlayerMovement.trfm.position))
+                {
+                    Teleport(PlayerMovement.trfm.position + vect3);
+                }
+            }
+        }
+    }
+
+    void Teleport(Vector2 destination)
+    {
+        teleportDestination = destination;
+        teleportReady.Stop();
+        teleportOut.Play();
+        teleportCooldown = 150;
     }
 
     bool still;

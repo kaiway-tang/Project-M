@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SceneInitializer : MonoBehaviour
 {
-    [SerializeField] ObjectPooler telegraphPooler;
+    [SerializeField] ObjectPooler telegraphPooler, slashFXPooler, ringFXPooler, bloodFXPooler;
     [SerializeField] Material defaultMaterial, flashMaterial;
     [SerializeField] SceneInitializer self;
     // Start is called before the first frame update
@@ -13,6 +13,11 @@ public class SceneInitializer : MonoBehaviour
         Enemy.telegraphPooler = telegraphPooler;
         Enemy.defaultMaterial = defaultMaterial;
         Enemy.flashMaterial = flashMaterial;
+
+        SlashAttack.slashFXPooler = slashFXPooler;
+        KickAttack.ringFXPooler = ringFXPooler;
+
+        HPEntity.bloodFXPooler = bloodFXPooler;
 
         Destroy(self);
     }

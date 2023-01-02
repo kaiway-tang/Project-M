@@ -4,14 +4,18 @@ using UnityEngine;
 
 public class HPEntity : MonoBehaviour
 {
-    [SerializeField] protected int HP, maxHP, stunned, movementLocked;
+    [SerializeField] protected int HP, maxHP, deathTraumaAmount, deathSleepAmount, stunned, movementLocked;
     [SerializeField] protected Transform trfm;
     public EntityTypes entityID;
+
+    [SerializeField] HPBar hpBar;
 
     public enum EntityTypes { Enemy, Player, None }
     public const int IGNORED = -1, ALIVE = 0, DEAD = 1;
 
     protected bool tookKnockback, tookDamage; protected Vector2 lastKnockback;
+
+    public static ObjectPooler bloodFXPooler;
 
     protected void FixedUpdate()
     {
@@ -38,10 +42,14 @@ public class HPEntity : MonoBehaviour
     public int TakeDamage(int amount, EntityTypes ignoreEntity, Vector2 knockback) //returns true if entity killed
     {
         int result = TakeDamage(amount, ignoreEntity);
+
+        bloodFXPooler.Instantiate(trfm.position, 0);
+
         if (result == ALIVE)
         {
             tookKnockback = true;
             lastKnockback = knockback;
+            hpBar.SetPercentage((float)HP / maxHP);
         }
         return result;
     }
@@ -53,6 +61,8 @@ public class HPEntity : MonoBehaviour
 
     public virtual void End()
     {
+        CameraController.SetTrauma(deathTraumaAmount);
+        CameraController.Sleep(deathSleepAmount);
         Destroy(transform.root.gameObject);
     }
 

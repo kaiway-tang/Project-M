@@ -5,10 +5,9 @@ using UnityEngine;
 public class ExclamationTelegraph : PooledObject
 {
     [SerializeField] Vector3 rise;
-    [SerializeField] Transform trfm;
-    new void Start()
+    new void OnEnable()
     {
-        base.Start();
+        base.OnEnable();
     }
 
     // Update is called once per frame

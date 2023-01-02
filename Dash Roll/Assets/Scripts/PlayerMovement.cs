@@ -18,7 +18,7 @@ public class PlayerMovement : MobileEntity
     [SerializeField] GameObject kickFX;
 
     int wallKickFXTimer, wallKickWindow, wallKickScreenShakeCooldown, attackKickTimer, dodgeFXActive;
-    int attackCooldown, attackReset;
+    int attackCooldown, attackReset, attackPhase, attackHitboxTimer;
     int dashRollCooldown;
     bool refundJump;
 
@@ -79,57 +79,45 @@ public class PlayerMovement : MobileEntity
 
         if (wallKickFXTimer > 0) 
         {
+            if (wallKickFXTimer == 5) { DisableDodgeFX(); }
+            if (wallKickFXTimer == 1) { hurtbox.enabled = true; }
             wallKickFXTimer--; 
-            if (wallKickFXTimer == 4) { DisableDodgeFX(); }
-            if (wallKickFXTimer == 0) { hurtbox.enabled = true; }
         }
         if (wallKickScreenShakeCooldown > 0) { wallKickScreenShakeCooldown--; }
 
         if (wallKickWindow > 0)
         {
+            if (wallKickWindow == 1) { refundJump = false; }
             wallKickWindow--;
-            if (wallKickWindow == 0) { refundJump = false; }
         }
 
         if (attackReset > 0)
         {
-            attackReset--;
-
-            switch (attackReset) 
+            if (attackReset == 1)
             {
-                case 38:
-                    lightAttack.Activate(IsFacingRight());
-                    break;
-                case 30:
-                    lightAttack.Deactivate();
-                    break;
-                case 21:
-                    attackReset = 0;
-                    break;
-                case 17:
-                    lightAttack.Activate(IsFacingRight());
-                    break;
-                case 9:
-                    lightAttack.Deactivate();
-                    break;
-                case 0: attackCooldown = 10;
-                    break;
-                default:
-                    break;
+                attackPhase = 0;
             }
+            attackReset--;
+        }
+
+        if (attackHitboxTimer > 0)
+        {
+            if (attackHitboxTimer == 5)
+            {
+                if (attackPhase == 0) { heavyAttack.Activate(IsFacingRight()); }
+                else { lightAttack.Activate(IsFacingRight()); }
+            }
+            if (attackHitboxTimer == 4)
+            {
+                lightAttack.Deactivate();
+                heavyAttack.Deactivate();
+            }
+            attackHitboxTimer--;
         }
 
         if (attackCooldown > 0)
         {
             attackCooldown--;
-            if (attackCooldown == 21)
-            {
-                heavyAttack.Activate(IsFacingRight());
-            }
-            if (attackCooldown == 12)
-            {
-                heavyAttack.Deactivate();
-            }
         }
 
         if (dashRollCooldown > 0)
@@ -163,8 +151,8 @@ public class PlayerMovement : MobileEntity
 
         if (hover > 0)
         {
-            hover--;
             if (rb.velocity.y < 0) { SetYVelocity(0); }
+            hover--;
         }
     }
 
@@ -297,35 +285,42 @@ public class PlayerMovement : MobileEntity
         {
             if (attackCooldown < 1)
             {
-                if (attackReset > 20)
+                if (attackPhase == 0) //light attack 1
+                {
+                    animator.QueAnimation(animator.LightAttack2, 12);
+                    LockMovement(9);
+
+                    attackCooldown = 12;
+                    attackReset = 20;
+                    attackHitboxTimer = 8;
+
+                    AddForwardXVelocity(18, 18);
+                    attackPhase = 1;
+                }
+                else if (attackPhase == 1) //light attack 2
                 {
                     animator.QueAnimation(animator.LightAttack1, 15);
                     LockMovement(12);
-                    attackCooldown = 15;
-                    attackReset = 21;
-                    AddForwardXVelocity(12, 12);
 
-                    //hover = 12;
+                    attackCooldown = 15;
+                    attackReset = 20;
+                    attackHitboxTimer = 8;
+
+                    AddForwardXVelocity(18, 18);
+                    attackPhase = 2;
                 }
-                else if (attackReset > 0)
+                else if (attackPhase == 2) //heavy attack
                 {
                     animator.QueAnimation(animator.HeavyAttack, 26);
                     LockMovement(27);
+
                     attackCooldown = 30;
                     attackReset = 0;
+                    attackHitboxTimer = 11;
 
                     if (!IsTouchingGround()) { SetYVelocity(-40); }
-                    AddForwardXVelocity(16, 16);
-                }
-                else
-                {
-                    animator.QueAnimation(animator.LightAttack2, 15);
-                    LockMovement(12);
-                    attackCooldown = 15;
-                    attackReset = 41;
-                    AddForwardXVelocity(12, 12);
-
-                    //hover = 12;
+                    AddForwardXVelocity(21, 21);
+                    attackPhase = 0;
                 }
             }
         }
@@ -449,6 +444,8 @@ public class PlayerMovement : MobileEntity
 
     void DoWallKick(float velocity)
     {
+        animator.QueAnimation(animator.Roll, 16);
+
         DoJump(jumpPower);
         SetXVelocity(velocity);
         wallKickWindow = 0;
