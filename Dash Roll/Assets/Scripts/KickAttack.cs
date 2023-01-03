@@ -10,16 +10,19 @@ public class KickAttack : DirectionalAttack
     {
         if (col.gameObject.layer == 12)
         {
+            SuccessfulHit();
             if (col.GetComponent<MobileEntity>().TakeDamage(damage, entityType, knockbackDirections[direction]) == HPEntity.ALIVE)
             {
-                col.GetComponent<Enemy>().kicked = 35;
-                SuccessfulHit();
+                playerMovement.TakeKnockback(knockbackDirections[direction] * -.8f);
+                col.GetComponent<Enemy>().kicked = 50;
             }
         } else
         if (col.gameObject.layer > 10 && col.gameObject.layer < 14)
         {
+            SuccessfulHit();
             if (col.GetComponent<MobileEntity>().TakeDamage(damage, entityType, knockbackDirections[direction]) == HPEntity.ALIVE)
             {
+                playerMovement.TakeKnockback(knockbackDirections[direction] * -.8f);
                 SuccessfulHit();
             }
         }
@@ -27,9 +30,8 @@ public class KickAttack : DirectionalAttack
 
     void SuccessfulHit()
     {
-        playerMovement.TakeKnockback(knockbackDirections[direction] * -.8f);
         ringFXPooler.Instantiate(trfm.position, 90);
         CameraController.SetTrauma(16);
-        CameraController.Sleep(3);
+        CameraController.Sleep(1);
     }
 }

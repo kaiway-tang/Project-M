@@ -23,7 +23,7 @@ public class NecromancerEnemy : Enemy
     }
 
 
-    bool everyTwo, everyFour;
+    bool everyFour;
     new void FixedUpdate()
     {
         base.FixedUpdate();
@@ -85,7 +85,7 @@ public class NecromancerEnemy : Enemy
                 }
                 else if (attack == 3) //summon skull
                 {
-                    Instantiate(skull, trfm.position, trfm.rotation);
+                    Instantiate(skull, trfm.position + Toolbox.GetUnitVectorToPlayer(trfm.position), trfm.rotation);
                 }
             }
             castTime--;
@@ -116,13 +116,6 @@ public class NecromancerEnemy : Enemy
             }
         }
 
-        if (tookDamage)
-        {
-            FlashWhite();
-            tookDamage = false;
-        }
-
-        everyTwo = !everyTwo;
         if (everyTwo) { EveryTwo(); }
     }
     void EveryTwo()

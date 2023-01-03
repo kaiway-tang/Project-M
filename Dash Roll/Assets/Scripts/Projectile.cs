@@ -25,7 +25,7 @@ public class Projectile : MonoBehaviour
         if (life == 0) { End(); }
     }
 
-    void End()
+    protected void End()
     {
         Instantiate(DestroyFX, trfm.position, trfm.rotation);
         Destroy(gameObject);

@@ -24,7 +24,7 @@ public class Toolbox : MonoBehaviour
         return trfm;
     }
 
-    public static Vector2 GetUnitVectorToPlayer(Vector3 position)
+    public static Vector3 GetUnitVectorToPlayer(Vector3 position)
     {
         trfm.up = PlayerMovement.trfm.position - position;
         return trfm.up;

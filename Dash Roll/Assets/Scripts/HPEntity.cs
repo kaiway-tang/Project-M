@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class HPEntity : MonoBehaviour
 {
-    [SerializeField] protected int HP, maxHP, deathTraumaAmount, deathSleepAmount, stunned, movementLocked;
+    [SerializeField] protected int HP, maxHP, deathTraumaAmount, deathSleepAmount, stunned, movementLocked, poisoned, invulnerable;
     [SerializeField] protected Transform trfm;
     public EntityTypes entityID;
 
     [SerializeField] HPBar hpBar;
 
-    public enum EntityTypes { Enemy, Player, None }
+    public enum EntityTypes { Enemy, Player, Neutral }
     public const int IGNORED = -1, ALIVE = 0, DEAD = 1;
 
     protected bool tookKnockback, tookDamage; protected Vector2 lastKnockback;
@@ -21,21 +21,35 @@ public class HPEntity : MonoBehaviour
     {
         if (stunned > 0) { stunned--; }
         if (movementLocked > 0) { movementLocked--; }
+        if (poisoned > 0)
+        {
+            if (poisoned % 50 == 1)
+            {
+                TakeDamage(5, EntityTypes.Neutral);
+            }
+            poisoned--;
+        }
+        if (invulnerable > 0) { invulnerable--; }
+        if (tookDamage) { tookDamage = false; }
     }
 
     public int TakeDamage(int amount, EntityTypes ignoreEntity) //returns true if entity killed
     {
-        if (ignoreEntity == entityID) { return IGNORED; }
+        if (ignoreEntity == entityID || invulnerable > 0) { return IGNORED; }
 
         HP -= amount;
 
+        bloodFXPooler.Instantiate(trfm.position, 0);
+        tookDamage = true;
+
         if (HP <= 0)
         {
-            End();
             return DEAD;
         }
-
-        tookDamage = true;
+        else
+        {
+            hpBar.SetPercentage((float)HP / maxHP);
+        }
         return ALIVE;
     }
 
@@ -43,13 +57,10 @@ public class HPEntity : MonoBehaviour
     {
         int result = TakeDamage(amount, ignoreEntity);
 
-        bloodFXPooler.Instantiate(trfm.position, 0);
-
         if (result == ALIVE)
         {
             tookKnockback = true;
             lastKnockback = knockback;
-            hpBar.SetPercentage((float)HP / maxHP);
         }
         return result;
     }
@@ -59,7 +70,7 @@ public class HPEntity : MonoBehaviour
         return TakeDamage(amount, ignoreEntity, (trfm.position - source).normalized * power);
     }
 
-    public virtual void End()
+    public void End()
     {
         CameraController.SetTrauma(deathTraumaAmount);
         CameraController.Sleep(deathSleepAmount);
@@ -70,7 +81,7 @@ public class HPEntity : MonoBehaviour
     {
         HP += amount;
 
-        if(HP > maxHP)
+        if (HP > maxHP)
         {
             if (!allowOverheal)
             {
@@ -87,5 +98,11 @@ public class HPEntity : MonoBehaviour
     public void LockMovement(int duration)
     {
         if (movementLocked < duration) { movementLocked = duration; }
+    }
+    public int Poison(int seconds, EntityTypes ignoreEntity)
+    {
+        if (ignoreEntity == entityID) { return IGNORED; }
+        poisoned += 50 * seconds;
+        return ALIVE;
     }
 }

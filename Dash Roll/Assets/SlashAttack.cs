@@ -22,7 +22,7 @@ public class SlashAttack : DirectionalAttack
             if (entityType == HPEntity.EntityTypes.Player)
             {
                 CameraController.SetTrauma(traumaOnHit);
-                CameraController.Sleep(2);
+                CameraController.Sleep(1);
             }
         }
     }

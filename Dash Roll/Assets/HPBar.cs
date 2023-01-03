@@ -62,7 +62,7 @@ public class HPBar : MonoBehaviour
                 {
                     setPercentageScale.x = hpTrfm.localScale.x;
                     highlightTrfm.localScale = setPercentageScale;
-                    fadeTimer = 50;
+                    fadeTimer = 150;
                 }
             }
         }

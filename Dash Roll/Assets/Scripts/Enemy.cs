@@ -8,12 +8,15 @@ public class Enemy : MobileEntity
     [SerializeField] protected int trackingRange;
     [SerializeField] protected SpriteRenderer spriteRenderer;
 
+    [SerializeReference] GameObject deathFX;
+
     public static ObjectPooler telegraphPooler;
     public static Material defaultMaterial, flashMaterial;
     int hurtTimer;
     public int kicked;
 
     static int terrainLayerMask = 1 << 7; //layer mask to only test for terrain collisions
+    protected bool everyTwo;
 
     protected void Start()
     {
@@ -23,6 +26,12 @@ public class Enemy : MobileEntity
     // Update is called once per frame
     protected new void FixedUpdate()
     {
+        if (tookDamage)
+        {
+            if (HP <= 0) { Die(); }
+            FlashWhite();
+        }
+
         base.FixedUpdate();
 
         if (hurtTimer > 0)
@@ -37,6 +46,14 @@ public class Enemy : MobileEntity
         {
             kicked--;
         }
+
+        everyTwo = !everyTwo;
+    }
+
+    protected void Die()
+    {
+        Instantiate(deathFX, trfm.position, Quaternion.identity);
+        End();
     }
 
     protected void FacePlayer()
@@ -56,13 +73,15 @@ public class Enemy : MobileEntity
     protected void FlashWhite()
     {
         spriteRenderer.material = flashMaterial;
-        hurtTimer = 5;
+        hurtTimer = 7;
     }
     private void OnCollisionStay2D(Collision2D col)
     {
-        if (kicked > 25 && col.gameObject.layer == 12)
+        if (kicked > 30 && col.gameObject.layer == 12)
         {
-            col.gameObject.GetComponent<Enemy>().KickChained(rb.velocity);
+            TakeDamage(10, HPEntity.EntityTypes.Player);
+            col.gameObject.GetComponent<Enemy>().KickChained(rb.velocity * 1.2f);
+            kicked = 30;
         }
     }
 

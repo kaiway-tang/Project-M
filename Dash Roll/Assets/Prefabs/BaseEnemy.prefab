@@ -141,10 +141,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8494053240132772477}
   - component: {fileID: 8494053240132772478}
-  - component: {fileID: 8494053240132772473}
-  - component: {fileID: 8072449593352937606}
   m_Layer: 12
-  m_Name: skull
+  m_Name: BaseEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -159,7 +157,7 @@ Transform:
   m_GameObject: {fileID: 8494053240132772472}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -10.387545, y: 1.5731716, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8494053241086069898}
@@ -189,59 +187,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!58 &8494053240132772473
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8494053240132772472}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.12
---- !u!114 &8072449593352937606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8494053240132772472}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 245349488ef65c84e9c1e9a2070dd522, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 20
-  maxHP: 20
-  deathTraumaAmount: 15
-  deathSleepAmount: 1
-  stunned: 0
-  movementLocked: 0
-  poisoned: 0
-  trfm: {fileID: 8494053240132772477}
-  entityID: 0
-  hpBar: {fileID: 4571180350385488935}
-  reflectionTrfm: {fileID: 8494053241086069898}
-  rb: {fileID: 8494053240132772478}
-  knockbackFactor: 1
-  touchingTerrain: 
-  friction: 0.5
-  trackingRange: 20
-  spriteRenderer: {fileID: 8494053241086069897}
-  deathFX: {fileID: 3780654266243000828, guid: 666ab1a4fef472a4b97a3e693a8d77ad, type: 3}
-  kicked: 0
-  jumpPower: 20
-  forwardPower: 12
-  neutralSprite: {fileID: 21300000, guid: ed6b5ad76fc8de44eb6b2e5fd5ac9356, type: 3}
-  attackSprite: {fileID: 21300000, guid: 9a681d6403cd6274c95912a3a6e3bfd1, type: 3}
-  attackTrailFX: {fileID: 4112731681619871778}
-  hurtbox: {fileID: 3338728296901816302}
 --- !u!1 &8494053241086069893
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,7 +196,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8494053241086069898}
-  - component: {fileID: 8494053241086069896}
   - component: {fileID: 8494053241086069897}
   m_Layer: 0
   m_Name: sprite, terrain hitbox
@@ -276,22 +220,6 @@ Transform:
   m_Father: {fileID: 8494053240132772477}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &8494053241086069896
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8494053241086069893}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.1
 --- !u!212 &8494053241086069897
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -333,7 +261,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ed6b5ad76fc8de44eb6b2e5fd5ac9356, type: 3}
+  m_Sprite: {fileID: -2413806693520163455, guid: 08505ceb583963b4abae284116584602, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -425,11 +353,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 415144393828672872, guid: e4333cd249622e1488708a06f95adf92, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.06
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 415144393828672872, guid: e4333cd249622e1488708a06f95adf92, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.005
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 415144393828672872, guid: e4333cd249622e1488708a06f95adf92, type: 3}
       propertyPath: m_LocalPosition.x
@@ -437,7 +365,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 415144393828672872, guid: e4333cd249622e1488708a06f95adf92, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.2118
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 415144393828672872, guid: e4333cd249622e1488708a06f95adf92, type: 3}
       propertyPath: m_LocalPosition.z
@@ -475,23 +403,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: HP Bar
       objectReference: {fileID: 0}
-    - target: {fileID: 4785546833492543157, guid: e4333cd249622e1488708a06f95adf92, type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e4333cd249622e1488708a06f95adf92, type: 3}
---- !u!114 &4571180350385488935 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5964234457419906849, guid: e4333cd249622e1488708a06f95adf92, type: 3}
-  m_PrefabInstance: {fileID: 7905277414317587206}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48edf0aac74a07849834b1c6167e8f90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &7527709932451683950 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 415144393828672872, guid: e4333cd249622e1488708a06f95adf92, type: 3}

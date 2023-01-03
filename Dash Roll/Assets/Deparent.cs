@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Deparent : MonoBehaviour
 {
-    [SerializeField] Deparent deparent;
     [SerializeField] Transform[] trfms;
     // Start is called before the first frame update
     void Awake()
@@ -13,6 +12,6 @@ public class Deparent : MonoBehaviour
         {
             trfms[i].parent = null;
         }
-        Destroy(deparent);
+        Destroy(this);
     }
 }

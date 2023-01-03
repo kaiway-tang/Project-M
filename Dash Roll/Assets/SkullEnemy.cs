@@ -20,31 +20,29 @@ public class SkullEnemy : Enemy
     {
         base.FixedUpdate();
 
-        if (tookDamage)
+        if (everyTwo) { EveryTwo(); }
+    }
+    void EveryTwo()
+    {
+        if (InBoxDistanceToPlayer(trackingRange) && PlayerInSight())
         {
-            FlashWhite();
-            tookDamage = false;
-        }
-
-        if (InBoxDistanceToPlayer(trackingRange))
-        {
-            if (rb.velocity.y < -15) { SetYVelocity(-15); }
+            if (rb.velocity.y < -18) { SetYVelocity(-18); }
 
             if (timer > 0)
             {
-                if (timer < 50)
+                if (timer < 25)
                 {
                     FacePlayer();
                 }
                 else
                 {
-                    if (timer == 61) 
+                    if (timer == 31)
                     {
                         attackTrailFX.emitting = true;
                         hurtbox.Activate(IsFacingRight());
                         AddForwardXVelocity(35, 35);
                     }
-                    if (timer == 51)
+                    if (timer == 26)
                     {
                         spriteRenderer.sprite = neutralSprite;
                         attackTrailFX.emitting = false;
@@ -61,12 +59,12 @@ public class SkullEnemy : Enemy
                 {
                     telegraphPooler.Instantiate(trfm.position);
                     spriteRenderer.sprite = attackSprite;
-                    timer = 86;
+                    timer = 44;
                 }
                 else
                 {
                     AddForwardVelocity(forwardPower, jumpPower);
-                    timer = 50;
+                    timer = 25;
                 }
             }
         }

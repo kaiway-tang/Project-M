@@ -70,7 +70,7 @@ public class CameraController : MonoBehaviour
     Vector3 zVect3;
     void ProcessTrauma()
     {
-        //rotational recovery
+        //rotational "recovery" ()
         if (cameraTrfm.localEulerAngles.z < .1f || cameraTrfm.localEulerAngles.z > 359.9f) 
         {
             cameraTrfm.localEulerAngles = Vector3.zero; 
@@ -82,7 +82,7 @@ public class CameraController : MonoBehaviour
             cameraTrfm.localEulerAngles += zVect3;
         }
 
-        //translational recovery
+        //translational "recovery" (lerps rotation back to level)
         vect3.x = (trackingTrfm.position.x - cameraTrfm.position.x) * trackingRate;
         vect3.y = (trackingTrfm.position.y - cameraTrfm.position.y) * trackingRate;
 
@@ -91,24 +91,28 @@ public class CameraController : MonoBehaviour
         //screen shake/rotation
         if (trauma > 0)
         {
-            if (trauma > 48)
+            if (trauma > 48) //hard cap trauma at 40
             {
                 processedTrauma = 2100;
             }
-            else if (trauma > 30)
+            else if (trauma > 30) //soft cap at 30 trauma
             {
                 processedTrauma = 900 + 60 * (trauma - 30);
             }
             else
             {
+                //amount of "shake" is proportional to trauma squared
                 processedTrauma = trauma * trauma;
             }
 
+            //generate random Translational offset for camera per tick
             vect3 = Random.insideUnitCircle.normalized * moveIntensity * processedTrauma;
             cameraTrfm.position += vect3;
 
+            //generate random Rotational offset for camera per tick
             cameraTrfm.Rotate(Vector3.forward * rotationIntensity * (Random.Range(0,2) * 2 - 1) * processedTrauma);
 
+            //decrement trauma as a timer
             trauma--;
         }
     }
@@ -117,7 +121,7 @@ public class CameraController : MonoBehaviour
     public static void Sleep(int amount)
     {
         if (amount < 1) { return; }
-        if (self.sleepTimer < 1) { Time.timeScale = .5f; }
+        if (self.sleepTimer < 1) { Time.timeScale = .25f; }
         if (self.sleepTimer < amount) { self.sleepTimer = amount; }
     }
 

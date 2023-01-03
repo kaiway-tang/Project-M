@@ -16,6 +16,9 @@ public class PlayerMovement : MobileEntity
     [SerializeField] Color dashBlack;
 
     [SerializeField] GameObject kickFX;
+    [SerializeField] ParticleSystem turnFX;
+    [SerializeField] SimpleAnimation smashFX;
+    [SerializeField] ObjectPooler dashRingCooldownFX;
 
     int wallKickFXTimer, wallKickWindow, wallKickScreenShakeCooldown, attackKickTimer, dodgeFXActive;
     int attackCooldown, attackReset, attackPhase, attackHitboxTimer;
@@ -110,6 +113,9 @@ public class PlayerMovement : MobileEntity
             if (attackHitboxTimer == 4)
             {
                 lightAttack.Deactivate();
+            }
+            if (attackHitboxTimer == 3)
+            {
                 heavyAttack.Deactivate();
             }
             attackHitboxTimer--;
@@ -122,19 +128,18 @@ public class PlayerMovement : MobileEntity
 
         if (dashRollCooldown > 0)
         {
-            dashRollCooldown--;
-
-            if (dashRollCooldown > 34 && dashRollCooldown % 2 == 0)
+            if (dashRollCooldown == 1)
             {
-                //dashShadowFXPooler.Instantiate(trfm.position + dashShadowFXOffset, (50-dashRollCooldown)/2 * -45);
-                //dashShadowFXPooler.Instantiate(trfm.position + dashShadowFXOffset);
+                dashRingCooldownFX.Instantiate(trfm.position, 0);
             }
 
-            if (dashRollCooldown == 34)
+            dashRollCooldown--;
+
+            if (dashRollCooldown == 59)
             {
                 DisableDodgeFX();
             }
-            if (dashRollCooldown == 30)
+            if (dashRollCooldown == 55)
             {
                 hurtbox.enabled = true;
             }
@@ -166,7 +171,14 @@ public class PlayerMovement : MobileEntity
                 {
                     if (!PlayerInput.LeftHeld())
                     {
-                        FaceRight();
+                        if (IsFacingLeft())
+                        {
+                            FaceRight();
+                            if (rb.velocity.x < -5)
+                            {
+                                turnFX.Play();
+                            }
+                        }
                         AddXVelocity(acceleration, maxSpd);
                         animator.RequestAnimatorState(animator.Run);
                     }
@@ -177,7 +189,14 @@ public class PlayerMovement : MobileEntity
                 }
                 else if (PlayerInput.LeftHeld())
                 {
-                    FaceLeft();
+                    if (IsFacingRight())
+                    {
+                        FaceLeft();
+                        if (rb.velocity.x > 5)
+                        {
+                            turnFX.Play();
+                        }
+                    }
                     AddXVelocity(-acceleration, -maxSpd);
                     animator.RequestAnimatorState(animator.Run);
                 }
@@ -259,9 +278,9 @@ public class PlayerMovement : MobileEntity
 
     void FrictionHandling()
     {
-        if (dashRollCooldown > 39)
+        if (dashRollCooldown > 64)
         {
-            if (dashRollCooldown < 48)
+            if (dashRollCooldown < 73)
             {
                 ApplyDirectionalFriction(dashRollFriction);
             }
@@ -356,10 +375,10 @@ public class PlayerMovement : MobileEntity
                 EnableDodgeFX();
                 hurtbox.enabled = false;
 
-                if (!IsTouchingGround()) { CameraController.SetTrauma(12); }
+                if (!IsTouchingGround()) { CameraController.SetTrauma(9); }
 
                 rb.velocity = vect2 * dashRollVelocity;
-                dashRollCooldown = 50;
+                dashRollCooldown = 75;
             }
         }
     }
@@ -413,17 +432,17 @@ public class PlayerMovement : MobileEntity
 
                 jumps--;
                 refundJump = true;
-                DoJump(jumpPower * .8f);
+                DoJump(jumpPower * .9f);
 
-                CameraController.SetTrauma(8);
+                CameraController.SetTrauma(6);
             }
             else if (jumps == 1)
             {
                 jumps--;
                 refundJump = true;
-                DoJump(jumpPower * .6f);
+                DoJump(jumpPower * .8f);
 
-                CameraController.SetTrauma(6);
+                CameraController.SetTrauma(4);
             }
 
             wallKickWindow = 5;
