@@ -12,9 +12,9 @@ public class Toolbox : MonoBehaviour
         trfm = transform;
     }
 
-    public static Quaternion GetQuaternionToPlayer(Vector3 position)
+    public static Quaternion GetQuaternionToPlayerHead(Vector3 position)
     {
-        trfm.up = PlayerMovement.trfm.position - position;
+        trfm.up = PlayerMovement.headTrfm.position - position;
         return trfm.rotation;
     }
 

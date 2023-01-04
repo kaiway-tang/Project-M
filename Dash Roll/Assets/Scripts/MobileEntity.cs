@@ -8,7 +8,7 @@ public class MobileEntity : HPEntity
     [SerializeField] protected Rigidbody2D rb;
     [SerializeField] float knockbackFactor = 1;
     public bool[] touchingTerrain; //0-4: ground, front, ceiling, backLow, backHigh
-    protected bool facing;
+    protected bool facing = FACING_RIGHT;
     protected const bool FACING_LEFT = false, FACING_RIGHT = true;
 
     int gravityDisable; float defaultGravity;

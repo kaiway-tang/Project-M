@@ -5,7 +5,7 @@ using UnityEngine;
 public class KickAttack : DirectionalAttack
 {
     [SerializeField] PlayerMovement playerMovement;
-    public static ObjectPooler ringFXPooler;
+    public static ObjectPooler kickRingFXPooler;
     new void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.layer == 12)
@@ -30,7 +30,7 @@ public class KickAttack : DirectionalAttack
 
     void SuccessfulHit()
     {
-        ringFXPooler.Instantiate(trfm.position, 90);
+        kickRingFXPooler.Instantiate(trfm.position, 90);
         CameraController.SetTrauma(16);
         CameraController.Sleep(1);
     }

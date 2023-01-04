@@ -5,7 +5,7 @@ using UnityEngine;
 public class SlashAttack : DirectionalAttack
 {
     public int traumaOnHit;
-    public static ObjectPooler slashFXPooler;
+    public static ObjectPooler slashFXPooler, hitRingFXPooler;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +18,7 @@ public class SlashAttack : DirectionalAttack
         if (takeDamageResult != HPEntity.IGNORED)
         {
             slashFXPooler.Instantiate(col.transform.position, Random.Range(-45, 46));
+            hitRingFXPooler.Instantiate(col.transform.position, 0);
 
             if (entityType == HPEntity.EntityTypes.Player)
             {

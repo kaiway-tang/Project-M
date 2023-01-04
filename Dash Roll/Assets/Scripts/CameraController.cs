@@ -14,6 +14,10 @@ public class CameraController : MonoBehaviour
 
     Vector3 vect3;
 
+    [SerializeField] SpriteRenderer darkCoverSpriteRenderer;
+    float targetAlpha;
+    Color fadeRate = new Color(0,0,0,0.01f);
+
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +51,7 @@ public class CameraController : MonoBehaviour
 
         ProcessTrauma();
         ProcessSleep();
+        ProcessDarkCoverFading();
     }
 
     [SerializeField] int trauma;
@@ -121,7 +126,7 @@ public class CameraController : MonoBehaviour
     public static void Sleep(int amount)
     {
         if (amount < 1) { return; }
-        if (self.sleepTimer < 1) { Time.timeScale = .25f; }
+        if (self.sleepTimer < 1) { Time.timeScale = .4f; }
         if (self.sleepTimer < amount) { self.sleepTimer = amount; }
     }
 
@@ -131,6 +136,33 @@ public class CameraController : MonoBehaviour
         {
             if (sleepTimer == 1) { Time.timeScale = 1; }
             sleepTimer--;
+        }
+    }
+
+    public static void SetDarkCoverOpacity(float alpha)
+    {
+
+    }
+    bool fadingDarkCover;
+    public static void FadeDarkCoverOpacity(float alpha)
+    {
+        if (Mathf.Abs(self.darkCoverSpriteRenderer.color.a - alpha) < .01f) { return; }
+
+        self.fadingDarkCover = true;
+        self.targetAlpha = alpha;
+    }
+
+    void ProcessDarkCoverFading()
+    {
+        if (fadingDarkCover)
+        {
+            if (darkCoverSpriteRenderer.color.a - targetAlpha > .01f) { darkCoverSpriteRenderer.color -= fadeRate; }
+            else if (darkCoverSpriteRenderer.color.a - targetAlpha < .01f) { darkCoverSpriteRenderer.color -= fadeRate; }
+            else
+            {
+                darkCoverSpriteRenderer.color = new Color(0,0,0,targetAlpha);
+                fadingDarkCover = false;
+            }
         }
     }
 }

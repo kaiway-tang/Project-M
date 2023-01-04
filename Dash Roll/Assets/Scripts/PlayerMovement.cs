@@ -9,7 +9,7 @@ public class PlayerMovement : MobileEntity
     [SerializeField] int jumps;
     [SerializeField] PlayerAnimator animator;
 
-    [SerializeField] ParticleSystem dashPtclFX;
+    [SerializeField] ParticleSystem dashPtclFX, dashRefreshFX;
     [SerializeField] TrailRenderer[] dashTrailFX;
     [SerializeField] Collider2D hurtbox;
     [SerializeField] SpriteRenderer spriteRenderer;
@@ -18,7 +18,6 @@ public class PlayerMovement : MobileEntity
     [SerializeField] GameObject kickFX;
     [SerializeField] ParticleSystem turnFX;
     [SerializeField] SimpleAnimation smashFX;
-    [SerializeField] ObjectPooler dashRingCooldownFX;
 
     int wallKickFXTimer, wallKickWindow, wallKickScreenShakeCooldown, attackKickTimer, dodgeFXActive;
     int attackCooldown, attackReset, attackPhase, attackHitboxTimer;
@@ -34,6 +33,7 @@ public class PlayerMovement : MobileEntity
     int cameraTargetResetTimer;
 
     public new static Transform trfm;
+    public static Transform headTrfm;
     void Awake()
     {
         trfm = transform;
@@ -130,7 +130,7 @@ public class PlayerMovement : MobileEntity
         {
             if (dashRollCooldown == 1)
             {
-                dashRingCooldownFX.Instantiate(trfm.position, 0);
+                dashRefreshFX.Play();
             }
 
             dashRollCooldown--;
@@ -174,7 +174,7 @@ public class PlayerMovement : MobileEntity
                         if (IsFacingLeft())
                         {
                             FaceRight();
-                            if (rb.velocity.x < -5)
+                            if (rb.velocity.x < -9)
                             {
                                 turnFX.Play();
                             }
@@ -192,7 +192,7 @@ public class PlayerMovement : MobileEntity
                     if (IsFacingRight())
                     {
                         FaceLeft();
-                        if (rb.velocity.x > 5)
+                        if (rb.velocity.x > 9 )
                         {
                             turnFX.Play();
                         }
@@ -343,19 +343,8 @@ public class PlayerMovement : MobileEntity
                 }
             }
         }
-    }
 
-    void UpdateAbilityHandling()
-    {
-        if (dodgeFXActive > 0 && PlayerInput.AttackPressed())
-        {
-            animator.QueAnimation(animator.Kick, 8);
-            Instantiate(kickFX, trfm.position, trfm.rotation);
-            kickAttack.Activate(IsFacingRight());
-            attackKickTimer = 8;
-        }
-
-        if (PlayerInput.DashRollPressed())
+        if (PlayerInput.DashRollHeld())
         {
             if (dashRollCooldown < 1)
             {
@@ -380,6 +369,17 @@ public class PlayerMovement : MobileEntity
                 rb.velocity = vect2 * dashRollVelocity;
                 dashRollCooldown = 75;
             }
+        }
+    }
+
+    void UpdateAbilityHandling()
+    {
+        if (dodgeFXActive > 0 && PlayerInput.AttackPressed())
+        {
+            animator.QueAnimation(animator.Kick, 8);
+            Instantiate(kickFX, trfm.position, trfm.rotation);
+            kickAttack.Activate(IsFacingRight());
+            attackKickTimer = 8;
         }
     }
 

@@ -72,8 +72,28 @@ PrefabInstance:
       value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: speed
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
       propertyPath: deathFX
       value: 
       objectReference: {fileID: 174363966710629707, guid: 2d2d85a78c49a524f8aa8ed8a8d62130, type: 3}
+    - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: knockbackFactor
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4566089120083853911, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.22
+      objectReference: {fileID: 0}
+    - target: {fileID: 4566089120083853911, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.013
+      objectReference: {fileID: 0}
+    - target: {fileID: 8715959523210781066, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}

@@ -133,6 +133,10 @@ public class PlayerInput : MonoBehaviour
     {
         return Input.GetKeyDown(DashRollKey);
     }
+    public static bool DashRollHeld()
+    {
+        return Input.GetKey(DashRollKey);
+    }
 
     static Vector2 vect2;
     public static Vector2 GetVectorInput()

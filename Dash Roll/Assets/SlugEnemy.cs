@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SlugEnemy : Enemy
 {
-    [SerializeField] int spitRange;
+    [SerializeField] int spitRange, speed;
     [SerializeField] SimpleAnimation crawlAnimation;
     [SerializeField] Sprite windup, lunge;
     [SerializeField] GameObject spitball;
@@ -30,69 +30,73 @@ public class SlugEnemy : Enemy
 
     void EveryTwo()
     {
-        if (InBoxDistanceToPlayer(trackingRange))
+        if (InBoxDistanceToPlayer(trackingRange) && PlayerInSight() && timer < 1)
         {
-            FacePlayer();
-
-            if (rb.velocity.y < -18) { SetYVelocity(-18); }
-
-            if (timer < 1)
+            if (attackCooldown < 1 && InBoxDistanceToPlayer(spitRange))
             {
-                if (attackCooldown < 1 && InBoxDistanceToPlayer(spitRange))
+                if (Mathf.Abs(PlayerMovement.trfm.position.x - trfm.position.x) < 8 && Mathf.Abs(trfm.position.y - PlayerMovement.trfm.position.y - 1) < 2)
                 {
-                    if (Mathf.Abs(PlayerMovement.trfm.position.x - trfm.position.x) < 8 && Mathf.Abs(trfm.position.y - PlayerMovement.trfm.position.y - 1) < 2)
-                    {
-                        selectedAttack = LUNGE;
-                        timer = 25;
-                        PrepareAttack();
-                        attackCooldown = Random.Range(10, 15);
-                    }
-                    else
-                    {
-                        selectedAttack = SPIT;
-                        PrepareAttack();
-                        attackCooldown = Random.Range(40,60);
-                        timer = 20;
-                    }
+                    selectedAttack = LUNGE;
+                    timer = 20;
+                    PrepareAttack();
+                    attackCooldown = Random.Range(10, 16);
                 }
                 else
                 {
-                    timer = Random.Range(8,10);
-                    crawlAnimation.Play();
-                    AddForwardXVelocity(8,8);
+                    selectedAttack = SPIT;
+                    PrepareAttack();
+                    attackCooldown = Random.Range(60, 81);
+                    timer = 15;
                 }
             }
             else
             {
-                if (selectedAttack == LUNGE)
+                timer = Random.Range(11, 14);
+                crawlAnimation.Play();
+            }
+            FacePlayer();
+        }
+        else
+        {
+            if (selectedAttack == LUNGE)
+            {
+                if (timer == 12)
                 {
-                    if (timer == 12)
-                    {
-                        attack.Activate();
-                        spriteRenderer.sprite = lunge;
-                        AddForwardVelocity(20, 30);
-                    }
-                    if (timer == 1)
-                    {
-                        attack.Deactivate();
-                        selectedAttack = NONE;
-                    }
+                    attack.Activate();
+                    spriteRenderer.sprite = lunge;
+                    AddForwardVelocity(speed * 2, 30);
                 }
-                else if (selectedAttack == SPIT)
+                if (timer == 1)
                 {
-                    if (timer == 7)
-                    {
-                        spriteRenderer.sprite = lunge;
-                        Instantiate(spitball, firepoint.position, Toolbox.GetQuaternionToPlayer(firepoint.position));
-                        AddForwardXVelocity(-16, -16);
-                        selectedAttack = NONE;
-                    }
+                    attack.Deactivate();
+                    selectedAttack = NONE;
+                }
+            }
+            else if (selectedAttack == SPIT)
+            {
+                FacePlayer();
+                if (timer == 7)
+                {
+                    spriteRenderer.sprite = lunge;
+                    Instantiate(spitball, firepoint.position, Toolbox.GetQuaternionToPlayerHead(firepoint.position));
+                    AddForwardXVelocity(-16, -16);
+                }
+                if (timer == 1)
+                {
+                    selectedAttack = NONE;
+                }
+            }
+            else if (selectedAttack == NONE)
+            {
+                if (timer == 5)
+                {
+                    AddForwardXVelocity(speed, speed);
                 }
             }
 
-            timer--;
-
+            if (rb.velocity.y < -18) { SetYVelocity(-18); }
             if (attackCooldown > 0) { attackCooldown--; }
+            timer--;
         }
     }
 

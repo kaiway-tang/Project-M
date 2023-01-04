@@ -35,12 +35,12 @@ public class PooledObject : MonoBehaviour
     {
         if (timer > 0)
         {
-            timer--;
-            if (timer == 0)
+            if (timer == 1)
             {
                 timer = life;
                 Destantiate();
             }
+            timer--;
         }
     }
 }

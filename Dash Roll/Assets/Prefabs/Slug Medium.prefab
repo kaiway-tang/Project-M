@@ -42,9 +42,17 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3448774977581546931, guid: 083d5de8473aba34292d1602785602d5, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7527709932451683950, guid: 083d5de8473aba34292d1602785602d5, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.27
+      value: 0.22
+      objectReference: {fileID: 0}
+    - target: {fileID: 7527709932451683950, guid: 083d5de8473aba34292d1602785602d5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.013
       objectReference: {fileID: 0}
     - target: {fileID: 7527709932451683950, guid: 083d5de8473aba34292d1602785602d5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -161,10 +169,12 @@ MonoBehaviour:
   - {fileID: 21300000, guid: cf7ba95e3ccaae743aec9589259e31f5, type: 3}
   - {fileID: 21300000, guid: ac8c422a0f809f8478b39bbf895ab243, type: 3}
   - {fileID: 21300000, guid: 7164b91cd58234d4c9d28baa348d3611, type: 3}
+  - {fileID: 21300000, guid: 9d071a83c70d4b541b7c62e0c206ef78, type: 3}
+  - {fileID: 21300000, guid: 9d071a83c70d4b541b7c62e0c206ef78, type: 3}
   - {fileID: 21300000, guid: 7164b91cd58234d4c9d28baa348d3611, type: 3}
   - {fileID: 21300000, guid: ac8c422a0f809f8478b39bbf895ab243, type: 3}
   - {fileID: 21300000, guid: cf7ba95e3ccaae743aec9589259e31f5, type: 3}
-  time: 000000000300000006000000090000000c0000000f000000
+  time: 000000000300000006000000090000000c0000000f0000001200000015000000
 --- !u!114 &2868790321320794684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,9 +205,10 @@ MonoBehaviour:
   friction: 0.5
   trackingRange: 20
   spriteRenderer: {fileID: 2506602817374474416}
-  deathFX: {fileID: 2506602816424328769, guid: 813e61166a5d11a41a04b1db6d1a5994, type: 3}
+  deathFX: {fileID: 7901605794185977358, guid: 813e61166a5d11a41a04b1db6d1a5994, type: 3}
   kicked: 0
   spitRange: 14
+  speed: 11
   crawlAnimation: {fileID: 32502164583650818}
   windup: {fileID: 21300000, guid: 25eb2a04b59ef9e4cb273703d2abc0b6, type: 3}
   lunge: {fileID: 21300000, guid: d1ba00c95aef2264791330eda9b0097d, type: 3}

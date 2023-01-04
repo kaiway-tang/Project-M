@@ -10,7 +10,7 @@ public class Enemy : MobileEntity
 
     [SerializeReference] GameObject deathFX;
 
-    public static ObjectPooler telegraphPooler;
+    public static ObjectPooler telegraphPooler, kickRingFXPooler;
     public static Material defaultMaterial, flashMaterial;
     int hurtTimer;
     public int kicked;
@@ -44,6 +44,10 @@ public class Enemy : MobileEntity
         }
         if (kicked > 0)
         {
+            if (kicked == 51)
+            {
+                kickRingFXPooler.Instantiate(trfm.position, 90);
+            }
             kicked--;
         }
 
@@ -77,7 +81,7 @@ public class Enemy : MobileEntity
     }
     private void OnCollisionStay2D(Collision2D col)
     {
-        if (kicked > 30 && col.gameObject.layer == 12)
+        if (kicked > 30 && kicked < 49 && col.gameObject.layer == 12)
         {
             TakeDamage(10, HPEntity.EntityTypes.Player);
             col.gameObject.GetComponent<Enemy>().KickChained(rb.velocity * 1.2f);
@@ -89,7 +93,7 @@ public class Enemy : MobileEntity
     {
         if (kicked > 0) { return; }
         TakeDamage(10, HPEntity.EntityTypes.Player, velocity);
-        kicked = 35;
+        kicked = 52;
     }
 
     protected bool PlayerInSight()

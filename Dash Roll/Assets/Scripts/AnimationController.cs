@@ -115,7 +115,7 @@ public class AnimationController : MonoBehaviour
             }
             else
             {
-                defaultState.SetReferenceState(referenceState);
+                //defaultState.SetReferenceState(referenceState);
             }
         }
         return false;

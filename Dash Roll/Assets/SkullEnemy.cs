@@ -59,12 +59,12 @@ public class SkullEnemy : Enemy
                 {
                     telegraphPooler.Instantiate(trfm.position);
                     spriteRenderer.sprite = attackSprite;
-                    timer = 44;
+                    timer = Random.Range(42,47);
                 }
                 else
                 {
                     AddForwardVelocity(forwardPower, jumpPower);
-                    timer = 25;
+                    timer = Random.Range(24, 27);
                 }
             }
         }

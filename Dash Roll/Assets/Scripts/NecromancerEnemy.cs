@@ -55,7 +55,7 @@ public class NecromancerEnemy : Enemy
                     castTime = 44;
                 }
 
-                attackTimer = Random.Range(70, 80);
+                attackTimer = Random.Range(50, 70);
             }
 
             attackTimer--;
@@ -71,11 +71,11 @@ public class NecromancerEnemy : Enemy
             {
                 if (attack == 0) //explosive fireball
                 {
-                    Instantiate(fireball, firepoint.position, Toolbox.GetQuaternionToPlayer(firepoint.position));
+                    Instantiate(fireball, firepoint.position, Toolbox.GetQuaternionToPlayerHead(firepoint.position));
                 }
                 else if (attack == 1) //triple bolt
                 {
-                    Instantiate(firebolts, firepoint.position, Toolbox.GetQuaternionToPlayer(firepoint.position));
+                    Instantiate(firebolts, firepoint.position, Toolbox.GetQuaternionToPlayerHead(firepoint.position));
                 }
                 else if (attack == 2) //meteor
                 {
