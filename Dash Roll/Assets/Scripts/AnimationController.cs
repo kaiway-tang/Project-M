@@ -85,19 +85,12 @@ public class AnimationController : MonoBehaviour
 
                 if (animationQue[i].duration < 1)
                 {
+                    if (animationQue[i].getID() == currentState.getID()) { currentState.hasReference = false; }
+
                     animationQue[i].hasReference = false;
                     activeAnimations--;
 
-                    currentState.hasReference = false;
-
-                    if (activeAnimations > 0)
-                    {
-                        RequestAnimatorState(animationQue[IndexOfGreatestActivePriority()].referenceState);
-                    }
-                    else
-                    {
-                        RequestAnimatorState(defaultState.referenceState);
-                    }
+                    ActivateNextState();
                 }
             }
         }
@@ -166,9 +159,14 @@ public class AnimationController : MonoBehaviour
         {
             if (animationQue[i].getID() == referenceState.getID())
             {
+                if (animationQue[i].getID() == currentState.getID()) { currentState.hasReference = false; }
+
                 animationQue[i].hasReference = false;
                 animationQue[i].duration = 0;
                 activeAnimations--;
+
+                ActivateNextState();
+
                 return;
             }
         }
@@ -187,5 +185,17 @@ public class AnimationController : MonoBehaviour
         }
 
         return indexGreatest;
+    }
+
+    void ActivateNextState()
+    {
+        if (activeAnimations > 0)
+        {
+            RequestAnimatorState(animationQue[IndexOfGreatestActivePriority()].referenceState);
+        }
+        else
+        {
+            RequestAnimatorState(defaultState.referenceState);
+        }
     }
 }

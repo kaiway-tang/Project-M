@@ -14,6 +14,7 @@ public class NecroSpawnButtons : HPEntity
             buttons++;
             if (buttons == 7)
             {
+                necromancer.transform.position = trfm.position + new Vector3(0,10,0);
                 necromancer.SetActive(true);
             }
             Destroy(gameObject);

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8182077557396238139}
   - component: {fileID: 8182077557396238138}
   m_Layer: 0
-  m_Name: hitRingF1
+  m_Name: hitRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1364526931
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 50
   m_Sprite: {fileID: 21300000, guid: c9eb6d33c83b73e4cbbe72f25b1cecd7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -105,7 +105,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 0a73c94d2f1cabd419ea05fc561cab73, type: 3}
   - {fileID: 21300000, guid: 781d8840932641647a596a59332ee699, type: 3}
   - {fileID: 21300000, guid: b84e7cc63f3edb748984615aa9c85612, type: 3}
-  time: 000000000200000004000000050000000600000007000000
+  time: 000000000300000004000000050000000600000007000000
 --- !u!114 &8182077557396238138
 MonoBehaviour:
   m_ObjectHideFlags: 0

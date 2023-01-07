@@ -2,23 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VFX : SelfDest
+public class jumpRingFX : PooledObject
 {
+    [SerializeField] Vector3 scale, initialScale;
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Color fade;
-    [SerializeField] Transform trfm;
-    [SerializeField] float speed;
     // Start is called before the first frame update
-    void Start()
+    new void OnEnable()
     {
-        
+        base.OnEnable();
+        trfm.localScale = initialScale;
+        spriteRenderer.color = Color.white;
     }
 
     // Update is called once per frame
     new void FixedUpdate()
     {
         base.FixedUpdate();
+        trfm.localScale += scale;
         spriteRenderer.color -= fade;
-        trfm.position += trfm.right * speed;
     }
 }

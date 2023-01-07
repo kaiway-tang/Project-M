@@ -17,7 +17,8 @@ public class PlayerAnimator : AnimationController
         ClingBack = new ReferenceState(6, 1),
         ClingFront = new ReferenceState(7, 1),
         Roll = new ReferenceState(8, 50),
-        Kick = new ReferenceState(10, 60);
+        Kick = new ReferenceState(10, 60),
+        CastHorizontal = new ReferenceState(11, 60);
 
     // Start is called before the first frame update
     new void Start()
@@ -25,7 +26,7 @@ public class PlayerAnimator : AnimationController
         currentState = new ActiveState(Idle);
         defaultState = new ActiveState(Idle);
 
-        animationQue = new ActiveState[] { new ActiveState(), new ActiveState(), new ActiveState() };
+        animationQue = new ActiveState[] { new ActiveState(), new ActiveState(), new ActiveState(), new ActiveState() };
     }
 
     new void FixedUpdate()

@@ -7,6 +7,7 @@ public class SimpleAnimation : MonoBehaviour
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Sprite[] sprites;
     [SerializeField] int[] time;
+    [SerializeField] bool loop;
     int timer, currentSprite;
     public void Play()
     {
@@ -23,8 +24,15 @@ public class SimpleAnimation : MonoBehaviour
             {
                 if (currentSprite >= sprites.Length)
                 {
-                    spriteRenderer.sprite = null;
-                    timer = -1;
+                    if (loop)
+                    {
+                        Play();
+                    }
+                    else
+                    {
+                        spriteRenderer.sprite = null;
+                        timer = -1;
+                    }
                     return;
                 }
 
@@ -33,11 +41,23 @@ public class SimpleAnimation : MonoBehaviour
 
                 if (currentSprite >= time.Length)
                 {
-                    timer = -1;
+                    if (loop)
+                    {
+                        Play();
+                    }
+                    else
+                    {
+                        timer = -1;
+                    }
                     return;
                 }
             }
             timer++;
         }
+    }
+
+    void End()
+    {
+        timer = -1;
     }
 }

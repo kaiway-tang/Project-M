@@ -16,7 +16,6 @@ public class NecromancerAnimator : AnimationController
     {
         currentState = new ActiveState(Idle);
         defaultState = new ActiveState(Idle);
-
         animationQue = new ActiveState[] { new ActiveState(), new ActiveState(), new ActiveState() };
     }
 

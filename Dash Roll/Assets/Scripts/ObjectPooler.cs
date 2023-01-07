@@ -5,7 +5,8 @@ using UnityEngine;
 public class ObjectPooler : MonoBehaviour
 {
     [SerializeField] GameObject prefab;
-    [SerializeField] PooledObject[] pooledObjects;
+    [SerializeField] int poolSize;
+    PooledObject[] pooledObjects;
     GameObject[] gameObjects;
     bool[] objectReady;
 
@@ -13,12 +14,20 @@ public class ObjectPooler : MonoBehaviour
 
     private void Start()
     {
-        objectReady = new bool[pooledObjects.Length];
-        gameObjects = new GameObject[pooledObjects.Length];
-        for (int i = 0; i < pooledObjects.Length; i++)
+        objectReady = new bool[poolSize];
+        gameObjects = new GameObject[poolSize];
+        pooledObjects = new PooledObject[poolSize];
+
+        GameObject newObject;
+
+        for (int i = 0; i < poolSize; i++)
         {
+            newObject = Instantiate(prefab, Vector2.zero, Quaternion.identity);
+
+            pooledObjects[i] = newObject.GetComponent<PooledObject>();
             pooledObjects[i].Setup(this, i + 1);
-            gameObjects[i] = pooledObjects[i].gameObject;
+
+            gameObjects[i] = newObject;
             objectReady[i] = true;
         }
     }

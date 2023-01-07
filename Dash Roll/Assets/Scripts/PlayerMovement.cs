@@ -16,28 +16,35 @@ public class PlayerMovement : MobileEntity
     [SerializeField] Color dashBlack;
 
     [SerializeField] GameObject kickFX;
-    [SerializeField] ParticleSystem turnFX;
+    [SerializeField] ParticleSystem turnFX, frontTurnFX;
     [SerializeField] SimpleAnimation smashFX;
+    public static ObjectPooler jumpRingFXPooler;
 
-    int wallKickFXTimer, wallKickWindow, wallKickScreenShakeCooldown, attackKickTimer, dodgeFXActive;
+    [SerializeField] GameObject shootingSword;
+
+    int wallKickFXTimer, wallKickWindow, wallKickScreenShakeCooldown, attackKickTimer, dodgeFXActive, clingAnimationDelay;
     int attackCooldown, attackReset, attackPhase, attackHitboxTimer;
     int dashRollCooldown;
-    bool refundJump;
+    int mana, manaTimer, castWindup, castCooldown;
+    bool refundJump, highFall, castQued;
 
     public int hover;
 
-    bool cameraTrackingIncreased;
-
-    [SerializeField] DirectionalAttack lightAttack, heavyAttack, kickAttack;
+    [SerializeField] DirectionalAttack lightAttack1, lightAttack2, heavyAttack, kickAttack;
     [SerializeField] Transform cameraTargetPoint;
     int cameraTargetResetTimer;
 
     public new static Transform trfm;
     public static Transform headTrfm;
+    public static PlayerMovement playerMovement;
+
+    [SerializeField] PlayerResourceBar playerHPBar, manaBar;
     void Awake()
     {
         trfm = transform;
+        playerMovement = GetComponent<PlayerMovement>();
     }
+    new void Start() { base.Start(); }
 
     // Update is called once per frame
     void Update()
@@ -53,6 +60,27 @@ public class PlayerMovement : MobileEntity
 
     private new void FixedUpdate()
     {
+        if (tookDamage)
+        {
+            if ((int)(lastDamage * 1.2f) < 10) { CameraController.AddTrauma(10); }
+            else 
+            {
+                invulnerable = 2;
+                CameraController.SetTrauma((int)(lastDamage * 1.2f)); 
+            }
+
+            playerHPBar.SetPercentage((float)HP/maxHP);
+
+            if (HP <= 0) 
+            {
+                playerHPBar.SetPercentage(0);
+                HP = 0;
+                trfm.root.gameObject.SetActive(false);
+            }
+
+            tookDamage = false;
+        }
+
         base.FixedUpdate();
 
         if (IsTouchingGround())
@@ -65,6 +93,8 @@ public class PlayerMovement : MobileEntity
         MovementHandling();
 
         FrictionHandling();
+
+        HandlePositionPredicting();
 
         Clocks();
     }
@@ -90,7 +120,11 @@ public class PlayerMovement : MobileEntity
 
         if (wallKickWindow > 0)
         {
-            if (wallKickWindow == 1) { refundJump = false; }
+            if (wallKickWindow == 1 && refundJump)
+            {
+                jumpRingFXPooler.Instantiate(trfm.position - Vector3.up * .2f, 0);
+                refundJump = false; 
+            }
             wallKickWindow--;
         }
 
@@ -105,18 +139,17 @@ public class PlayerMovement : MobileEntity
 
         if (attackHitboxTimer > 0)
         {
-            if (attackHitboxTimer == 5)
+            if (attackHitboxTimer == 6)
             {
                 if (attackPhase == 0) { heavyAttack.Activate(IsFacingRight()); }
-                else { lightAttack.Activate(IsFacingRight()); }
+                else if (attackPhase == 1) { lightAttack1.Activate(IsFacingRight()); }
+                else if (attackPhase == 2) { lightAttack2.Activate(IsFacingRight()); }
             }
-            if (attackHitboxTimer == 4)
-            {
-                lightAttack.Deactivate();
-            }
-            if (attackHitboxTimer == 3)
+            if (attackHitboxTimer == 1)
             {
                 heavyAttack.Deactivate();
+                lightAttack1.Deactivate();
+                lightAttack2.Deactivate();
             }
             attackHitboxTimer--;
         }
@@ -159,6 +192,30 @@ public class PlayerMovement : MobileEntity
             if (rb.velocity.y < 0) { SetYVelocity(0); }
             hover--;
         }
+        
+        if (manaTimer > 0) { manaTimer--; }
+        else if (mana < 100)
+        {
+            AddMana(1);
+            manaTimer = 25;
+        }
+
+        if (clingAnimationDelay > 0)
+        {
+            if (clingAnimationDelay > 5)
+            {
+                if (touchingTerrain[1])
+                {
+                    animator.RequestAnimatorState(animator.ClingFront);
+                }
+                else if (touchingTerrain[3])
+                {
+                    animator.RequestAnimatorState(animator.ClingBack);
+                }
+                clingAnimationDelay = 6;
+            }
+            clingAnimationDelay--;
+        }
     }
 
     void MovementHandling()
@@ -167,6 +224,13 @@ public class PlayerMovement : MobileEntity
         {
             if (IsTouchingGround())
             {
+                if (highFall)
+                {
+                    turnFX.Play();
+                    frontTurnFX.Play();
+                    highFall = false;
+                }
+
                 if (PlayerInput.RightHeld())
                 {
                     if (!PlayerInput.LeftHeld())
@@ -233,19 +297,20 @@ public class PlayerMovement : MobileEntity
 
                         if (rb.velocity.y < -50)
                         {
+                            highFall = true;
                             SetYVelocity(-50);
+                        }
+                        else
+                        {
+                            highFall = false;
                         }
                     }
                 }
                 else
                 {
-                    if (touchingTerrain[1])
+                    if (touchingTerrain[1] || touchingTerrain[3])
                     {
-                        animator.RequestAnimatorState(animator.ClingFront);
-                    }
-                    else if (touchingTerrain[3])
-                    {
-                        animator.RequestAnimatorState(animator.ClingBack);
+                        clingAnimationDelay += 2;
                     }
                     else
                     {
@@ -311,7 +376,7 @@ public class PlayerMovement : MobileEntity
 
                     attackCooldown = 12;
                     attackReset = 20;
-                    attackHitboxTimer = 8;
+                    attackHitboxTimer = 9;
 
                     AddForwardXVelocity(18, 18);
                     attackPhase = 1;
@@ -323,7 +388,7 @@ public class PlayerMovement : MobileEntity
 
                     attackCooldown = 15;
                     attackReset = 20;
-                    attackHitboxTimer = 8;
+                    attackHitboxTimer = 9;
 
                     AddForwardXVelocity(18, 18);
                     attackPhase = 2;
@@ -335,7 +400,7 @@ public class PlayerMovement : MobileEntity
 
                     attackCooldown = 30;
                     attackReset = 0;
-                    attackHitboxTimer = 11;
+                    attackHitboxTimer = 12;
 
                     if (!IsTouchingGround()) { SetYVelocity(-40); }
                     AddForwardXVelocity(21, 21);
@@ -370,6 +435,56 @@ public class PlayerMovement : MobileEntity
                 dashRollCooldown = 75;
             }
         }
+
+        if (PlayerInput.CastHeld() && mana >= 20)
+        {
+            if (castWindup < 1)
+            {
+                animator.QueAnimation(animator.CastHorizontal, 999);
+                castWindup = 1;
+            }
+            if (!castQued)
+            {
+                movementLocked = 5;
+                SetYVelocity(0);
+                hover = 5;
+                castQued = true;
+                AddMana(-20);
+
+                vect3.y = .7f; vect3.z = 0;
+                if (IsFacingRight())
+                {
+                    vect3.x = 2.2f;
+                    Instantiate(shootingSword, trfm.position + vect3, Quaternion.Euler(0, 0, 0));
+                }
+                else
+                {
+                    vect3.x = -2.2f;
+                    Instantiate(shootingSword, trfm.position + vect3, Quaternion.Euler(0, 0, 180));
+                }
+            }
+        }
+
+        if (castCooldown > 0) 
+        {
+            castCooldown--; 
+        }
+        else if (castWindup > 9)
+        {
+            if (castQued)
+            {
+                castCooldown = 5;
+                AddForwardXVelocity(-11,11);
+                castQued = false;
+            }
+            else
+            {
+                animator.DeQueAnimation(animator.CastHorizontal);
+                castWindup = -10;
+            }
+        }
+
+        if (castWindup < 10 && castWindup > 0) { castWindup++; }
     }
 
     void UpdateAbilityHandling()
@@ -377,7 +492,8 @@ public class PlayerMovement : MobileEntity
         if (dodgeFXActive > 0 && PlayerInput.AttackPressed())
         {
             animator.QueAnimation(animator.Kick, 8);
-            Instantiate(kickFX, trfm.position, trfm.rotation);
+            if (IsFacingRight()) { Instantiate(kickFX, trfm.position + Vector3.right * -2, Quaternion.identity).transform.parent = trfm; }
+            else { Instantiate(kickFX, trfm.position + Vector3.right * 2, Quaternion.Euler(0,0,180)).transform.parent = trfm; }
             kickAttack.Activate(IsFacingRight());
             attackKickTimer = 8;
         }
@@ -480,7 +596,7 @@ public class PlayerMovement : MobileEntity
 
     bool CanWallKick()
     {
-        return touchingTerrain[4] || (!IsTouchingGround() && touchingTerrain[3]);
+        return (touchingTerrain[4] && !touchingTerrain[2]) || (!IsTouchingGround() && touchingTerrain[3]);
     }
 
     void DoJump(float pJumpPower)
@@ -497,5 +613,41 @@ public class PlayerMovement : MobileEntity
         {
             SetYVelocity(pJumpPower);
         }
+    }
+
+    int velocityLogTimer;
+    Vector2[] loggedVelocities = new Vector2[4];
+    Vector2 averageVelocity;
+    int nextIndex;
+    void HandlePositionPredicting()
+    {
+        if (velocityLogTimer > 0) { velocityLogTimer--; }
+        else {
+            loggedVelocities[nextIndex] = rb.velocity;
+            averageVelocity = (loggedVelocities[0] + loggedVelocities[1] + loggedVelocities[2] + loggedVelocities[3] + loggedVelocities[nextIndex]) * .2f;
+
+            nextIndex++;
+            if (nextIndex > 3) { nextIndex = 0; }
+
+            velocityLogTimer = 5;
+        }
+    }
+
+    public static Vector2 PredictedPosition(int ticks)
+    {
+        vect2 = trfm.position;
+        return playerMovement.averageVelocity * ticks * .02f + vect2;
+    }
+
+    public static void AddMana(int amount)
+    {
+        playerMovement.mana += amount;
+        if (playerMovement.mana > 100) { playerMovement.mana = 100; }
+        playerMovement.manaBar.SetPercentage((float)playerMovement.mana * .01f);
+    }
+    public static void AddMana(int damage, int remainingHP)
+    {
+        if (remainingHP > damage) { AddMana(Mathf.RoundToInt(damage * .5f)); }
+        else { AddMana(Mathf.RoundToInt(remainingHP * .5f)); }
     }
 }

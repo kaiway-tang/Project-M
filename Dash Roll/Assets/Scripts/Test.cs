@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    [SerializeField] int layerMask = 1 << 7;
-    [SerializeField] bool playerVisible;
-
-    bool everyTwo;
+    [SerializeField] GameObject firebolt;
+    [SerializeField] Transform trfm;
+    int time;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +16,12 @@ public class Test : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        playerVisible = !Physics2D.Linecast(transform.position, PlayerMovement.trfm.position, layerMask);
+        trfm.rotation = Toolbox.GetQuaternionToPlayerPredicted(trfm.position, 18);
+        if (time > 0) { time--; }
+        else
+        {
+            time = 25;
+            Instantiate(firebolt, trfm.position, trfm.rotation);
+        }
     }
 }

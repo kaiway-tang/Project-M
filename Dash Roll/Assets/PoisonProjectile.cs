@@ -21,7 +21,7 @@ public class PoisonProjectile : Projectile
     {
         if (col.gameObject.layer > 10 && col.gameObject.layer < 14)
         {
-            col.GetComponent<MobileEntity>().Poison(damage, entityType);
+            col.GetComponent<HPEntity>().Poison(damage, entityType);
         }
         base.OnTriggerEnter2D(col);
     }

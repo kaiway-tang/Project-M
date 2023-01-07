@@ -14,6 +14,8 @@ public class SlugEnemy : Enemy
 
     int selectedAttack; const int NONE = 0, LUNGE = 1, SPIT = 2;
     int timer, attackCooldown;
+
+    Quaternion spitBallAim;
     
     new void Start()
     {
@@ -74,11 +76,15 @@ public class SlugEnemy : Enemy
             }
             else if (selectedAttack == SPIT)
             {
-                FacePlayer();
+                if (timer == 11)
+                {
+                    spitBallAim = Toolbox.GetQuaternionToPlayerHead(firepoint.position);
+                    FacePlayer();
+                }
                 if (timer == 7)
                 {
                     spriteRenderer.sprite = lunge;
-                    Instantiate(spitball, firepoint.position, Toolbox.GetQuaternionToPlayerHead(firepoint.position));
+                    Instantiate(spitball, firepoint.position, spitBallAim);
                     AddForwardXVelocity(-16, -16);
                 }
                 if (timer == 1)

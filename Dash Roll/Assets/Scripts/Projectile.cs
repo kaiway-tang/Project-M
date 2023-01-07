@@ -35,7 +35,7 @@ public class Projectile : MonoBehaviour
     {
         if (col.gameObject.layer > 10 && col.gameObject.layer < 14)
         {
-            if (col.GetComponent<MobileEntity>().TakeDamage(damage, entityType, trfm.up * knockback) != HPEntity.IGNORED)
+            if (col.GetComponent<HPEntity>().TakeDamage(damage, entityType, trfm.up * knockback) != HPEntity.IGNORED)
             {
                 End();
             }

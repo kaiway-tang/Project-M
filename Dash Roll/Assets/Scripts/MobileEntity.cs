@@ -16,6 +16,10 @@ public class MobileEntity : HPEntity
     protected static Vector2 vect2; //passive vect2 to avoid declaring new Vector2 repeatedly
     protected static Vector3 vect3; // ^^
 
+    protected new void Start()
+    {
+        base.Start();
+    }
     protected new void FixedUpdate()
     {
         base.FixedUpdate();

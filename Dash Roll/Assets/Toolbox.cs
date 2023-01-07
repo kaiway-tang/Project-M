@@ -17,6 +17,11 @@ public class Toolbox : MonoBehaviour
         trfm.up = PlayerMovement.headTrfm.position - position;
         return trfm.rotation;
     }
+    public static Quaternion GetQuaternionToPlayerPredicted(Vector2 position, int ticks)
+    {
+        trfm.up = PlayerMovement.PredictedPosition(ticks) - position;
+        return trfm.rotation;
+    }
 
     public static Transform GetTransformToPlayer(Vector3 position)
     {

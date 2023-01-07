@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerInput : MonoBehaviour
 {
     static KeyCode JumpKey, JumpKey1, UpKey, UpKey1, DownKey, DownKey1, LeftKey, LeftKey1, RightKey, RightKey1;
-    static KeyCode AttackKey, DashRollKey;
+    static KeyCode AttackKey, AttackKey1, DashRollKey, DashRollKey1, CastKey, CastKey1;
 
     static bool firstLoad;
 
@@ -30,9 +30,13 @@ public class PlayerInput : MonoBehaviour
 
 
         AttackKey = KeyCode.U;
+        AttackKey1 = KeyCode.Z;
 
         DashRollKey = KeyCode.I;
+        DashRollKey1 = KeyCode.X;
 
+        CastKey = KeyCode.O;
+        CastKey1 = KeyCode.C;
 
         firstLoad = true;
     }
@@ -118,24 +122,34 @@ public class PlayerInput : MonoBehaviour
 
     public static bool AttackPressed()
     {
-        return Input.GetKeyDown(AttackKey);
+        return Input.GetKeyDown(AttackKey) || Input.GetKeyDown(AttackKey1);
     }
     public static bool AttackHeld()
     {
-        return Input.GetKey(AttackKey);
+        return Input.GetKey(AttackKey) || Input.GetKey(AttackKey1);
     }
     public static bool AttackReleased()
     {
-        return Input.GetKeyUp(AttackKey);
+        return Input.GetKeyUp(AttackKey) || Input.GetKeyUp(AttackKey1);
     }
 
     public static bool DashRollPressed()
     {
-        return Input.GetKeyDown(DashRollKey);
+        return Input.GetKeyDown(DashRollKey) || Input.GetKeyDown(DashRollKey1);
     }
     public static bool DashRollHeld()
     {
-        return Input.GetKey(DashRollKey);
+        return Input.GetKey(DashRollKey) || Input.GetKey(DashRollKey1);
+    }
+
+
+    public static bool CastPressed()
+    {
+        return Input.GetKeyDown(CastKey) || Input.GetKeyDown(CastKey1);
+    }
+    public static bool CastHeld()
+    {
+        return Input.GetKey(CastKey) || Input.GetKey(CastKey1);
     }
 
     static Vector2 vect2;

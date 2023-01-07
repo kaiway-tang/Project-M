@@ -18,9 +18,9 @@ public class Enemy : MobileEntity
     static int terrainLayerMask = 1 << 7; //layer mask to only test for terrain collisions
     protected bool everyTwo;
 
-    protected void Start()
+    protected new void Start()
     {
-        //terrainLayerMask = 1 << 7;
+        base.Start();
     }
 
     // Update is called once per frame
@@ -77,23 +77,27 @@ public class Enemy : MobileEntity
     protected void FlashWhite()
     {
         spriteRenderer.material = flashMaterial;
-        hurtTimer = 7;
+        hurtTimer = 8;
     }
-    private void OnCollisionStay2D(Collision2D col)
+    private void OnTriggerStay2D(Collider2D col)
     {
-        if (kicked > 30 && kicked < 49 && col.gameObject.layer == 12)
+        if (kicked > 20 && kicked < 49 && col.gameObject.layer == 12)
         {
+            PlayerMovement.AddMana(10, col.GetComponent<HPEntity>().GetHP());
             TakeDamage(10, HPEntity.EntityTypes.Player);
-            col.gameObject.GetComponent<Enemy>().KickChained(rb.velocity * 1.2f);
-            kicked = 30;
+            if (col.GetComponent<Enemy>().KickChained(rb.velocity) == HPEntity.ALIVE)
+            {
+                rb.velocity = Vector3.zero;
+            }
+            kicked = 20;
         }
     }
 
-    void KickChained(Vector2 velocity)
+    int KickChained(Vector2 velocity)
     {
-        if (kicked > 0) { return; }
-        TakeDamage(10, HPEntity.EntityTypes.Player, velocity);
+        if (kicked > 0) { return HPEntity.IGNORED; }
         kicked = 52;
+        return TakeDamage(10, HPEntity.EntityTypes.Player, velocity);
     }
 
     protected bool PlayerInSight()

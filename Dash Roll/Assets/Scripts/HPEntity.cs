@@ -11,14 +11,41 @@ public class HPEntity : MonoBehaviour
     [SerializeField] HPBar hpBar;
 
     public enum EntityTypes { Enemy, Player, Neutral }
+    public enum DamageSource { Default, LightAttack1, LightAttack2, HeavyAttack }
+    DamageSource lastDamageSource;
     public const int IGNORED = -1, ALIVE = 0, DEAD = 1;
 
-    protected bool tookKnockback, tookDamage; protected Vector2 lastKnockback;
+    protected bool tookKnockback, tookDamage;
+    protected Vector2 lastKnockback;
+    protected int lastDamage, ignoreLastDamageSource;
 
     public static ObjectPooler bloodFXPooler;
+    [SerializeField] GameObject damagedFXObj;
+    [SerializeField] ObjectPooler damagedFXPooler;
+    bool usingInstantiateDamagedFX, usingHPBar, lowestChildSubclass;
+    private void Awake()
+    {
+        lowestChildSubclass = true;
+    }
+
+    protected void Start()
+    {
+        if (damagedFXObj)
+        {
+            usingInstantiateDamagedFX = true;
+        }
+        else if (!damagedFXPooler)
+        {
+            damagedFXPooler = bloodFXPooler;
+        }
+
+        usingHPBar = hpBar;
+    }
 
     protected void FixedUpdate()
     {
+        if (tookDamage) { tookDamage = false; }
+
         if (stunned > 0) { stunned--; }
         if (movementLocked > 0) { movementLocked--; }
         if (poisoned > 0)
@@ -30,32 +57,60 @@ public class HPEntity : MonoBehaviour
             poisoned--;
         }
         if (invulnerable > 0) { invulnerable--; }
-        if (tookDamage) { tookDamage = false; }
+        if (ignoreLastDamageSource > 0)
+        {
+            if (ignoreLastDamageSource == 1) { lastDamageSource = DamageSource.Default; }
+            ignoreLastDamageSource--;
+        }
     }
 
-    public int TakeDamage(int amount, EntityTypes ignoreEntity) //returns true if entity killed
+    public int GetHP() { return HP; }
+
+    public int TakeDamage(int amount, EntityTypes entitySource, DamageSource damageSource = DamageSource.Default) //returns true if entity killed
     {
-        if (ignoreEntity == entityID || invulnerable > 0) { return IGNORED; }
+        if (entitySource == entityID || invulnerable > 0) { return IGNORED; }
+        if (lastDamageSource != DamageSource.Default)
+        {
+            ignoreLastDamageSource = 8;
+            if (lastDamageSource == damageSource)
+            {
+                return IGNORED;
+            }
+            else
+            {
+                lastDamageSource = damageSource;
+            }
+        }
 
         HP -= amount;
 
-        bloodFXPooler.Instantiate(trfm.position, 0);
+        if (usingInstantiateDamagedFX)
+        {
+            Instantiate(damagedFXObj, trfm.position, Quaternion.identity);
+        }
+        else
+        {
+            damagedFXPooler.Instantiate(trfm.position, 0);
+        }
+
         tookDamage = true;
+        lastDamage = amount;
 
         if (HP <= 0)
         {
+            if (lowestChildSubclass) { Destroy(trfm.root.gameObject); }
             return DEAD;
         }
         else
         {
-            hpBar.SetPercentage((float)HP / maxHP);
+            if (entityID != EntityTypes.Player && usingHPBar) { hpBar.SetPercentage((float)HP / maxHP); }
+            return ALIVE;
         }
-        return ALIVE;
     }
 
-    public int TakeDamage(int amount, EntityTypes ignoreEntity, Vector2 knockback) //returns true if entity killed
+    public int TakeDamage(int amount, EntityTypes entitySource, Vector2 knockback, DamageSource damageSource = DamageSource.Default) //returns true if entity killed
     {
-        int result = TakeDamage(amount, ignoreEntity);
+        int result = TakeDamage(amount, entitySource, damageSource);
 
         if (result == ALIVE)
         {
@@ -65,9 +120,9 @@ public class HPEntity : MonoBehaviour
         return result;
     }
 
-    public int TakeDamage(int amount, EntityTypes ignoreEntity, Vector3 source, int power) //returns true if entity killed
+    public int TakeDamage(int amount, EntityTypes entitySource, Vector3 source, int power) //returns true if entity killed
     {
-        return TakeDamage(amount, ignoreEntity, (trfm.position - source).normalized * power);
+        return TakeDamage(amount, entitySource, (trfm.position - source).normalized * power);
     }
 
     public void End()
@@ -99,10 +154,25 @@ public class HPEntity : MonoBehaviour
     {
         if (movementLocked < duration) { movementLocked = duration; }
     }
-    public int Poison(int seconds, EntityTypes ignoreEntity)
+    public int Poison(int seconds, EntityTypes ignoreEntity, bool stacking = false)
     {
         if (ignoreEntity == entityID) { return IGNORED; }
-        poisoned += 50 * seconds;
+
+        if (stacking)
+        {
+            poisoned += 50 * seconds;
+        }
+        else
+        {
+            if (poisoned < 50 * seconds)
+            {
+                poisoned += 50 * seconds;
+                if (poisoned > 50 * seconds)
+                {
+                    poisoned = 50 * seconds;
+                }
+            }
+        }
         return ALIVE;
     }
 }

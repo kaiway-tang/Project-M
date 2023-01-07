@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SceneInitializer : MonoBehaviour
 {
-    [SerializeField] ObjectPooler telegraphPooler, slashFXPooler, kickRingFXPooler, bloodFXPooler, hitRingFXPooler;
+    [SerializeField] ObjectPooler telegraphPooler, slashFXPooler, kickRingFXPooler, bloodFXPooler, hitRingFXPooler, jumpRingFXPooler;
     [SerializeField] Material defaultMaterial, flashMaterial;
     [SerializeField] SceneInitializer self;
     [SerializeField] Transform headTrfm;
@@ -19,10 +19,13 @@ public class SceneInitializer : MonoBehaviour
         SlashAttack.slashFXPooler = slashFXPooler;
         SlashAttack.hitRingFXPooler = hitRingFXPooler;
         KickAttack.kickRingFXPooler = kickRingFXPooler;
+        ShootingSword.slashFXPooler = slashFXPooler;
+        ShootingSword.hitRingFXPooler = hitRingFXPooler;
 
         HPEntity.bloodFXPooler = bloodFXPooler;
 
         PlayerMovement.headTrfm = headTrfm;
+        PlayerMovement.jumpRingFXPooler = jumpRingFXPooler;
 
         Destroy(self);
     }
