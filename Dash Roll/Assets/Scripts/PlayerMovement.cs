@@ -66,7 +66,8 @@ public class PlayerMovement : MobileEntity
             else 
             {
                 invulnerable = 2;
-                CameraController.SetTrauma((int)(lastDamage * 1.2f)); 
+                CameraController.SetTrauma((int)(lastDamage * 1));
+                CameraController.SetVignetteOpacity(lastDamage * .01f);
             }
 
             playerHPBar.SetPercentage((float)HP/maxHP);
@@ -113,7 +114,7 @@ public class PlayerMovement : MobileEntity
         if (wallKickFXTimer > 0) 
         {
             if (wallKickFXTimer == 5) { DisableDodgeFX(); }
-            if (wallKickFXTimer == 1) { hurtbox.enabled = true; }
+            if (wallKickFXTimer == 1) { EnableHurtbox(); }
             wallKickFXTimer--; 
         }
         if (wallKickScreenShakeCooldown > 0) { wallKickScreenShakeCooldown--; }
@@ -174,7 +175,7 @@ public class PlayerMovement : MobileEntity
             }
             if (dashRollCooldown == 55)
             {
-                hurtbox.enabled = true;
+                EnableHurtbox();
             }
         }
 
@@ -427,7 +428,7 @@ public class PlayerMovement : MobileEntity
 
                 animator.QueAnimation(animator.Roll, 16);
                 EnableDodgeFX();
-                hurtbox.enabled = false;
+                DisableHurtbox();
 
                 if (!IsTouchingGround()) { CameraController.SetTrauma(9); }
 
@@ -589,14 +590,33 @@ public class PlayerMovement : MobileEntity
         else { CameraController.SetTrauma(8); }
         wallKickScreenShakeCooldown = 30;
 
-        if (wallKickFXTimer < 5) { EnableDodgeFX(); }
-        hurtbox.enabled = false;
+        if (wallKickFXTimer < 5) 
+        {
+            EnableDodgeFX(); 
+            if (wallKickFXTimer < 1)
+            {
+                DisableHurtbox();
+            }
+        }
         wallKickFXTimer = 20;
     }
 
     bool CanWallKick()
     {
         return (touchingTerrain[4] && !touchingTerrain[2]) || (!IsTouchingGround() && touchingTerrain[3]);
+    }
+
+    [SerializeField] int hurtboxDisable;
+    void DisableHurtbox()
+    {
+        if (hurtboxDisable < 1) { hurtbox.enabled = false; }
+        hurtboxDisable++;
+    }
+
+    void EnableHurtbox()
+    {
+        hurtboxDisable--;
+        if (hurtboxDisable < 1) { hurtbox.enabled = true; }
     }
 
     void DoJump(float pJumpPower)

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] Transform cameraTrfm, trackingTrfm, targetTrfm;
+    [SerializeField] Transform cameraTrfm, trackingTrfm, targetTrfm, swordHUDTrfm;
     public float trackingRate, rotationRate, moveIntensity, rotationIntensity;
 
     public static CameraController self;
@@ -12,17 +12,23 @@ public class CameraController : MonoBehaviour
     int mode;
     const int TRACK_PLAYER = 0;
 
-    Vector3 vect3;
+    Vector3 cameraTrackingVect3;
 
-    [SerializeField] SpriteRenderer darkCoverSpriteRenderer;
-    float targetAlpha;
+    [SerializeField] SpriteRenderer vignetteRenderer, blackCoverSpriteRenderer;
+    float blackCoverTargetAlpha;
     Color fadeRate = new Color(0,0,0,0.01f);
+    Color color;
+
+    int alignHUDTimer;
 
     // Start is called before the first frame update
     void Start()
     {
         trackingTrfm.parent = null;
         self = GetComponent<CameraController>();
+
+        CalculateScreenSize();
+        AlignHUDElements();
     }
 
     private void Update()
@@ -41,17 +47,19 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+
         if (mode == TRACK_PLAYER)
         {
-            vect3.x = (targetTrfm.position.x - trackingTrfm.position.x) * trackingRate;
-            vect3.y = (targetTrfm.position.y - trackingTrfm.position.y) * trackingRate;
+            cameraTrackingVect3.x = (targetTrfm.position.x - trackingTrfm.position.x) * trackingRate;
+            cameraTrackingVect3.y = (targetTrfm.position.y - trackingTrfm.position.y) * trackingRate;
 
-            trackingTrfm.position += vect3;
+            trackingTrfm.position += cameraTrackingVect3;
         }
 
         ProcessTrauma();
         ProcessSleep();
-        ProcessDarkCoverFading();
+        ProcessFading();
+        ManageHUDAlignment();
     }
 
     [SerializeField] int trauma;
@@ -88,10 +96,10 @@ public class CameraController : MonoBehaviour
         }
 
         //translational "recovery" (lerps rotation back to level)
-        vect3.x = (trackingTrfm.position.x - cameraTrfm.position.x) * trackingRate;
-        vect3.y = (trackingTrfm.position.y - cameraTrfm.position.y) * trackingRate;
+        cameraTrackingVect3.x = (trackingTrfm.position.x - cameraTrfm.position.x) * trackingRate;
+        cameraTrackingVect3.y = (trackingTrfm.position.y - cameraTrfm.position.y) * trackingRate;
 
-        cameraTrfm.position += vect3;
+        cameraTrfm.position += cameraTrackingVect3;
 
         //screen shake/rotation
         if (trauma > 0)
@@ -111,8 +119,8 @@ public class CameraController : MonoBehaviour
             }
 
             //generate random Translational offset for camera per tick
-            vect3 = Random.insideUnitCircle.normalized * moveIntensity * processedTrauma;
-            cameraTrfm.position += vect3;
+            cameraTrackingVect3 = Random.insideUnitCircle.normalized * moveIntensity * processedTrauma;
+            cameraTrfm.position += cameraTrackingVect3;
 
             //generate random Rotational offset for camera per tick
             cameraTrfm.Rotate(Vector3.forward * rotationIntensity * (Random.Range(0,2) * 2 - 1) * processedTrauma);
@@ -139,29 +147,92 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    public static void SetDarkCoverOpacity(float alpha)
+    public static void SetBlackCoverOpacity(float alpha)
     {
 
     }
-    bool fadingDarkCover;
-    public static void FadeDarkCoverOpacity(float alpha)
-    {
-        if (Mathf.Abs(self.darkCoverSpriteRenderer.color.a - alpha) < .01f) { return; }
 
-        self.fadingDarkCover = true;
-        self.targetAlpha = alpha;
+    bool fadingBlackCover;
+    public static void FadeBlackCoverOpacity(float targetAlpha)
+    {
+        if (Mathf.Abs(self.blackCoverSpriteRenderer.color.a - targetAlpha) < .01f) { return; }
+
+        self.fadingBlackCover = true;
+        self.blackCoverTargetAlpha = targetAlpha;
     }
 
-    void ProcessDarkCoverFading()
+    void ProcessFading()
     {
-        if (fadingDarkCover)
+        if (fadingBlackCover)
         {
-            if (darkCoverSpriteRenderer.color.a - targetAlpha > .01f) { darkCoverSpriteRenderer.color -= fadeRate; }
-            else if (darkCoverSpriteRenderer.color.a - targetAlpha < .01f) { darkCoverSpriteRenderer.color -= fadeRate; }
+            if (blackCoverSpriteRenderer.color.a - blackCoverTargetAlpha > .01f) { blackCoverSpriteRenderer.color -= fadeRate; }
+            else if (blackCoverSpriteRenderer.color.a - blackCoverTargetAlpha < .01f) { blackCoverSpriteRenderer.color -= fadeRate; }
             else
             {
-                darkCoverSpriteRenderer.color = new Color(0,0,0,targetAlpha);
-                fadingDarkCover = false;
+                blackCoverSpriteRenderer.color = new Color(0,0,0,blackCoverTargetAlpha);
+                fadingBlackCover = false;
+            }
+        }
+
+        if (fadingVignette)
+        {
+            if (vignetteRenderer.color.a > 0)
+            {
+                vignetteRenderer.color -= fadeRate;
+            }
+            else
+            {
+                color = vignetteRenderer.color;
+                color.a = 0;
+                vignetteRenderer.color = color;
+                fadingVignette = false;
+            }
+        }
+    }
+
+    bool fadingVignette;
+    public static void SetVignetteOpacity(float alpha)
+    {
+        self.fadingVignette = true;
+
+        self.color = self.vignetteRenderer.color;
+        self.color.a = alpha;
+        self.vignetteRenderer.color = self.color;
+    }
+
+    float screenXSize, screenYSize, lastScreenXSize, lastScreenYSize;
+    bool CalculateScreenSize()
+    {
+        screenYSize = 2 * Camera.main.orthographicSize;
+        screenXSize = screenYSize * Camera.main.aspect;
+
+        if (Mathf.Abs(screenXSize-lastScreenXSize) > .001f || Mathf.Abs(screenYSize - lastScreenYSize) > .001f)
+        {
+            lastScreenXSize = screenXSize;
+            lastScreenYSize = screenYSize;
+            return true;
+        }
+        return false;
+    }
+
+    void AlignHUDElements()
+    {
+        vignetteRenderer.transform.localScale = new Vector3(.0894f * screenXSize, .185f * screenYSize, 1);
+
+        Vector3 hudPosition = swordHUDTrfm.localPosition;
+        hudPosition.x = screenXSize * -.419f + 4;
+        swordHUDTrfm.localPosition = hudPosition;
+    }
+
+    void ManageHUDAlignment()
+    {
+        if (alignHUDTimer > 0) { alignHUDTimer--; }
+        else
+        {
+            alignHUDTimer = 100;
+            if (CalculateScreenSize())
+            {
+                AlignHUDElements();
             }
         }
     }

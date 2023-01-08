@@ -22,7 +22,7 @@ public class ObjectPooler : MonoBehaviour
 
         for (int i = 0; i < poolSize; i++)
         {
-            newObject = Instantiate(prefab, Vector2.zero, Quaternion.identity);
+            newObject = Instantiate(prefab, Vector3.zero, Quaternion.identity);
 
             pooledObjects[i] = newObject.GetComponent<PooledObject>();
             pooledObjects[i].Setup(this, i + 1);

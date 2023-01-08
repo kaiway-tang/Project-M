@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviour
 {
-    static KeyCode JumpKey, JumpKey1, UpKey, UpKey1, DownKey, DownKey1, LeftKey, LeftKey1, RightKey, RightKey1;
-    static KeyCode AttackKey, AttackKey1, DashRollKey, DashRollKey1, CastKey, CastKey1;
+    public static KeyCode JumpKey, JumpKey1, UpKey, UpKey1, DownKey, DownKey1, LeftKey, LeftKey1, RightKey, RightKey1;
+    public static KeyCode AttackKey, AttackKey1, DashRollKey, DashRollKey1, CastKey, CastKey1;
 
     static bool firstLoad;
 

@@ -18,6 +18,7 @@ public class PooledObject : MonoBehaviour
     {
         objectPooler = pObjectPooler;
         objectID = pObjectID;
+        gameObject.SetActive(false);
     }
 
     protected void Destantiate()

@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WallKickTip : TutorialTip
+public class WallKickTip : TutorialAction
 {
-    [SerializeField] SpriteRenderer SpriteRenderer;
+    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] Sprite alternateSprite;
+    [SerializeField] Transform textTrfm;
 
     new void FixedUpdate()
     {
@@ -14,7 +16,9 @@ public class WallKickTip : TutorialTip
     {
         if (collision.gameObject.layer == 11)
         {
-            SpriteRenderer.enabled = true;
+            if (TutorialManager.usingArrows && alternateSprite) { spriteRenderer.sprite = alternateSprite; }
+            textTrfm.position = new Vector3(textTrfm.position.x, PlayerMovement.trfm.position.y + 4, 0);
+            spriteRenderer.enabled = true;
             PlayerMovement.playerMovement.hover = 999;
             EnterSloMo(.5f);
         }
@@ -23,7 +27,7 @@ public class WallKickTip : TutorialTip
     {
         if (collision.gameObject.layer == 11)
         {
-            SpriteRenderer.enabled = false;
+            spriteRenderer.enabled = false;
             PlayerMovement.playerMovement.hover = 1;
             ExitSloMo();
         }

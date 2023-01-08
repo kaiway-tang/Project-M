@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TutorialTip : MonoBehaviour
+public class TutorialAction : MonoBehaviour
 {
     int timer;
 

@@ -4954,15 +4954,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2642846086475545992}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -12.7, y: -8, z: 10}
-  m_LocalScale: {x: 1.9, y: 1.9, z: 1}
+  m_LocalPosition: {x: -13.35, y: -8, z: 10}
+  m_LocalScale: {x: 2.2, y: 2.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 541106233948163299}
   - {fileID: 3919386305893309103}
   - {fileID: 98735433437417673}
   m_Father: {fileID: 5914327581745451732}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &871474199695736476
 SpriteRenderer:
@@ -5067,6 +5067,90 @@ SpriteMask:
   m_BackSortingOrder: 19
   m_IsCustomRangeActive: 1
   m_SpriteSortPoint: 0
+--- !u!1 &3698381477173882888
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6555053097152212437}
+  - component: {fileID: 7078646436581871121}
+  m_Layer: 0
+  m_Name: baseVignette
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6555053097152212437
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3698381477173882888}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5914327581745451732}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &7078646436581871121
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3698381477173882888}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 94093041
+  m_SortingLayer: 4
+  m_SortingOrder: 100
+  m_Sprite: {fileID: 21300000, guid: 276cb17bd2b38ef48963d3a8aa434f58, type: 3}
+  m_Color: {r: 1, g: 0, b: 0, a: 0}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 12, y: 5.5}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &4498033658854803408
 GameObject:
   m_ObjectHideFlags: 0
@@ -5097,7 +5181,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5914327581745451732}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7903076405372170364
 SpriteRenderer:
@@ -15744,6 +15828,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6555053097152212437}
   - {fileID: 7311143726817986222}
   - {fileID: 8195066168064666514}
   - {fileID: 5914327583275667753}
@@ -15816,11 +15901,13 @@ MonoBehaviour:
   cameraTrfm: {fileID: 5914327581745451732}
   trackingTrfm: {fileID: 5914327582155241805}
   targetTrfm: {fileID: 5914327581833312523}
+  swordHUDTrfm: {fileID: 7311143726817986222}
   trackingRate: 0.1
   rotationRate: 0.2
   moveIntensity: 0.0012
   rotationIntensity: 0.002
-  darkCoverSpriteRenderer: {fileID: 7903076405372170364}
+  vignetteRenderer: {fileID: 7078646436581871121}
+  blackCoverSpriteRenderer: {fileID: 7903076405372170364}
   trauma: 0
 --- !u!114 &5914327581745451728
 MonoBehaviour:
@@ -15966,7 +16053,7 @@ Transform:
   m_GameObject: {fileID: 5914327581781148683}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 10}
-  m_LocalScale: {x: 9, y: 9, z: 1}
+  m_LocalScale: {x: 11, y: 11, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5914327582338515576}
@@ -15995,7 +16082,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraTrfm: {fileID: 5914327581745451732}
-  referencePoint: {x: 0, y: -4}
+  referencePoint: {x: 0, y: -7}
   backgrounds:
   - {fileID: 5914327582338515576}
   - {fileID: 5914327581671805670}
@@ -16426,6 +16513,9 @@ MonoBehaviour:
   trfm: {fileID: 5914327581401260407}
   entityID: 1
   hpBar: {fileID: 0}
+  damagedFXObj: {fileID: 0}
+  damagedFXPooler: {fileID: 0}
+  isStructure: 0
   reflectionTrfm: {fileID: 5914327581851422984}
   rb: {fileID: 5914327581401260406}
   knockbackFactor: 1
@@ -16456,10 +16546,6 @@ MonoBehaviour:
   frontTurnFX: {fileID: 4656021853948651653}
   smashFX: {fileID: 0}
   shootingSword: {fileID: 7376597741772767454, guid: d215b6a21fa25be439dfc249b8047a04, type: 3}
-  mana: 100
-  manaTimer: 0
-  castWindup: 0
-  castCooldown: 0
   hover: 0
   lightAttack1: {fileID: 5914327583051751918}
   lightAttack2: {fileID: 6544080692893932525}
@@ -16468,6 +16554,7 @@ MonoBehaviour:
   cameraTargetPoint: {fileID: 5914327581833312523}
   playerHPBar: {fileID: 3544311169536536635}
   manaBar: {fileID: 1916623211750555585}
+  hurtboxDisable: 0
 --- !u!61 &5914327582254935035
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -16585,7 +16672,7 @@ MonoBehaviour:
   - {x: 48, y: 7}
   - {x: -47, y: 7}
   playerMovement: {fileID: 5914327582254935034}
-  damageSource: 0
+  damageSource: 4
 --- !u!1 &5914327582337748030
 GameObject:
   m_ObjectHideFlags: 0
@@ -27418,7 +27505,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5914327581745451732}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5914327583275667754
 MonoBehaviour:

@@ -11,7 +11,7 @@ public class HPEntity : MonoBehaviour
     [SerializeField] HPBar hpBar;
 
     public enum EntityTypes { Enemy, Player, Neutral }
-    public enum DamageSource { Default, LightAttack1, LightAttack2, HeavyAttack }
+    public enum DamageSource { Default, LightAttack1, LightAttack2, HeavyAttack, KickAttack }
     DamageSource lastDamageSource;
     public const int IGNORED = -1, ALIVE = 0, DEAD = 1;
 
@@ -22,6 +22,7 @@ public class HPEntity : MonoBehaviour
     public static ObjectPooler bloodFXPooler;
     [SerializeField] GameObject damagedFXObj;
     [SerializeField] ObjectPooler damagedFXPooler;
+    [SerializeField] bool isStructure; //vulnerable to kicks
     bool usingInstantiateDamagedFX, usingHPBar, lowestChildSubclass;
     private void Awake()
     {
@@ -82,6 +83,8 @@ public class HPEntity : MonoBehaviour
             }
         }
 
+        if (isStructure && damageSource == DamageSource.KickAttack) { HP -= amount * 10; }
+
         HP -= amount;
 
         if (usingInstantiateDamagedFX)
@@ -98,7 +101,7 @@ public class HPEntity : MonoBehaviour
 
         if (HP <= 0)
         {
-            if (lowestChildSubclass) { Destroy(trfm.root.gameObject); }
+            if (lowestChildSubclass) { Destroy(trfm.gameObject); }
             return DEAD;
         }
         else

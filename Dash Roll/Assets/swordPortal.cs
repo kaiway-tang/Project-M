@@ -7,6 +7,7 @@ public class swordPortal : MonoBehaviour
     [SerializeField] GameObject swordObj;
     [SerializeField] Transform trfm;
     [SerializeField] Vector3 scale;
+    [SerializeField] Vector2 scaleRate;
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Color fade;
     [SerializeField] SpriteMask mask;
@@ -23,7 +24,8 @@ public class swordPortal : MonoBehaviour
     {
         if (timer < 10)
         {
-            trfm.localScale += scale;
+            //trfm.localScale += scale;
+            trfm.localScale *= scaleRate;
         }
         else
         {
