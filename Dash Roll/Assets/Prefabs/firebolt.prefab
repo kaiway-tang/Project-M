@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3caeda8240c2d349ab57f936531fc49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 15
+  damage: 25
   knockback: 25
   speed: 0.5
   entityType: 0
@@ -137,7 +137,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 383366f26313044408649cb26bfca017, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deparent: {fileID: 1799349012153886998}
   trfms:
   - {fileID: 6011750964500517451}
   - {fileID: 8833350904148150868}
@@ -502,7 +501,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3caeda8240c2d349ab57f936531fc49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 15
+  damage: 25
   knockback: 10
   speed: 0.4
   entityType: 0
@@ -624,7 +623,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3caeda8240c2d349ab57f936531fc49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 15
+  damage: 25
   knockback: 10
   speed: 0.4
   entityType: 0

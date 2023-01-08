@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] Transform cameraTrfm, trackingTrfm, targetTrfm, swordHUDTrfm;
+    [SerializeField] Transform cameraTrfm, trackingTrfm, targetTrfm;
     public float trackingRate, rotationRate, moveIntensity, rotationIntensity;
 
     public static CameraController self;
@@ -14,34 +14,11 @@ public class CameraController : MonoBehaviour
 
     Vector3 cameraTrackingVect3;
 
-    [SerializeField] SpriteRenderer vignetteRenderer, blackCoverSpriteRenderer;
-    float blackCoverTargetAlpha;
-    Color fadeRate = new Color(0,0,0,0.01f);
-    Color color;
-
-    int alignHUDTimer;
-
     // Start is called before the first frame update
     void Start()
     {
         trackingTrfm.parent = null;
         self = GetComponent<CameraController>();
-
-        CalculateScreenSize();
-        AlignHUDElements();
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1)) trauma += 10;
-        if (Input.GetKeyDown(KeyCode.Alpha2)) trauma += 20;
-        if (Input.GetKeyDown(KeyCode.Alpha3)) trauma += 30;
-        if (Input.GetKeyDown(KeyCode.Alpha4)) trauma += 40;
-        if (Input.GetKeyDown(KeyCode.Alpha5)) trauma += 50;
-        if (Input.GetKeyDown(KeyCode.Alpha6)) trauma += 60;
-        if (Input.GetKeyDown(KeyCode.Alpha7)) trauma += 70;
-        if (Input.GetKeyDown(KeyCode.Alpha8)) trauma += 80;
-        if (Input.GetKeyDown(KeyCode.Alpha9)) trauma += 90;
     }
 
     // Update is called once per frame
@@ -58,8 +35,6 @@ public class CameraController : MonoBehaviour
 
         ProcessTrauma();
         ProcessSleep();
-        ProcessFading();
-        ManageHUDAlignment();
     }
 
     [SerializeField] int trauma;
@@ -144,96 +119,6 @@ public class CameraController : MonoBehaviour
         {
             if (sleepTimer == 1) { Time.timeScale = 1; }
             sleepTimer--;
-        }
-    }
-
-    public static void SetBlackCoverOpacity(float alpha)
-    {
-
-    }
-
-    bool fadingBlackCover;
-    public static void FadeBlackCoverOpacity(float targetAlpha)
-    {
-        if (Mathf.Abs(self.blackCoverSpriteRenderer.color.a - targetAlpha) < .01f) { return; }
-
-        self.fadingBlackCover = true;
-        self.blackCoverTargetAlpha = targetAlpha;
-    }
-
-    void ProcessFading()
-    {
-        if (fadingBlackCover)
-        {
-            if (blackCoverSpriteRenderer.color.a - blackCoverTargetAlpha > .01f) { blackCoverSpriteRenderer.color -= fadeRate; }
-            else if (blackCoverSpriteRenderer.color.a - blackCoverTargetAlpha < .01f) { blackCoverSpriteRenderer.color -= fadeRate; }
-            else
-            {
-                blackCoverSpriteRenderer.color = new Color(0,0,0,blackCoverTargetAlpha);
-                fadingBlackCover = false;
-            }
-        }
-
-        if (fadingVignette)
-        {
-            if (vignetteRenderer.color.a > 0)
-            {
-                vignetteRenderer.color -= fadeRate;
-            }
-            else
-            {
-                color = vignetteRenderer.color;
-                color.a = 0;
-                vignetteRenderer.color = color;
-                fadingVignette = false;
-            }
-        }
-    }
-
-    bool fadingVignette;
-    public static void SetVignetteOpacity(float alpha)
-    {
-        self.fadingVignette = true;
-
-        self.color = self.vignetteRenderer.color;
-        self.color.a = alpha;
-        self.vignetteRenderer.color = self.color;
-    }
-
-    float screenXSize, screenYSize, lastScreenXSize, lastScreenYSize;
-    bool CalculateScreenSize()
-    {
-        screenYSize = 2 * Camera.main.orthographicSize;
-        screenXSize = screenYSize * Camera.main.aspect;
-
-        if (Mathf.Abs(screenXSize-lastScreenXSize) > .001f || Mathf.Abs(screenYSize - lastScreenYSize) > .001f)
-        {
-            lastScreenXSize = screenXSize;
-            lastScreenYSize = screenYSize;
-            return true;
-        }
-        return false;
-    }
-
-    void AlignHUDElements()
-    {
-        vignetteRenderer.transform.localScale = new Vector3(.0894f * screenXSize, .185f * screenYSize, 1);
-
-        Vector3 hudPosition = swordHUDTrfm.localPosition;
-        hudPosition.x = screenXSize * -.419f + 4;
-        swordHUDTrfm.localPosition = hudPosition;
-    }
-
-    void ManageHUDAlignment()
-    {
-        if (alignHUDTimer > 0) { alignHUDTimer--; }
-        else
-        {
-            alignHUDTimer = 100;
-            if (CalculateScreenSize())
-            {
-                AlignHUDElements();
-            }
         }
     }
 }

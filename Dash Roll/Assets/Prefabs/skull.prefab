@@ -159,7 +159,7 @@ Transform:
   m_GameObject: {fileID: 8494053240132772472}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -10.387545, y: 1.5731716, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalScale: {x: 6, y: 6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8494053241086069898}
@@ -217,17 +217,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 245349488ef65c84e9c1e9a2070dd522, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 20
-  maxHP: 20
-  deathTraumaAmount: 15
+  HP: 40
+  maxHP: 40
+  deathTraumaAmount: 20
   deathSleepAmount: 1
   stunned: 0
   movementLocked: 0
   poisoned: 0
-  invulnerable: 0
+  invulnerable: 5
   trfm: {fileID: 8494053240132772477}
   entityID: 0
   hpBar: {fileID: 4571180350385488935}
+  damagedFXObj: {fileID: 0}
+  damagedFXPooler: {fileID: 0}
+  isStructure: 0
   reflectionTrfm: {fileID: 8494053241086069898}
   rb: {fileID: 8494053240132772478}
   knockbackFactor: 1
@@ -406,7 +409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7acfbd991890b274aa168a27d010dc61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  damage: 20
   entityType: 0
   trfm: {fileID: 8017878160988989862}
   hitbox: {fileID: 3258799779148496768}

@@ -4833,7 +4833,7 @@ MonoBehaviour:
   trfm: {fileID: 5300725318646996044}
   DestroyFX: {fileID: 3780654266243000828, guid: 43b088a831d745f46ab6f28138b0ed24, type: 3}
   life: 100
-  poison: 3
+  poison: 4
 --- !u!58 &2448628298942380379
 CircleCollider2D:
   m_ObjectHideFlags: 0

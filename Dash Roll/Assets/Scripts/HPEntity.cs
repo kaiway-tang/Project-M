@@ -22,12 +22,8 @@ public class HPEntity : MonoBehaviour
     public static ObjectPooler bloodFXPooler;
     [SerializeField] GameObject damagedFXObj;
     [SerializeField] ObjectPooler damagedFXPooler;
-    [SerializeField] bool isStructure; //vulnerable to kicks
-    bool usingInstantiateDamagedFX, usingHPBar, lowestChildSubclass;
-    private void Awake()
-    {
-        lowestChildSubclass = true;
-    }
+    [SerializeField] bool isStructure, standardDestroyOnDeath; //vulnerable to kicks
+    bool usingInstantiateDamagedFX, usingHPBar;
 
     protected void Start()
     {
@@ -101,7 +97,7 @@ public class HPEntity : MonoBehaviour
 
         if (HP <= 0)
         {
-            if (lowestChildSubclass) { Destroy(trfm.gameObject); }
+            if (standardDestroyOnDeath) { Destroy(trfm.gameObject); }
             return DEAD;
         }
         else

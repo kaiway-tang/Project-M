@@ -184,6 +184,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: ac8c422a0f809f8478b39bbf895ab243, type: 3}
   - {fileID: 21300000, guid: cf7ba95e3ccaae743aec9589259e31f5, type: 3}
   time: 000000000300000006000000090000000c0000000f0000001200000015000000
+  loop: 0
 --- !u!114 &2868790321320794684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,6 +208,9 @@ MonoBehaviour:
   trfm: {fileID: 2506602816424328772}
   entityID: 0
   hpBar: {fileID: 7519276207638091806}
+  damagedFXObj: {fileID: 0}
+  damagedFXPooler: {fileID: 0}
+  isStructure: 0
   reflectionTrfm: {fileID: 2506602817374474419}
   rb: {fileID: 2506602816424328775}
   knockbackFactor: 1
@@ -289,7 +293,7 @@ MonoBehaviour:
   knockbackDirections:
   - {x: 32, y: 11}
   - {x: -32, y: 11}
-  poison: 3
+  poison: 4
 --- !u!4 &4065893003203835295 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8017878160988989862, guid: 083d5de8473aba34292d1602785602d5, type: 3}

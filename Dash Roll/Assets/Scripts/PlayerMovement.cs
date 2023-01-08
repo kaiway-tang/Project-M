@@ -41,7 +41,7 @@ public class PlayerMovement : MobileEntity
     [SerializeField] PlayerResourceBar playerHPBar, manaBar;
     void Awake()
     {
-        trfm = transform;
+        trfm = base.trfm;
         playerMovement = GetComponent<PlayerMovement>();
     }
     new void Start() { base.Start(); }
@@ -60,6 +60,7 @@ public class PlayerMovement : MobileEntity
 
     private new void FixedUpdate()
     {
+
         if (tookDamage)
         {
             if ((int)(lastDamage * 1.2f) < 10) { CameraController.AddTrauma(10); }
@@ -67,8 +68,8 @@ public class PlayerMovement : MobileEntity
             {
                 invulnerable = 2;
                 CameraController.SetTrauma((int)(lastDamage * 1));
-                CameraController.SetVignetteOpacity(lastDamage * .01f);
             }
+            HUDManager.SetVignetteOpacity(lastDamage * .03f);
 
             playerHPBar.SetPercentage((float)HP/maxHP);
 
@@ -497,6 +498,11 @@ public class PlayerMovement : MobileEntity
             else { Instantiate(kickFX, trfm.position + Vector3.right * 2, Quaternion.Euler(0,0,180)).transform.parent = trfm; }
             kickAttack.Activate(IsFacingRight());
             attackKickTimer = 8;
+        }
+
+        if (mana < 20 && PlayerInput.CastPressed())
+        {
+            HUDManager.FlashManaBar();
         }
     }
 

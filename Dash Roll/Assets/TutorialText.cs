@@ -8,7 +8,7 @@ public class TutorialText : MonoBehaviour
     [SerializeField] Sprite alternateSprite;
     [SerializeField] Color fade;
     int process; const int NONE = 0, FADING_IN = 1, FADING_OUT = 2;
-    int timer;
+    [SerializeField] int timer;
     private void Start()
     {
         spriteRenderer.color = new Color(1, 1, 1, 0);
@@ -18,6 +18,7 @@ public class TutorialText : MonoBehaviour
     {
         if (TutorialManager.usingArrows && alternateSprite) { spriteRenderer.sprite = alternateSprite; }
         process = FADING_IN;
+        timer = 0;
     }
     public void FadeOut()
     {
@@ -39,7 +40,7 @@ public class TutorialText : MonoBehaviour
             }
             else
             {
-                spriteRenderer.color += fade;
+                spriteRenderer.color -= fade;
                 if (spriteRenderer.color.a <= 0)
                 {
                     spriteRenderer.color = new Color(1,1,1,0);

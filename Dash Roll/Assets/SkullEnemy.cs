@@ -24,48 +24,46 @@ public class SkullEnemy : Enemy
     }
     void EveryTwo()
     {
-        if (InBoxDistanceToPlayer(trackingRange) && PlayerInSight())
+        if (rb.velocity.y < -18) { SetYVelocity(-18); }
+
+        if (timer > 0)
         {
-            if (rb.velocity.y < -18) { SetYVelocity(-18); }
-
-            if (timer > 0)
+            if (timer < 25)
             {
-                if (timer < 25)
-                {
-                    FacePlayer();
-                }
-                else
-                {
-                    if (timer == 31)
-                    {
-                        attackTrailFX.emitting = true;
-                        hurtbox.Activate(IsFacingRight());
-                        AddForwardXVelocity(35, 35);
-                    }
-                    if (timer == 26)
-                    {
-                        spriteRenderer.sprite = neutralSprite;
-                        attackTrailFX.emitting = false;
-                        hurtbox.Deactivate();
-                        SetXVelocity(0);
-                    }
-                }
-
-                timer--;
+                FacePlayer();
             }
             else
             {
-                if (Mathf.Abs(PlayerMovement.trfm.position.x - trfm.position.x) < 6 && Mathf.Abs(PlayerMovement.trfm.position.y - trfm.position.y - .2f) < .2f)
+                if (timer == 32)
                 {
-                    telegraphPooler.Instantiate(trfm.position);
-                    spriteRenderer.sprite = attackSprite;
-                    timer = Random.Range(42,47);
+                    attackTrailFX.emitting = true;
+                    hurtbox.Activate(IsFacingRight());
+                    AddForwardXVelocity(35, 35);
                 }
-                else
+                if (timer == 27)
                 {
-                    AddForwardVelocity(forwardPower, jumpPower);
-                    timer = Random.Range(24, 27);
+                    spriteRenderer.sprite = neutralSprite;
+                    attackTrailFX.emitting = false;
+                    hurtbox.Deactivate();
+                    SetXVelocity(0);
+                    timer -= Random.Range(0,5);
                 }
+            }
+
+            timer--;
+        }
+        else if(InBoxDistanceToPlayer(trackingRange) && PlayerInSight())
+        {
+            if (Mathf.Abs(PlayerMovement.trfm.position.x - trfm.position.x) < 6 && Mathf.Abs(PlayerMovement.trfm.position.y - trfm.position.y - .2f) < .2f)
+            {
+                telegraphPooler.Instantiate(trfm.position);
+                spriteRenderer.sprite = attackSprite;
+                timer = 44;
+            }
+            else
+            {
+                AddForwardVelocity(forwardPower, jumpPower);
+                timer = Random.Range(24, 27);
             }
         }
     }

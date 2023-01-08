@@ -288,8 +288,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 199a309041fe89348853ad0700555ead, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 100
-  maxHP: 100
+  HP: 120
+  maxHP: 120
   deathTraumaAmount: 30
   deathSleepAmount: 2
   stunned: 0
@@ -299,6 +299,9 @@ MonoBehaviour:
   trfm: {fileID: 2370132628229140502}
   entityID: 0
   hpBar: {fileID: 2534690604109140960}
+  damagedFXObj: {fileID: 0}
+  damagedFXPooler: {fileID: 0}
+  isStructure: 0
   reflectionTrfm: {fileID: 2370132628036719006}
   rb: {fileID: 2370132628229140587}
   knockbackFactor: 1
