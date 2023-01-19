@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/Necromancer demo.unity
-    guid: 0daab3dd6af7d8041a88b07042b1826e
+    path: Assets/Scenes/Starting Scene.unity
+    guid: fc9a4d7c9c306c94f9e2ce4d5e049572
+  - enabled: 1
+    path: Assets/Scenes/Plains.unity
+    guid: c28869dbcccdb8f43bb601ee5c1b1db2
   m_configObjects: {}

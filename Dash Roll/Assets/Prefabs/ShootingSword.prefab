@@ -168,9 +168,9 @@ ParticleSystem:
         m_RotationOrder: 4
     startSpeed:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 5
-      minScalar: 5
+      minMaxState: 3
+      scalar: 6
+      minScalar: 4
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -285,7 +285,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 1.3
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -662,10 +662,10 @@ ParticleSystem:
     serializedVersion: 6
     enabled: 1
     type: 4
-    angle: 5
+    angle: 20
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
-    radiusThickness: 1
+    radiusThickness: 0.1
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
@@ -748,7 +748,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1
+      value: 0.1
       mode: 0
       spread: 0
       speed:
@@ -866,9 +866,9 @@ ParticleSystem:
     serializedVersion: 4
     rateOverTime:
       serializedVersion: 2
-      minMaxState: 0
-      scalar: 60
-      minScalar: 10
+      minMaxState: 3
+      scalar: 140
+      minScalar: 80
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -9692,9 +9692,9 @@ GameObject:
   m_Component:
   - component: {fileID: 74644117802630548}
   - component: {fileID: 215070024738533854}
-  - component: {fileID: 2721000364319732306}
   - component: {fileID: 8148577972693632138}
   - component: {fileID: 3111635818869691286}
+  - component: {fileID: 357344503444970799}
   m_Layer: 8
   m_Name: ShootingSword
   m_TagString: Untagged
@@ -9717,6 +9717,7 @@ Transform:
   - {fileID: 570680252595979329}
   - {fileID: 3761536810017322371}
   - {fileID: 4038415899575363001}
+  - {fileID: 5304929423294712658}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9772,31 +9773,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 2
   m_SpriteSortPoint: 0
---- !u!114 &2721000364319732306
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2418249024692528160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39866a0c41f986142bb7df06b42878a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 20
-  knockback: 35
-  speed: 1.8
-  entityType: 1
-  trfm: {fileID: 74644117802630548}
-  DestroyFX: {fileID: 6023119522122821356, guid: 866927597a7ec864da02cad368e43314, type: 3}
-  life: 150
-  spriteRenderer: {fileID: 215070024738533854}
-  embeddedSprite: {fileID: 21300000, guid: 9a9abf1bd0a6f9148b3610d32c01967e, type: 3}
-  trailRenderer: {fileID: 4452569098193524397}
-  disintegrate: {fileID: 411512983671624368}
-  flight: {fileID: 4303829671945493382}
-  capsuleCollider: {fileID: 8148577972693632138}
 --- !u!70 &8148577972693632138
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -9811,7 +9787,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.5}
-  m_Size: {x: 0.5, y: 3}
+  m_Size: {x: 2, y: 3}
   m_Direction: 0
 --- !u!50 &3111635818869691286
 Rigidbody2D:
@@ -9834,6 +9810,96 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &357344503444970799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2418249024692528160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39866a0c41f986142bb7df06b42878a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 20
+  knockback: 35
+  speed: 1.8
+  entityType: 1
+  trfm: {fileID: 74644117802630548}
+  DestroyFX: {fileID: 6023119522122821356, guid: 866927597a7ec864da02cad368e43314, type: 3}
+  life: 150
+--- !u!1 &2772391575114911576
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5304929423294712658}
+  - component: {fileID: 9078447384922440465}
+  - component: {fileID: 9096768205678384945}
+  m_Layer: 0
+  m_Name: TerrainHitbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5304929423294712658
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2772391575114911576}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 74644117802630548}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!70 &9078447384922440465
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2772391575114911576}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.5}
+  m_Size: {x: 0.2, y: 3}
+  m_Direction: 0
+--- !u!114 &9096768205678384945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2772391575114911576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74b5154929dd8b444a7f8c8431dd74a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 215070024738533854}
+  embeddedSprite: {fileID: 21300000, guid: 9a9abf1bd0a6f9148b3610d32c01967e, type: 3}
+  trailRenderer: {fileID: 4452569098193524397}
+  disintegrate: {fileID: 411512983671624368}
+  flight: {fileID: 4303829671945493382}
+  timer: 0
+  capsuleCollider:
+  - {fileID: 8148577972693632138}
+  - {fileID: 9078447384922440465}
+  shootingSword: {fileID: 357344503444970799}
 --- !u!1 &7325189225343741240
 GameObject:
   m_ObjectHideFlags: 0

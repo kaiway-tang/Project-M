@@ -80,12 +80,32 @@ PrefabInstance:
       value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
-      propertyPath: deathFX
+      propertyPath: spawnObj
       value: 
       objectReference: {fileID: 174363966710629707, guid: 2d2d85a78c49a524f8aa8ed8a8d62130, type: 3}
     - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: healthShards
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
       propertyPath: knockbackFactor
       value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: spawnObjects.Array.data[0]
+      value: 
+      objectReference: {fileID: 2506602816424328769, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+    - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: spawnObjects.Array.data[1]
+      value: 
+      objectReference: {fileID: 2506602816424328769, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+    - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: cooldownLengths.Array.data[0]
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: cooldownLengths.Array.data[1]
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 4566089120083853911, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
       propertyPath: m_LocalScale.x

@@ -288,8 +288,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 199a309041fe89348853ad0700555ead, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 120
-  maxHP: 120
+  HP: 140
+  maxHP: 140
   deathTraumaAmount: 30
   deathSleepAmount: 2
   stunned: 0
@@ -302,6 +302,7 @@ MonoBehaviour:
   damagedFXObj: {fileID: 0}
   damagedFXPooler: {fileID: 0}
   isStructure: 0
+  standardDestroyOnDeath: 0
   reflectionTrfm: {fileID: 2370132628036719006}
   rb: {fileID: 2370132628229140587}
   knockbackFactor: 1
@@ -309,7 +310,16 @@ MonoBehaviour:
   friction: 1
   trackingRange: 0
   spriteRenderer: {fileID: 2370132628036719004}
-  deathFX: {fileID: 8126511047095392249, guid: 3935d4311d774854a9231fe5b035f6f0, type: 3}
+  triggeredGates: []
+  deathFX: {fileID: 0}
+  spawnObjects:
+  - {fileID: 8494053240132772472, guid: 037d994ccc0931f4ba13e5659bb01f20, type: 3}
+  - {fileID: 8494053240132772472, guid: 037d994ccc0931f4ba13e5659bb01f20, type: 3}
+  - {fileID: 8494053240132772472, guid: 037d994ccc0931f4ba13e5659bb01f20, type: 3}
+  spawnObjectsVelocity:
+  - {x: 0, y: 15}
+  - {x: 15, y: 7}
+  - {x: -15, y: 7}
   kicked: 0
   fireball: {fileID: 1608627101485096213, guid: 1a97dfb151b3df744a381fad38a30f54, type: 3}
   firebolts: {fileID: 52302631453200245, guid: 30eb26e0f5633ee43a741f314e475741, type: 3}
@@ -318,7 +328,7 @@ MonoBehaviour:
   attackTimer: 0
   castTime: 0
   attack: 0
-  attackRange: 12
+  attackRange: 14
   teleportCooldown: 0
   speed: 2.5
   animator: {fileID: 2370132628036719005}

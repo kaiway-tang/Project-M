@@ -6,14 +6,17 @@ public class Attack : MonoBehaviour
 {
     [SerializeField] protected int damage;
     [SerializeField] protected HPEntity.EntityTypes entityType;
-    [SerializeField] protected Transform trfm;
+    public Transform trfm;
     [SerializeField] Collider2D hitbox;
+
+    protected bool manaGranted;
 
     protected int takeDamageResult;
     
     public void Activate()
     {
         hitbox.enabled = true;
+        manaGranted = false;
     }
 
     public void Deactivate()
@@ -25,6 +28,7 @@ public class Attack : MonoBehaviour
     {
         if (col.gameObject.layer > 10 && col.gameObject.layer < 14) 
         {
+            if (!manaGranted) { Player.AddMana(10, col.GetComponent<HPEntity>().GetHP()); }
             takeDamageResult = col.GetComponent<HPEntity>().TakeDamage(damage, entityType);
             return;
         }

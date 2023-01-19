@@ -72,7 +72,7 @@ TrailRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1364526931
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: -50
   m_Time: 0.2
   m_Parameters:
@@ -281,7 +281,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8017878160988989862}
-  - component: {fileID: 3258799779148496768}
   - component: {fileID: 3338728296901816302}
   m_Layer: 9
   m_Name: Attack
@@ -305,22 +304,6 @@ Transform:
   m_Father: {fileID: 8494053241086069898}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &3258799779148496768
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9205684016975362250}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.05
 --- !u!114 &3338728296901816302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,7 +319,7 @@ MonoBehaviour:
   damage: 10
   entityType: 0
   trfm: {fileID: 8017878160988989862}
-  hitbox: {fileID: 3258799779148496768}
+  hitbox: {fileID: 0}
   knockbackDirections:
   - {x: 32, y: 11}
   - {x: -32, y: 11}

@@ -13,7 +13,7 @@ public class NecromancerEnemy : Enemy
 
     static Vector3 meteorOffset;
     Vector2 teleportDestination;
-    bool inRangeAndSight;
+    bool inRangeAndSight, initiated;
     
     new void Start()
     {
@@ -27,6 +27,9 @@ public class NecromancerEnemy : Enemy
     new void FixedUpdate()
     {
         base.FixedUpdate();
+        if (everyTwo) { EveryTwo(); }
+
+        if (!initiated) { return; }
 
         if (inRangeAndSight)
         {
@@ -81,7 +84,7 @@ public class NecromancerEnemy : Enemy
                 {
                     if (IsFacingLeft()) { meteorOffset.x = 6; }
                     else { meteorOffset.x = -6; }
-                    Instantiate(meteor, PlayerMovement.trfm.position + meteorOffset, Quaternion.identity);
+                    Instantiate(meteor, Player.trfm.position + meteorOffset, Quaternion.identity);
                 }
                 else if (attack == 3) //summon skull
                 {
@@ -97,6 +100,7 @@ public class NecromancerEnemy : Enemy
             {
                 trfm.position = teleportDestination;
                 teleportIn.Play();
+                teleportCooldown -= Random.Range(0,50);
             }
             if (teleportCooldown == 1)
             {
@@ -115,19 +119,19 @@ public class NecromancerEnemy : Enemy
                 Teleport(trfm.position + Vector3.right * -10);
             }
         }
-
-        if (everyTwo) { EveryTwo(); }
     }
     void EveryTwo()
     {
+        everyFour = !everyFour;
+        if (everyFour) { EveryFour(); }
+
+        if (!initiated) { return; }
+
         FacePlayer();
         ApplyXFriction(friction);
         ApplyYFriction(friction * 2);
 
         if (attackTimer > 0) { Kite(); }
-
-        everyFour = !everyFour;
-        if (everyFour) { EveryFour(); }
     }
 
     void EveryFour()
@@ -135,8 +139,10 @@ public class NecromancerEnemy : Enemy
         if (PlayerInSight())
         {
             inRangeAndSight = InBoxDistanceToPlayer(attackRange);
+
+            if (!initiated && inRangeAndSight) { initiated = true; }
         }
-        else
+        else if (initiated)
         {
             inRangeAndSight = false;
 
@@ -145,9 +151,9 @@ public class NecromancerEnemy : Enemy
                 vect3.x = (Random.Range(0, 2) * 2 - 1) * 7;
                 vect3.y = 6;
                 vect3.z = 0;
-                if (!ObstructedSightLine(PlayerMovement.trfm.position + vect3, PlayerMovement.trfm.position))
+                if (!ObstructedSightLine(Player.trfm.position + vect3, Player.trfm.position))
                 {
-                    Teleport(PlayerMovement.trfm.position + vect3);
+                    Teleport(Player.trfm.position + vect3);
                 }
             }
         }
@@ -166,23 +172,23 @@ public class NecromancerEnemy : Enemy
     {
         still = true;
 
-        if (trfm.position.y < PlayerMovement.trfm.position.y + 5)
+        if (trfm.position.y < Player.trfm.position.y + 5)
         {
             AddYVelocity(speed * 1.5f, speed * 2);
             still = false;
         }
-        else if (trfm.position.y > PlayerMovement.trfm.position.y + 7)
+        else if (trfm.position.y > Player.trfm.position.y + 7)
         {
             AddYVelocity(-speed * 1.5f, -speed * 2);
             still = false;
         }
 
-        if (Mathf.Abs(trfm.position.x - PlayerMovement.trfm.position.x) < 6)
+        if (Mathf.Abs(trfm.position.x - Player.trfm.position.x) < 6)
         {
             AddForwardXVelocity(-speed, -speed * 2);
             still = false;
         }
-        else if (Mathf.Abs(trfm.position.x - PlayerMovement.trfm.position.x) > 10)
+        else if (Mathf.Abs(trfm.position.x - Player.trfm.position.x) > 10)
         {
             AddForwardXVelocity(speed, speed * 2);
             still = false;

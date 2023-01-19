@@ -217,8 +217,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 245349488ef65c84e9c1e9a2070dd522, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 40
-  maxHP: 40
+  HP: 30
+  maxHP: 30
   deathTraumaAmount: 20
   deathSleepAmount: 1
   stunned: 0
@@ -231,14 +231,19 @@ MonoBehaviour:
   damagedFXObj: {fileID: 0}
   damagedFXPooler: {fileID: 0}
   isStructure: 0
+  standardDestroyOnDeath: 0
   reflectionTrfm: {fileID: 8494053241086069898}
   rb: {fileID: 8494053240132772478}
   knockbackFactor: 1
   touchingTerrain: 
   friction: 0.5
   trackingRange: 20
+  healthShards: 2
   spriteRenderer: {fileID: 8494053241086069897}
-  deathFX: {fileID: 3780654266243000828, guid: 666ab1a4fef472a4b97a3e693a8d77ad, type: 3}
+  triggeredGates: []
+  deathFX: {fileID: 0}
+  spawnObjects: []
+  spawnObjectsVelocity: []
   kicked: 0
   jumpPower: 20
   forwardPower: 12

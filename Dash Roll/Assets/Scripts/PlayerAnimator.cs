@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlayerAnimator : AnimationController
 {
-    //public const int IDLE = 0, RUN = 1, JUMP = 2, FALL = 3, ATTACK_1 = 4, ATTACK_2 = 5, CLING_BACK = 6, CLING_FRONT = 7, ROLL = 8;
-
     public ReferenceState
         Idle = new ReferenceState(0, 1),
         Run = new ReferenceState(1, 1),
@@ -18,7 +16,8 @@ public class PlayerAnimator : AnimationController
         ClingFront = new ReferenceState(7, 1),
         Roll = new ReferenceState(8, 50),
         Kick = new ReferenceState(10, 60),
-        CastHorizontal = new ReferenceState(11, 60);
+        CastHorizontal = new ReferenceState(11, 60),
+        Death = new ReferenceState(12, 9999);
 
     // Start is called before the first frame update
     new void Start()

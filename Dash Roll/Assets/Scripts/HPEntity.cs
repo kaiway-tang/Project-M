@@ -22,7 +22,7 @@ public class HPEntity : MonoBehaviour
     public static ObjectPooler bloodFXPooler;
     [SerializeField] GameObject damagedFXObj;
     [SerializeField] ObjectPooler damagedFXPooler;
-    [SerializeField] bool isStructure, standardDestroyOnDeath; //vulnerable to kicks
+    [SerializeField] bool isStructure, standardDestroyOnDeath; //structures vulnerable to kicks
     bool usingInstantiateDamagedFX, usingHPBar;
 
     protected void Start()
@@ -49,7 +49,14 @@ public class HPEntity : MonoBehaviour
         {
             if (poisoned % 50 == 1)
             {
-                TakeDamage(5, EntityTypes.Neutral);
+                if (entityID == EntityTypes.Player && HP < 6)
+                {
+                    TakeDamage(HP - 1, EntityTypes.Neutral);
+                }
+                else
+                {
+                    TakeDamage(5, EntityTypes.Neutral);
+                }
             }
             poisoned--;
         }
@@ -66,9 +73,9 @@ public class HPEntity : MonoBehaviour
     public int TakeDamage(int amount, EntityTypes entitySource, DamageSource damageSource = DamageSource.Default) //returns true if entity killed
     {
         if (entitySource == entityID || invulnerable > 0) { return IGNORED; }
-        if (lastDamageSource != DamageSource.Default)
+        if (damageSource != DamageSource.Default)
         {
-            ignoreLastDamageSource = 8;
+            ignoreLastDamageSource = 15;
             if (lastDamageSource == damageSource)
             {
                 return IGNORED;
@@ -79,9 +86,8 @@ public class HPEntity : MonoBehaviour
             }
         }
 
-        if (isStructure && damageSource == DamageSource.KickAttack) { HP -= amount * 10; }
-
-        HP -= amount;
+        if (isStructure && damageSource == DamageSource.KickAttack) { HP -= amount * 5; }
+        else { HP -= amount; }
 
         if (usingInstantiateDamagedFX)
         {
@@ -128,10 +134,10 @@ public class HPEntity : MonoBehaviour
     {
         CameraController.SetTrauma(deathTraumaAmount);
         CameraController.Sleep(deathSleepAmount);
-        Destroy(transform.root.gameObject);
+        Destroy(trfm.gameObject);
     }
 
-    public void Heal(int amount, bool allowOverheal)
+    public void Heal(int amount, bool allowOverheal = false)
     {
         HP += amount;
 
@@ -142,11 +148,14 @@ public class HPEntity : MonoBehaviour
                 HP = maxHP;
             }
         }
+
+        if (usingHPBar) { hpBar.SetPercentage((float)HP / maxHP); }
     }
 
     public void Stun(int duration)
     {
         if (stunned < duration) { stunned = duration; }
+        if (movementLocked < stunned) { movementLocked = stunned; }
     }
 
     public void LockMovement(int duration)

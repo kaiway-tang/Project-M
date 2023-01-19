@@ -16,7 +16,7 @@ public class TerrainContact : MonoBehaviour
     // Update is called once per frame
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.layer == 7)
+        if (col.gameObject.layer == 7 || col.gameObject.layer == 12)
         {
             contacts++;
             mobileEntity.touchingTerrain[(int)contactType] = true;
@@ -25,7 +25,7 @@ public class TerrainContact : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D col)
     {
-        if (col.gameObject.layer == 7)
+        if (col.gameObject.layer == 7 || col.gameObject.layer == 12)
         {
             contacts--;
             if (contacts < 1)

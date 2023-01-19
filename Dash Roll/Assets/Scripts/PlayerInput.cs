@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerInput : MonoBehaviour
 {
     public static KeyCode JumpKey, JumpKey1, UpKey, UpKey1, DownKey, DownKey1, LeftKey, LeftKey1, RightKey, RightKey1;
-    public static KeyCode AttackKey, AttackKey1, DashRollKey, DashRollKey1, CastKey, CastKey1;
+    public static KeyCode AttackKey, AttackKey1, DashRollKey, DashRollKey1, CastKey, CastKey1, SoulKey, SoulKey1;
 
     static bool firstLoad;
 
@@ -38,10 +38,13 @@ public class PlayerInput : MonoBehaviour
         CastKey = KeyCode.O;
         CastKey1 = KeyCode.C;
 
+        SoulKey = KeyCode.P;
+        SoulKey1 = KeyCode.V;
+
         firstLoad = true;
     }
 
-    public void RebindKey(KeyCode key)
+    public bool RebindKey(KeyCode key)
     {
         if (Input.anyKeyDown)
         {
@@ -50,9 +53,11 @@ public class PlayerInput : MonoBehaviour
                 if (Input.GetKeyDown((KeyCode)i))
                 {
                     key = (KeyCode)i;
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     public static bool JumpPressed()
@@ -150,6 +155,11 @@ public class PlayerInput : MonoBehaviour
     public static bool CastHeld()
     {
         return Input.GetKey(CastKey) || Input.GetKey(CastKey1);
+    }
+
+    public static bool SoulPressed()
+    {
+        return Input.GetKeyDown(SoulKey) || Input.GetKeyDown(SoulKey1);
     }
 
     static Vector2 vect2;

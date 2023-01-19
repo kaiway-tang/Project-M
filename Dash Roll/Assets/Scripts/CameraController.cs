@@ -9,8 +9,8 @@ public class CameraController : MonoBehaviour
 
     public static CameraController self;
 
-    int mode;
-    const int TRACK_PLAYER = 0;
+    public int mode;
+    public const int TRACK_PLAYER = 0, PANNING = 1, CAMERA_STOP = 2;
 
     Vector3 cameraTrackingVect3;
 
@@ -29,12 +29,22 @@ public class CameraController : MonoBehaviour
         {
             cameraTrackingVect3.x = (targetTrfm.position.x - trackingTrfm.position.x) * trackingRate;
             cameraTrackingVect3.y = (targetTrfm.position.y - trackingTrfm.position.y) * trackingRate;
-
-            trackingTrfm.position += cameraTrackingVect3;
         }
+        else if (mode == PANNING)
+        {
+            cameraTrackingVect3.x = (panPositions[currentPanIndex].x - trackingTrfm.position.x) * trackingRate;
+            cameraTrackingVect3.y = (panPositions[currentPanIndex].y - trackingTrfm.position.y) * trackingRate;
+        } else if (mode == CAMERA_STOP)
+        {
+            cameraTrackingVect3.x = (lastTargetPos.x - trackingTrfm.position.x) * trackingRate;
+            cameraTrackingVect3.y = (lastTargetPos.y - trackingTrfm.position.y) * trackingRate;
+        }
+
+        trackingTrfm.position += cameraTrackingVect3;
 
         ProcessTrauma();
         ProcessSleep();
+        ProcessPanning();
     }
 
     [SerializeField] int trauma;
@@ -120,5 +130,71 @@ public class CameraController : MonoBehaviour
             if (sleepTimer == 1) { Time.timeScale = 1; }
             sleepTimer--;
         }
+    }
+
+    [SerializeField] Vector2[] panPositions = new Vector2[3];
+    [SerializeField] int[] panDurations = new int[3], panPriorities = new int[3];
+    [SerializeField] int currentPanIndex, nextAvailablePanIndex;
+
+    public static void QueCameraPan(Vector2 position, int duration, int priority)
+    {
+        self.m_QueCameraPan(position, duration, priority);
+    }
+
+    void m_QueCameraPan(Vector2 position, int duration, int priority)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (panDurations[i] < 1)
+            {
+                panPositions[i] = position;
+                panDurations[i] = duration;
+                panPriorities[i] = priority;
+
+                if (panDurations[currentPanIndex] < 1 || priority > panPriorities[currentPanIndex]) { currentPanIndex = i; }
+
+                mode = PANNING;
+
+                return;
+            }
+        }
+
+        Debug.Log("camera pan que full!");
+    }
+
+    void ProcessPanning()
+    {
+        if (panDurations[currentPanIndex] > 0)
+        {
+            panDurations[currentPanIndex]--;
+
+            if (panDurations[currentPanIndex] < 1)
+            {
+                currentPanIndex = -1;
+                for (int i = 0; i < panPositions.Length; i++)
+                {
+                    if (currentPanIndex == -1)
+                    {
+                        if (panDurations[i] > 0) { currentPanIndex = i; }
+                    }
+                    else if (panPriorities[i] > panPriorities[currentPanIndex])
+                    {
+                        currentPanIndex = i;
+                    }
+                }
+                if (currentPanIndex == -1) 
+                {
+                    mode = TRACK_PLAYER;
+                    currentPanIndex = 0; 
+                }
+            }
+        }
+    }
+
+    Vector3 lastTargetPos;
+    public static void StopCameraTracking()
+    {
+        self.mode = CAMERA_STOP;
+        self.lastTargetPos = self.targetTrfm.position;
     }
 }

@@ -80,12 +80,20 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
-      propertyPath: deathFX
+      propertyPath: spawnObj
       value: 
-      objectReference: {fileID: 3780654266243000828, guid: 666ab1a4fef472a4b97a3e693a8d77ad, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
       propertyPath: invulnerable
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: cooldownLengths.Array.data[0]
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: cooldownLengths.Array.data[1]
+      value: 35
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
@@ -107,7 +115,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2506602816424328772, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2506602816424328772, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
       propertyPath: m_LocalScale.x
@@ -177,6 +185,10 @@ PrefabInstance:
       propertyPath: deathFX
       value: 
       objectReference: {fileID: 3780654266243000828, guid: 666ab1a4fef472a4b97a3e693a8d77ad, type: 3}
+    - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: spawnObj
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
       propertyPath: invulnerable
       value: 5
