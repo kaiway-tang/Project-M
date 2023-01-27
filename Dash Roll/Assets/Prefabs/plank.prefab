@@ -135,7 +135,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: ee8a11c39c4fb7e4ebb51d061b26d0d4, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.4811321, g: 0.37745252, b: 0.2519135, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -194,7 +194,7 @@ MonoBehaviour:
   trfm: {fileID: 7332538920322540034}
   entityID: 2
   hpBar: {fileID: 0}
-  damagedFXObj: {fileID: 3780654266243000828, guid: 5a542f8316ad68c44ba350f56e4234fb, type: 3}
+  damagedFXObj: {fileID: 3780654266243000828, guid: c5a28590e89efc04d8c9b2a1596d19e2, type: 3}
   damagedFXPooler: {fileID: 0}
   isStructure: 1
   grantsMana: 1

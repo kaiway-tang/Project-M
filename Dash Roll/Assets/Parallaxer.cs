@@ -21,7 +21,7 @@ public class Parallaxer : MonoBehaviour
 
         for (int i = 0; i < layers.Length; i++)
         {
-            calculatedRates[i].x = 1 - 1 / Mathf.Pow(layers[i].position.z / 10, 2);
+            calculatedRates[i].x = 1 - 1 / Mathf.Pow(layers[i].position.z / 10, 2) * xFactor;
             calculatedRates[i].y = 1 - 1 / Mathf.Pow(layers[i].position.z / 10, 2) * yFactor;
         }
     }
