@@ -19,9 +19,12 @@ public class Enabler : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        for (int i = 0; i < objects.Length; i++)
+        if (col.gameObject.layer == 1)
         {
-            objects[i].SetActive(!objects[i].activeSelf);
-        }
+            for (int i = 0; i < objects.Length; i++)
+            {
+                objects[i].SetActive(!objects[i].activeSelf);
+            }
+        } 
     }
 }
