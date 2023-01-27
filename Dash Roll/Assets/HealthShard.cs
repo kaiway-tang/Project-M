@@ -12,6 +12,7 @@ public class HealthShard : PooledObject
         base.OnEnable();
         rotated = false;
         turnSpd = 0;
+        spd = 0.5f;
     }
 
     // Update is called once per frame
@@ -25,6 +26,7 @@ public class HealthShard : PooledObject
             rotated = true;
         }
         turnSpd += .003f;
+        spd += .002f;
         trfm.up += (Player.trfm.position - trfm.position) * turnSpd;
         trfm.position += trfm.up * spd;
     }

@@ -112,6 +112,7 @@ MonoBehaviour:
   damagedFXObj: {fileID: 3780654266243000828, guid: 5a542f8316ad68c44ba350f56e4234fb, type: 3}
   damagedFXPooler: {fileID: 0}
   isStructure: 1
+  grantsMana: 0
   standardDestroyOnDeath: 1
 --- !u!61 &6549983263004120820
 BoxCollider2D:

@@ -17,7 +17,7 @@ public class SceneEdge : CameraStop
         if (col.gameObject.layer == 1)
         {
             TriggerEnteredByPlayer();
-            GameManager.nextScene = nextScene;
+            Player.nextScene = nextScene;
             GameManager.spawnPosition = spawnPosition;
         }
     }
@@ -27,7 +27,7 @@ public class SceneEdge : CameraStop
         if (col.gameObject.layer == 1)
         {
             TriggerExitedByPlayer();
-            GameManager.nextScene = -1;
+            Player.nextScene = -1;
         }
     }
 }

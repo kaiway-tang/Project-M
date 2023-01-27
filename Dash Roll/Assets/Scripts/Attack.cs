@@ -28,7 +28,7 @@ public class Attack : MonoBehaviour
     {
         if (col.gameObject.layer > 10 && col.gameObject.layer < 14) 
         {
-            if (!manaGranted) { Player.AddMana(10, col.GetComponent<HPEntity>().GetHP()); }
+            //if (!manaGranted) { Player.AddMana(10, col.GetComponent<HPEntity>().GetHP()); }
             takeDamageResult = col.GetComponent<HPEntity>().TakeDamage(damage, entityType);
             return;
         }

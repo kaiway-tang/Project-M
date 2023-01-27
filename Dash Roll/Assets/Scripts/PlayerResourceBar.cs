@@ -5,14 +5,15 @@ using UnityEngine;
 public class PlayerResourceBar : HPBar
 {
     [SerializeField] bool animateHighlight;
-    public new void SetPercentage(float percentage) //1.0 = 100% (full hp)
+
+    public override void SetPercentage(float percentage) //1.0 = 100% (full hp)
     {
         setPercentageScale.x = percentage;
         hpTrfm.localScale = setPercentageScale;
         animateBar = animateHighlight;
     }
 
-    new void FixedUpdate()
+    protected new void FixedUpdate()
     {
         if (animateBar)
         {

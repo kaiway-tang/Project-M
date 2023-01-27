@@ -68,7 +68,7 @@ public class CameraController : MonoBehaviour
     Vector3 zVect3;
     void ProcessTrauma()
     {
-        //rotational "recovery" ()
+        //rotational "recovery"
         if (cameraTrfm.localEulerAngles.z < .1f || cameraTrfm.localEulerAngles.z > 359.9f) 
         {
             cameraTrfm.localEulerAngles = Vector3.zero; 

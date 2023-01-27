@@ -5,7 +5,7 @@ using UnityEngine;
 public class HPEntity : MonoBehaviour
 {
     [SerializeField] protected int HP, maxHP, deathTraumaAmount, deathSleepAmount, stunned, movementLocked, poisoned, invulnerable;
-    [SerializeField] protected Transform trfm;
+    public Transform trfm;
     public EntityTypes entityID;
 
     [SerializeField] HPBar hpBar;
@@ -22,7 +22,8 @@ public class HPEntity : MonoBehaviour
     public static ObjectPooler bloodFXPooler;
     [SerializeField] GameObject damagedFXObj;
     [SerializeField] ObjectPooler damagedFXPooler;
-    [SerializeField] bool isStructure, standardDestroyOnDeath; //structures vulnerable to kicks
+    public bool isStructure, grantsMana = true;
+    [SerializeField] bool standardDestroyOnDeath; //structures vulnerable to kicks
     bool usingInstantiateDamagedFX, usingHPBar;
 
     protected void Start()

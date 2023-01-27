@@ -7,6 +7,7 @@ public class SlashAttack : DirectionalAttack
     public int traumaOnHit;
     public static ObjectPooler slashFXPooler, hitRingFXPooler;
     [SerializeField] HPEntity.DamageSource damageSource;
+    HPEntity colEntity;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,11 +18,17 @@ public class SlashAttack : DirectionalAttack
     {
         if (col.gameObject.layer > 10 && col.gameObject.layer < 14)
         {
-            if (col.GetComponent<HPEntity>().TakeDamage(damage, entityType, knockbackDirections[direction], damageSource) != HPEntity.IGNORED)
+            colEntity = col.GetComponent<HPEntity>();
+            takeDamageResult = colEntity.TakeDamage(damage, entityType, knockbackDirections[direction], damageSource);
+            if (takeDamageResult != HPEntity.IGNORED)
             {
-                if (!manaGranted) { Player.AddMana(damage); manaGranted = true; }
-                slashFXPooler.Instantiate(col.transform.position, Random.Range(-45, 46));
-                hitRingFXPooler.Instantiate(col.transform.position, 0);
+                if (!manaGranted && colEntity.grantsMana)
+                {
+                    Player.AddMana(damage, damage); manaGranted = true;
+                }
+
+                slashFXPooler.Instantiate(colEntity.trfm.position, Random.Range(-45, 46));
+                hitRingFXPooler.Instantiate(colEntity.trfm.position, 0);
 
                 if (entityType == HPEntity.EntityTypes.Player)
                 {

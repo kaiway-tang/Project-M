@@ -8,10 +8,10 @@ public class HPBar : MonoBehaviour
     [SerializeField] protected SpriteRenderer[] spriteRenderer;
     protected static Color fadeColor = new Color(0, 0, 0, .1f), startColor = new Color(0,0,0,1);
     protected static Vector3 setPercentageScale = Vector3.one, highlightShrinkScale = Vector3.zero;
-    protected bool animateBar;
+    [SerializeField] protected bool animateBar;
     int fadeTimer;
 
-    public void SetPercentage(float percentage) //1.0 = 100% (full hp)
+    public virtual void SetPercentage(float percentage) //1.0 = 100% (full hp)
     {
         setPercentageScale.x = percentage;
         hpTrfm.localScale = setPercentageScale;

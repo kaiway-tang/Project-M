@@ -58,9 +58,9 @@ public class Enemy : MobileEntity
         }
         if (kicked > 0)
         {
-            if (kicked > 10 && Mathf.Abs(rb.velocity.x) < 22)
+            if (kicked > 10 && Mathf.Abs(rb.velocity.x) < 26)
             {
-                if (Mathf.Abs(rb.velocity.x - lastVelocity) > 22)
+                if (Mathf.Abs(rb.velocity.x) < 1 && Mathf.Abs(rb.velocity.x - lastVelocity) > 26)
                 {
                     TakeDamage(10, HPEntity.EntityTypes.Player);
                 }
@@ -132,7 +132,7 @@ public class Enemy : MobileEntity
     protected void FlashWhite()
     {
         spriteRenderer.material = flashMaterial;
-        hurtTimer = 8;
+        hurtTimer = 11;
     }
     private void OnTriggerStay2D(Collider2D col)
     {
@@ -142,6 +142,7 @@ public class Enemy : MobileEntity
             {
                 rb.velocity = Vector3.zero;
             }
+            TakeDamage(10, EntityTypes.Player);
             kicked = 10;
         }
     }

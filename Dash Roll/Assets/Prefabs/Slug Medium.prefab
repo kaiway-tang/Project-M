@@ -199,7 +199,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8017878160988989862, guid: 083d5de8473aba34292d1602785602d5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.69
+      value: 0.896
       objectReference: {fileID: 0}
     - target: {fileID: 8494053240132772472, guid: 083d5de8473aba34292d1602785602d5, type: 3}
       propertyPath: m_Name
@@ -436,7 +436,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -4.3, y: -0.07}
-  m_Size: {x: 10, y: 0.3}
+  m_Size: {x: 6, y: 0.3}
   m_Direction: 1
 --- !u!114 &2194557308331774278
 MonoBehaviour:

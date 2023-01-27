@@ -59,18 +59,20 @@ public class Obelisk : MonoBehaviour
 
                 claimed = true;
                 animator.SetInteger("state", 1);
+
+                if (!invisible)
+                {
+                    Player.PlayerHeal(999);
+                    Player.AddMana(999);
+                }
             }
+            /*
             else
             {
                 animator.SetInteger("state", 2);
                 animationIdleDelay = 10;
             }
-
-            if (!invisible)
-            {
-                Player.PlayerHeal(999);
-                Player.AddMana(999);
-            }
+            */
         }
     }
 }

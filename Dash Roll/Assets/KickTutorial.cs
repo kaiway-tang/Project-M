@@ -22,8 +22,14 @@ public class KickTutorial : MonoBehaviour
             if (PlayerInput.AttackPressed())
             {
                 Time.timeScale = 1;
+                Invoke("ResetDashCD", .1f);
             }
         }
+    }
+
+    void ResetDashCD()
+    {
+        Player.playerScript.SetDashCooldown(5);
     }
 
     // Update is called once per frame
@@ -32,6 +38,7 @@ public class KickTutorial : MonoBehaviour
         if (col.gameObject.layer == 1)
         {
             inContactWithPlayer = true;
+            Invoke("ResetDashCD", .1f);
         }
     }
 
@@ -39,6 +46,7 @@ public class KickTutorial : MonoBehaviour
     {
         if (col.gameObject.layer == 1)
         {
+            Time.timeScale = 1;
             inContactWithPlayer = false;
         }
     }

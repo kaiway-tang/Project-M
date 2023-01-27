@@ -5,6 +5,10 @@ using UnityEngine;
 public class HUDManager : MonoBehaviour
 {
     [SerializeField] Transform swordHUDTrfm;
+    [SerializeField] GameObject castPrompt;
+    [SerializeField] SpriteRenderer castPromptRenderer;
+    [SerializeField] Sprite castPromptAlt;
+    bool castPromptActive;
 
     public float screenXSize, screenYSize, lastScreenXSize, lastScreenYSize;
 
@@ -33,6 +37,12 @@ public class HUDManager : MonoBehaviour
     {
         ProcessFading();
         ManageHUDAlignment();
+
+        if (castPromptActive && Player.mana < 81)
+        {
+            castPrompt.SetActive(false);
+            castPromptActive = false;
+        }
     }
 
     bool CalculateScreenSize()
@@ -161,5 +171,16 @@ public class HUDManager : MonoBehaviour
                 self.vignetteBoostRenderer.color = self.color;
             }
         }
+    }
+
+    public static void DoCastPrompt()
+    {
+        if (TutorialManager.usingArrows)
+        {
+            self.castPromptRenderer.sprite = self.castPromptAlt;
+        }
+
+        self.castPrompt.SetActive(true);
+        self.castPromptActive = true;
     }
 }

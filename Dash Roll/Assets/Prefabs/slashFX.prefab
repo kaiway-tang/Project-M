@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 5760075190858800934}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 10}
-  m_LocalScale: {x: 1, y: 2.8, z: 1}
+  m_LocalScale: {x: 2, y: 3.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -99,5 +99,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   life: 7
   trfm: {fileID: 5171064984124138383}
-  initialScale: {x: 1, y: 2.8, z: 1}
-  changeScale: {x: 1.7, y: -0.4, z: 0}
+  initialScale: {x: 2, y: 3.5, z: 1}
+  changeScale: {x: 1.4, y: -0.5, z: 0}

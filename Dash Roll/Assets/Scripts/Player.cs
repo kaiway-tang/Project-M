@@ -16,7 +16,7 @@ public class Player : MobileEntity
     [SerializeField] Color dashBlack;
 
     [SerializeField] GameObject kickFX;
-    [SerializeField] ParticleSystem turnFX, frontTurnFX, runFX;
+    [SerializeField] ParticleSystem turnFX, frontTurnFX, runFX, jumpFX, healFX;
     [SerializeField] SimpleAnimation smashFX;
     public static ObjectPooler jumpRingFXPooler;
 
@@ -25,7 +25,7 @@ public class Player : MobileEntity
     int wallKickFXTimer, wallKickWindow, wallKickScreenShakeCooldown, attackKickTimer, dodgeFXActive, clingAnimationDelay;
     int attackCooldown, attackReset, attackPhase, attackHitboxTimer;
     int dashRollCooldown, kickAttackCooldown;
-    int manaTimer, castWindup, castCooldown;
+    int manaTimer, castWindup, castCooldown, healFXTimer;
     bool refundJump, highFall, castQued, runFXActive;
 
     public int hover, deathAnimationTimer;
@@ -40,6 +40,7 @@ public class Player : MobileEntity
 
     static bool firstStartComplete, returnToObeliskOnStart;
     public static int m_HP, mana, soulShards, maxShards, currentShardPercent;
+    static int castsUsed;
 
     public static Vector3 lastSafePosition;
 
@@ -48,16 +49,7 @@ public class Player : MobileEntity
     {
         trfm = base.trfm;
         playerScript = GetComponent<Player>();
-
-        if (returnToObeliskOnStart)
-        {
-            trfm.position = Obelisk.lastObeliskPosition;
-            returnToObeliskOnStart = false;
-        }
-        else
-        {
-            trfm.position = GameManager.spawnPosition;
-        }
+        nextScene = -1;
     }
     new void Start()
     {
@@ -65,15 +57,27 @@ public class Player : MobileEntity
         {
             mana = 100;
             m_HP = HP;
-            maxShards = 3;
+            maxShards = 2;
 
             firstStartComplete = true;
         }
         else
         {
             HP = m_HP;
+
+            if (returnToObeliskOnStart)
+            {
+                trfm.position = Obelisk.lastObeliskPosition;
+                returnToObeliskOnStart = false;
+            }
+            else
+            {
+                trfm.position = GameManager.spawnPosition;
+            }
         }
 
+        playerHPBar.SetPercentage((float)HP / maxHP);
+        playerScript.manaBar.SetPercentage((float)mana * .01f);
         lastSafePosition = trfm.position;
 
         base.Start();
@@ -91,8 +95,10 @@ public class Player : MobileEntity
         WallKickWindowHandling();
     }
 
+    [SerializeField] int shards, percent, max;
     private new void FixedUpdate()
     {
+        if (Input.GetKey(KeyCode.Equals)) { CollectShard(2); }
 
         if (tookDamage)
         {
@@ -101,16 +107,16 @@ public class Player : MobileEntity
                 CameraController.AddTrauma(10);
                 HUDManager.SetVignetteOpacity(.3f);
             }
-            else 
+            else
             {
                 invulnerable = 2;
                 CameraController.SetTrauma((int)(lastDamage * 1));
                 HUDManager.SetVignetteOpacity(lastDamage * .03f);
             }
 
-            playerHPBar.SetPercentage((float)HP/maxHP);
+            playerHPBar.SetPercentage((float)HP / maxHP);
 
-            if (HP <= 0) 
+            if (HP <= 0)
             {
                 playerHPBar.SetPercentage(0);
                 HP = 0;
@@ -161,11 +167,11 @@ public class Player : MobileEntity
             cameraTargetResetTimer--;
         }
 
-        if (wallKickFXTimer > 0) 
+        if (wallKickFXTimer > 0)
         {
             if (wallKickFXTimer == 5) { DisableDodgeFX(); }
             if (wallKickFXTimer == 1) { EnableHurtbox(); }
-            wallKickFXTimer--; 
+            wallKickFXTimer--;
         }
         if (wallKickScreenShakeCooldown > 0) { wallKickScreenShakeCooldown--; }
 
@@ -174,7 +180,7 @@ public class Player : MobileEntity
             if (wallKickWindow == 1 && refundJump)
             {
                 jumpRingFXPooler.Instantiate(trfm.position - Vector3.up * .2f, 0);
-                refundJump = false; 
+                refundJump = false;
             }
             wallKickWindow--;
         }
@@ -245,7 +251,7 @@ public class Player : MobileEntity
             if (rb.velocity.y < 0) { SetYVelocity(0); }
             hover--;
         }
-        
+
         if (manaTimer > 0) { manaTimer--; }
         else if (mana > 0)
         {
@@ -282,7 +288,7 @@ public class Player : MobileEntity
             if (deathAnimationTimer == 347) { HUDManager.self.blackCoverSpriteRenderer.color = Color.black; }
             if (deathAnimationTimer > 150 && deathAnimationTimer < 251)
             {
-                spriteRenderer.color -= new Color(0,0,0,.01f);
+                spriteRenderer.color -= new Color(0, 0, 0, .01f);
             }
             if (deathAnimationTimer == 100)
             {
@@ -389,10 +395,10 @@ public class Player : MobileEntity
                     vect2.x = 1; vect2.y = 44 + rb.velocity.y;
                     cameraTargetPoint.localPosition = vect2;
 
-                    if (rb.velocity.y < -50)
+                    if (rb.velocity.y < 50)
                     {
-                        highFall = true;
                         SetYVelocity(-50);
+                        highFall = true;
                     }
                     else
                     {
@@ -424,11 +430,31 @@ public class Player : MobileEntity
                 {
                     DoWallKick(wallKickVelocity);
                     if (refundJump) { jumps++; }
+
+                    if (wallKickWindow > 2) { wallKickWindow = 2; }
                 }
                 if (PlayerInput.LeftHeld())
                 {
                     DoWallKick(-wallKickVelocity);
                     if (refundJump) { jumps++; }
+
+                    if (wallKickWindow > 2) { wallKickWindow = 2; }
+                }
+            } else if (false && touchingTerrain[1]) //DISABLED: wall jump by directioning into wall
+            {
+                if (PlayerInput.LeftHeld() && IsFacingLeft())
+                {
+                    DoWallKick(wallKickVelocity);
+                    if (refundJump) { jumps++; }
+
+                    if (wallKickWindow > 2) { wallKickWindow = 2; }
+                }
+                if (PlayerInput.RightHeld() && IsFacingRight())
+                {
+                    DoWallKick(-wallKickVelocity);
+                    if (refundJump) { jumps++; }
+
+                    if (wallKickWindow > 2) { wallKickWindow = 2; }
                 }
             }
         }
@@ -471,7 +497,8 @@ public class Player : MobileEntity
                     attackReset = 20;
                     attackHitboxTimer = 9;
 
-                    AddForwardXVelocity(18, 18);
+                    if (PlayerInput.LeftHeld() || PlayerInput.RightHeld()) { AddForwardXVelocity(23, 23); }
+                    else { AddForwardXVelocity(10, 10); }
                     attackPhase = 1;
                 }
                 else if (attackPhase == 1) //light attack 2
@@ -483,7 +510,8 @@ public class Player : MobileEntity
                     attackReset = 20;
                     attackHitboxTimer = 9;
 
-                    AddForwardXVelocity(18, 18);
+                    if (PlayerInput.LeftHeld() || PlayerInput.RightHeld()) { AddForwardXVelocity(23, 23); }
+                    else { AddForwardXVelocity(10, 10); }
                     attackPhase = 2;
                 }
                 else if (attackPhase == 2) //heavy attack
@@ -496,7 +524,8 @@ public class Player : MobileEntity
                     attackHitboxTimer = 12;
 
                     if (!IsTouchingGround()) { SetYVelocity(-40); }
-                    AddForwardXVelocity(21, 21);
+                    else { AddForwardXVelocity(14, 14); }
+                    if (PlayerInput.LeftHeld() || PlayerInput.RightHeld()) { AddForwardXVelocity(23, 23); }
                     attackPhase = 0;
                 }
             }
@@ -555,19 +584,21 @@ public class Player : MobileEntity
                     vect3.x = -2.2f;
                     Instantiate(shootingSword, trfm.position + vect3, Quaternion.Euler(0, 0, 180));
                 }
+
+                castsUsed++;
             }
         }
 
-        if (castCooldown > 0) 
+        if (castCooldown > 0)
         {
-            castCooldown--; 
+            castCooldown--;
         }
         else if (castWindup > 9)
         {
             if (castQued)
             {
                 castCooldown = 5;
-                AddForwardXVelocity(-11,11);
+                AddForwardXVelocity(-11, 11);
                 castQued = false;
             }
             else
@@ -586,7 +617,7 @@ public class Player : MobileEntity
         {
             animator.QueAnimation(animator.Kick, 8);
             if (IsFacingRight()) { Instantiate(kickFX, trfm.position + Vector3.right * -2, Quaternion.identity).transform.parent = trfm; }
-            else { Instantiate(kickFX, trfm.position + Vector3.right * 2, Quaternion.Euler(0,0,180)).transform.parent = trfm; }
+            else { Instantiate(kickFX, trfm.position + Vector3.right * 2, Quaternion.Euler(0, 0, 180)).transform.parent = trfm; }
             kickAttack.Activate(IsFacingRight());
             attackKickTimer = 8;
             kickAttackCooldown = 10;
@@ -599,9 +630,13 @@ public class Player : MobileEntity
 
         if (soulShards > 0 && PlayerInput.SoulPressed())
         {
+            HPGemManager.SetScalerPercent(soulShards, 0);
             soulShards--;
-            PlayerHeal((int)((maxHP-HP) * .5f));
-            PlayerHeal((int)(maxHP * .1f));
+            HPGemManager.SetGemActive(soulShards, false);
+            HPGemManager.SetScalerPercent(soulShards, currentShardPercent);
+
+            PlayerHeal((int)((maxHP - HP) * .3f));
+            PlayerHeal((int)(maxHP * .3f));
             AddMana(999);
         }
     }
@@ -638,27 +673,28 @@ public class Player : MobileEntity
         {
             if (CanWallKick())
             {
-                if (PlayerInput.RightHeld()) 
+                if (PlayerInput.RightHeld())
                 {
-                    DoWallKick(wallKickVelocity); return; 
-                } else if (PlayerInput.LeftHeld()) 
+                    DoWallKick(wallKickVelocity); return;
+                } else if (PlayerInput.LeftHeld())
                 {
                     DoWallKick(-wallKickVelocity); return;
                 }
                 else
                 {
                     refundJump = !IsTouchingGround() && jumps > 0;
-                    wallKickWindow = 5;
+                    wallKickWindow = 8;
                 }
             } else if (touchingTerrain[1])
             {
                 refundJump = !IsTouchingGround() && jumps > 0;
-                wallKickWindow = 5;
+                wallKickWindow = 8;
             }
 
             if (IsTouchingGround())
             {
                 DoJump(jumpPower);
+                jumpFX.Play();
             }
             else if (jumps > 1)
             {
@@ -701,14 +737,15 @@ public class Player : MobileEntity
         DoJump(jumpPower);
         SetXVelocity(velocity);
         wallKickWindow = 0;
+        jumpFX.Play();
 
         if (wallKickScreenShakeCooldown < 1) { CameraController.SetTrauma(12); }
         else { CameraController.SetTrauma(8); }
         wallKickScreenShakeCooldown = 30;
 
-        if (wallKickFXTimer < 5) 
+        if (wallKickFXTimer < 5)
         {
-            EnableDodgeFX(); 
+            EnableDodgeFX();
             if (wallKickFXTimer < 1)
             {
                 DisableHurtbox();
@@ -745,7 +782,7 @@ public class Player : MobileEntity
         {
             animator.QueAnimation(animator.Roll, 16);
         }
-        if (rb.velocity.y < pJumpPower) 
+        if (rb.velocity.y < pJumpPower)
         {
             SetYVelocity(pJumpPower);
         }
@@ -785,18 +822,30 @@ public class Player : MobileEntity
     {
         if (remainingHP > damage) { AddMana(Mathf.RoundToInt(damage)); }
         else { AddMana(Mathf.RoundToInt(remainingHP)); }
+
+        if (castsUsed > 0 && castsUsed < 15 && mana >= 100) { HUDManager.DoCastPrompt(); }
     }
 
     public static void CollectShard(int amount)
     {
+        if (soulShards >= maxShards) { return; }
+
         currentShardPercent += amount;
         if (currentShardPercent > 99)
         {
             currentShardPercent -= 100;
             soulShards++;
 
-            if (soulShards > maxShards) { soulShards = maxShards; }
+            if (soulShards > maxShards)
+            {
+                soulShards = maxShards;
+                currentShardPercent = 0;
+            }
+
+            HPGemManager.SetGemActive(soulShards - 1, true);
         }
+
+        HPGemManager.SetScalerPercent(soulShards, currentShardPercent);
     }
 
     public static void PlayerHeal(int amount)
@@ -806,23 +855,25 @@ public class Player : MobileEntity
     }
 
     public bool isInVoid, reviving;
+    public static int nextScene;
 
     private void OnBecameInvisible()
     {
-        if (GameManager.nextScene != -1)
+        if (nextScene != -1)
         {
+            GameManager.nextScene = nextScene;
             Invoke("LoadNextScene", 2);
             Stun(999);
             HUDManager.FadeBlackCoverOpacity(1);
         }
         if (isInVoid)
         {
-            TakeDamage(20, HPEntity.EntityTypes.Neutral);
+            TakeDamage(15, HPEntity.EntityTypes.Neutral);
+            Stun(100);
 
             if (HP > 0)
             {
                 HUDManager.FadeBlackCoverOpacity(1);
-                Stun(100);
                 reviving = true;
                 Invoke("Revive", 2);
             }
@@ -864,5 +915,19 @@ public class Player : MobileEntity
             runFX.Stop();
             runFXActive = false;
         }
+    }
+
+    public void SetDashCooldown(int max)
+    {
+        if (dashRollCooldown > 59 && max < 59)
+        {
+            DisableDodgeFX();
+        }
+        if (dashRollCooldown > 55 && max < 55)
+        {
+            EnableHurtbox();
+        }
+
+        if (dashRollCooldown > max) { dashRollCooldown = max; }
     }
 }

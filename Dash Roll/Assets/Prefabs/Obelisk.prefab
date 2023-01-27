@@ -102,7 +102,7 @@ MonoBehaviour:
   invisible: 0
   animator: {fileID: 1069252439205411118}
   trfm: {fileID: 1069252439205411117}
-  bob: {x: 0, y: 0.004, z: 0}
+  bob: {x: 0, y: 0.005, z: 0}
 --- !u!95 &1069252439205411118
 Animator:
   serializedVersion: 5
