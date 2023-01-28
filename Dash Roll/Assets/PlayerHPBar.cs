@@ -9,13 +9,16 @@ public class PlayerHPBar : PlayerResourceBar
     
     void Start()
     {
-        
+
     }
 
     public override void SetPercentage(float percentage)
     {
-        healFXTimer = hpTrfm.localScale.x - .07f;
-        healFX.Play();
+        if (percentage > hpTrfm.localScale.x)
+        {
+            healFXTimer = hpTrfm.localScale.x - .07f;
+            healFX.Play();
+        }
 
         base.SetPercentage(percentage);
     }

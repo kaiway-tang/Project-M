@@ -6,7 +6,7 @@ public class ForegroundParallaxer : MonoBehaviour
 {
     [SerializeField] Transform foregroundLayer;
     [SerializeField] Transform[] foregroundObjects;
-    [SerializeField] float rate;
+    [SerializeField] float rate, yFactor;
     [SerializeField] Transform cameraTrfm;
     [SerializeField] Vector2 referencePoint;
 
@@ -16,7 +16,9 @@ public class ForegroundParallaxer : MonoBehaviour
     {
         for (int i = 0; i < foregroundObjects.Length; i++)
         {
-            foregroundObjects[i].position *= 1 - rate;
+            vect2.x = foregroundObjects[i].position.x * (1 - rate);
+            vect2.y = foregroundObjects[i].position.y * (1 - rate * yFactor);
+            foregroundObjects[i].position = vect2;
         }
     }
 
@@ -24,7 +26,7 @@ public class ForegroundParallaxer : MonoBehaviour
     void FixedUpdate()
     {
         vect2.x = (cameraTrfm.position.x - referencePoint.x) * rate;
-        vect2.y = (cameraTrfm.position.y - referencePoint.y) * rate;
+        vect2.y = (cameraTrfm.position.y - referencePoint.y) * rate * yFactor;
 
         foregroundLayer.position = vect2;
     }

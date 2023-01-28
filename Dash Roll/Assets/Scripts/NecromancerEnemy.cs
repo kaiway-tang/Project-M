@@ -108,15 +108,15 @@ public class NecromancerEnemy : Enemy
             }
             teleportCooldown--;
         }
-        else if (InBoxDistanceToPlayer(4))
+        else if (InBoxDistanceToPlayer(4.5f))
         {
             if (IsFacingRight())
             {
-                Teleport(trfm.position + Vector3.right * 10);
+                Teleport(trfm.position + Vector3.right * 12);
             }
             else
             {
-                Teleport(trfm.position + Vector3.right * -10);
+                Teleport(trfm.position + Vector3.right * -12);
             }
         }
     }
@@ -174,23 +174,23 @@ public class NecromancerEnemy : Enemy
 
         if (trfm.position.y < Player.trfm.position.y + 5)
         {
-            AddYVelocity(speed * 1.5f, speed * 2);
+            AddYVelocity(speed * 1.5f, speed * 5);
             still = false;
         }
         else if (trfm.position.y > Player.trfm.position.y + 7)
         {
-            AddYVelocity(-speed * 1.5f, -speed * 2);
+            AddYVelocity(-speed * 1.5f, -speed * 5);
             still = false;
         }
 
         if (Mathf.Abs(trfm.position.x - Player.trfm.position.x) < 6)
         {
-            AddForwardXVelocity(-speed, -speed * 2);
+            AddForwardXVelocity(-speed, -speed * 5);
             still = false;
         }
         else if (Mathf.Abs(trfm.position.x - Player.trfm.position.x) > 10)
         {
-            AddForwardXVelocity(speed, speed * 2);
+            AddForwardXVelocity(speed, speed * 5);
             still = false;
         }
 

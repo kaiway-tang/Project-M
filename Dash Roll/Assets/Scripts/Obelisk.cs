@@ -59,6 +59,7 @@ public class Obelisk : MonoBehaviour
 
                 claimed = true;
                 animator.SetInteger("state", 1);
+                SceneSaver.self.UpdateStatus();
 
                 if (!invisible)
                 {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] Transform cameraTrfm, trackingTrfm, targetTrfm;
+    public Transform cameraTrfm, trackingTrfm, targetTrfm;
     public float trackingRate, rotationRate, moveIntensity, rotationIntensity;
 
     public static CameraController self;

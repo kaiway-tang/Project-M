@@ -30,16 +30,16 @@ public class PlayerInput : MonoBehaviour
 
 
         AttackKey = KeyCode.U;
-        AttackKey1 = KeyCode.Z;
+        AttackKey1 = KeyCode.V;
 
         DashRollKey = KeyCode.I;
-        DashRollKey1 = KeyCode.X;
+        DashRollKey1 = KeyCode.C;
 
         CastKey = KeyCode.O;
-        CastKey1 = KeyCode.C;
+        CastKey1 = KeyCode.X;
 
         SoulKey = KeyCode.P;
-        SoulKey1 = KeyCode.V;
+        SoulKey1 = KeyCode.Z;
 
         firstLoad = true;
     }

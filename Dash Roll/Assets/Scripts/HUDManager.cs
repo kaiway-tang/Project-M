@@ -38,7 +38,7 @@ public class HUDManager : MonoBehaviour
         ProcessFading();
         ManageHUDAlignment();
 
-        if (castPromptActive && Player.mana < 81)
+        if (castPromptActive && Player.mana < 91)
         {
             castPrompt.SetActive(false);
             castPromptActive = false;

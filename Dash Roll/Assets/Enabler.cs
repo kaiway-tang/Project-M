@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Enabler : MonoBehaviour
 {
-    [SerializeField] GameObject[] objects;
+    [SerializeField] GameObject[] enable;
+    [SerializeField] GameObject[] disable;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,9 +22,13 @@ public class Enabler : MonoBehaviour
     {
         if (col.gameObject.layer == 1)
         {
-            for (int i = 0; i < objects.Length; i++)
+            for (int i = 0; i < enable.Length; i++)
             {
-                objects[i].SetActive(!objects[i].activeSelf);
+                enable[i].SetActive(true);
+            }
+            for (int i = 0; i < disable.Length; i++)
+            {
+                disable[i].SetActive(false);
             }
         } 
     }

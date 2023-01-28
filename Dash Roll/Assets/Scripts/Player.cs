@@ -256,7 +256,7 @@ public class Player : MobileEntity
         else if (mana > 0)
         {
             AddMana(-1);
-            manaTimer = 25;
+            manaTimer = 20;
         }
 
         if (clingAnimationDelay > 0)

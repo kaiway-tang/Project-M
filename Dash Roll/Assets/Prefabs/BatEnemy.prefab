@@ -248,6 +248,7 @@ MonoBehaviour:
   damagedFXObj: {fileID: 0}
   damagedFXPooler: {fileID: 0}
   isStructure: 0
+  grantsMana: 1
   standardDestroyOnDeath: 0
   reflectionTrfm: {fileID: 701133713110868110}
   rb: {fileID: 701133713503178362}
