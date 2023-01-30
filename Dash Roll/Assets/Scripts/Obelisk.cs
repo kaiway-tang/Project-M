@@ -13,11 +13,18 @@ public class Obelisk : MonoBehaviour
     int animationTimer, animationIdleDelay;
     bool claimed;
 
+    int shardSpawnTimer;
+    public static ObjectPooler healthShardPooler;
+
     private void Start()
     {
         if (invisible)
         {
             GetComponent<SpriteRenderer>().enabled = false;
+        }
+        if (Toolbox.InBoxDistance(Player.trfm.position, trfm.position, 5))
+        {
+            Invoke("SetShardTimer", 1);
         }
     }
 
@@ -46,6 +53,15 @@ public class Obelisk : MonoBehaviour
 
             animationTimer++;
         }
+
+        if (shardSpawnTimer > 0)
+        {
+            if (shardSpawnTimer % 7 == 0)
+            {
+                healthShardPooler.Instantiate(trfm.position);
+            }
+            shardSpawnTimer--;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -59,7 +75,9 @@ public class Obelisk : MonoBehaviour
 
                 claimed = true;
                 animator.SetInteger("state", 1);
-                SceneSaver.self.UpdateStatus();
+                SceneSaver.self.UpdateStatus(SceneSaver.OBELISK);
+
+                SetShardTimer();
 
                 if (!invisible)
                 {
@@ -75,5 +93,10 @@ public class Obelisk : MonoBehaviour
             }
             */
         }
+    }
+
+    void SetShardTimer()
+    {
+        shardSpawnTimer = 75;
     }
 }

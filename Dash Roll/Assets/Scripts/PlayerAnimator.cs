@@ -11,6 +11,8 @@ public class PlayerAnimator : AnimationController
         Fall = new ReferenceState(3, 1),
         LightAttack1 = new ReferenceState(9, 100),
         LightAttack2 = new ReferenceState(4, 110),
+        UpAttack = new ReferenceState(13, 110),
+        DownAttack = new ReferenceState(14, 110),
         HeavyAttack = new ReferenceState(5, 150),
         ClingBack = new ReferenceState(6, 1),
         ClingFront = new ReferenceState(7, 1),

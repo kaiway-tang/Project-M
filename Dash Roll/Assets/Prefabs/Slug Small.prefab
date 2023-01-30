@@ -77,7 +77,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
       propertyPath: speed
-      value: 8
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
       propertyPath: spawnObj
@@ -102,6 +102,14 @@ PrefabInstance:
     - target: {fileID: 2868790321320794684, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
       propertyPath: cooldownLengths.Array.data[1]
       value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 6500147722369452799, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6500147722369452799, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}
+      propertyPath: InitialModule.startSize.minScalar
+      value: 0.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d7aa1e4eecc4f149a88db41957ee0cc, type: 3}

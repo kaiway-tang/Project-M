@@ -25,7 +25,7 @@ public class HealthShard : PooledObject
             trfm.Rotate(Vector3.forward * Random.Range(0, 360));
             rotated = true;
         }
-        turnSpd += .003f;
+        turnSpd += .004f;
         spd += .002f;
         trfm.up += (Player.trfm.position - trfm.position) * turnSpd;
         trfm.position += trfm.up * spd;
@@ -33,7 +33,7 @@ public class HealthShard : PooledObject
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.layer == 11)
+        if (col.gameObject.layer == 11 && turnSpd > .2f)
         {
             Player.CollectShard(3);
             Destantiate();

@@ -45,7 +45,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4090349402796171401, guid: c5c0d7a91d2c78243aa97fd62e1f1569, type: 3}
       propertyPath: friction
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4090349402796171401, guid: c5c0d7a91d2c78243aa97fd62e1f1569, type: 3}
       propertyPath: attackRange
@@ -58,6 +58,10 @@ PrefabInstance:
     - target: {fileID: 4090349402796171401, guid: c5c0d7a91d2c78243aa97fd62e1f1569, type: 3}
       propertyPath: heightOffset
       value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4090349402796171401, guid: c5c0d7a91d2c78243aa97fd62e1f1569, type: 3}
+      propertyPath: knockbackFactor
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 8494053240132772472, guid: c5c0d7a91d2c78243aa97fd62e1f1569, type: 3}
       propertyPath: m_Name

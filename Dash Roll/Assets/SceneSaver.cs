@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class SceneSaver : MonoBehaviour
 {
-	static int[][] objectStatus = new int[3][]; //set array size to number of scenes
+	static int[][][] objectStatus = new int[2][][];
 	const int ACTIVE = 0, DISABLED = 1, DESTROYED = 2;
+	static int saveMode;
+	public const int OBELISK = 0, SCENE_EDGE = 1;
 
-	static bool[] firstSceneLoad = new bool[3]; //set array size to number of scenes
+	static bool[] firstSceneLoad;
+	static bool firstGameLoad;
+	static int scenes = 3; //set equal to number of scenes
 
 	[SerializeField] GameObject[] sceneObjects;
 
@@ -16,6 +20,15 @@ public class SceneSaver : MonoBehaviour
     private void Awake()
     {
 		self = GetComponent<SceneSaver>();
+
+		if (!firstGameLoad)
+        {
+			objectStatus[0] = new int[scenes][];
+			objectStatus[1] = new int[scenes][];
+			firstSceneLoad = new bool[scenes];
+
+			firstGameLoad = true;
+        }
     }
 
     void Start()
@@ -23,14 +36,15 @@ public class SceneSaver : MonoBehaviour
 		if (!firstSceneLoad[GameManager.GetCurrentScene()])
 		{
 			firstSceneLoad[GameManager.GetCurrentScene()] = true;
-			objectStatus[GameManager.GetCurrentScene()] = new int[sceneObjects.Length];
+			objectStatus[0][GameManager.GetCurrentScene()] = new int[sceneObjects.Length];
+			objectStatus[1][GameManager.GetCurrentScene()] = new int[sceneObjects.Length];
 		}
 		else
 		{
 			int status;
 			for (int i = 0; i < sceneObjects.Length; i++)
 			{
-				status = objectStatus[GameManager.GetCurrentScene()][i];
+				status = objectStatus[saveMode][GameManager.GetCurrentScene()][i];
 
 				if (status == ACTIVE)
                 {
@@ -48,21 +62,22 @@ public class SceneSaver : MonoBehaviour
 		}
 	}
 
-	public void UpdateStatus()
+	public void UpdateStatus(int mode)
     {
+		saveMode = mode;
 		for (int i = 0; i < sceneObjects.Length; i++)
 		{
 			if (!sceneObjects[i])
 			{
-				objectStatus[GameManager.GetCurrentScene()][i] = DESTROYED;
+				objectStatus[saveMode][GameManager.GetCurrentScene()][i] = DESTROYED;
 			}
 			else if (sceneObjects[i].activeSelf)
 			{
-				objectStatus[GameManager.GetCurrentScene()][i] = ACTIVE;
+				objectStatus[saveMode][GameManager.GetCurrentScene()][i] = ACTIVE;
 			}
 			else if (!sceneObjects[i].activeSelf)
 			{
-				objectStatus[GameManager.GetCurrentScene()][i] = DISABLED;
+				objectStatus[saveMode][GameManager.GetCurrentScene()][i] = DISABLED;
 			}
 		}
 	}

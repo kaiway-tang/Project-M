@@ -7,9 +7,10 @@ public class SlugEnemy : Enemy
     [SerializeField] int spitRange, lungeRange, speed, lungePower;
     [SerializeField] int[] cooldownLengths;
     [SerializeField] SimpleAnimation crawlAnimation;
-    [SerializeField] Sprite windup, lunge;
+    [SerializeField] Sprite windup, lungeWindup, lunge;
     [SerializeField] GameObject spitball;
     [SerializeField] TrailRenderer attackTrailFX;
+    [SerializeField] ParticleSystem spitPtcls;
 
     [SerializeField] Transform firepoint;
     [SerializeField] DirectionalAttack attack;
@@ -44,12 +45,15 @@ public class SlugEnemy : Enemy
                     selectedAttack = LUNGE;
                     timer = 20;
                     PrepareAttack();
+                    spriteRenderer.sprite = lungeWindup;
                     attackCooldown = Random.Range(cooldownLengths[0], cooldownLengths[1]); //10, 16
                 }
                 else
                 {
                     selectedAttack = SPIT;
                     PrepareAttack();
+                    spriteRenderer.sprite = windup;
+                    spitPtcls.Play();
                     attackCooldown = Random.Range(cooldownLengths[0] * 2, cooldownLengths[1] * 2); //30, 41
                     timer = 15;
                 }
@@ -58,6 +62,7 @@ public class SlugEnemy : Enemy
             {
                 timer = Random.Range(11, 14);
                 crawlAnimation.Play();
+                ToggleFriction(ON);
             }
             FacePlayer();
         }
@@ -71,12 +76,14 @@ public class SlugEnemy : Enemy
                     attackTrailFX.emitting = true;
                     spriteRenderer.sprite = lunge;
                     AddForwardVelocity(lungePower, 30);
+                    ToggleFriction(OFF);
                 }
                 if (timer == 1)
                 {
                     attack.Deactivate();
                     attackTrailFX.emitting = false;
                     selectedAttack = NONE;
+                    ToggleFriction(ON);
                 }
             }
             else if (selectedAttack == SPIT)
@@ -102,6 +109,7 @@ public class SlugEnemy : Enemy
                 if (timer == 5)
                 {
                     AddForwardXVelocity(speed, speed);
+                    ToggleFriction(OFF);
                 }
             }
 
@@ -114,7 +122,6 @@ public class SlugEnemy : Enemy
 
     void PrepareAttack()
     {
-        spriteRenderer.sprite = windup;
         telegraphPooler.Instantiate(reflectionTrfm.position + reflectionTrfm.right);
     }
 }

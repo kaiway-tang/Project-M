@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 25
   knockback: 25
-  speed: 0.5
+  speed: 0.6
   entityType: 0
   trfm: {fileID: 52302631453200233}
   DestroyFX: {fileID: 6023119522122821356, guid: 866927597a7ec864da02cad368e43314, type: 3}

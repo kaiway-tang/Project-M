@@ -111,6 +111,7 @@ MonoBehaviour:
   damagedFXObj: {fileID: 0}
   damagedFXPooler: {fileID: 0}
   isStructure: 0
+  grantsMana: 1
   standardDestroyOnDeath: 0
   reflectionTrfm: {fileID: 0}
   rb: {fileID: 0}
@@ -331,6 +332,7 @@ MonoBehaviour:
   damagedFXObj: {fileID: 3780654266243000828, guid: 8a84b727e64826147a6fa292b82cafd0, type: 3}
   damagedFXPooler: {fileID: 0}
   isStructure: 1
+  grantsMana: 1
   standardDestroyOnDeath: 1
   reflectionTrfm: {fileID: 0}
   rb: {fileID: 3084346829871106793}
@@ -338,7 +340,7 @@ MonoBehaviour:
   touchingTerrain: 
   friction: 0
   trackingRange: 0
-  healthShards: 2
+  healthShards: 4
   spriteRenderer: {fileID: 3084346829871106791}
   triggeredGates: []
   deathFX: {fileID: 3780654266243000828, guid: 8a84b727e64826147a6fa292b82cafd0, type: 3}
@@ -638,6 +640,7 @@ MonoBehaviour:
   damagedFXObj: {fileID: 0}
   damagedFXPooler: {fileID: 0}
   isStructure: 0
+  grantsMana: 1
   standardDestroyOnDeath: 0
   reflectionTrfm: {fileID: 0}
   rb: {fileID: 0}

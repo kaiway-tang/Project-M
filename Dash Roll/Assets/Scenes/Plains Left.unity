@@ -1174,11 +1174,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3929665444481155342, guid: c5ea0ac211695b549b5584cff4c29418, type: 3}
   m_PrefabInstance: {fileID: 613586145}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &625990336 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5914327581745451732, guid: 3fb45ee872fffce49aee6917db32c68c, type: 3}
-  m_PrefabInstance: {fileID: 5914327582191266388}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &638187395 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 774855854231108080, guid: 1b4c1975729211e49981bcd0b806e9e8, type: 3}
@@ -81536,7 +81531,7 @@ PrefabInstance:
     - target: {fileID: 4102644764193831351, guid: add17bf8498034d47a8baa9bef03cf49, type: 3}
       propertyPath: cameraTrfm
       value: 
-      objectReference: {fileID: 625990336}
+      objectReference: {fileID: 5914327582191266389}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: add17bf8498034d47a8baa9bef03cf49, type: 3}
 --- !u!1 &1719816798 stripped
@@ -82411,6 +82406,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3fb45ee872fffce49aee6917db32c68c, type: 3}
+--- !u!4 &5914327582191266389 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5914327582155241805, guid: 3fb45ee872fffce49aee6917db32c68c, type: 3}
+  m_PrefabInstance: {fileID: 5914327582191266388}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6777297455654131291
 PrefabInstance:
   m_ObjectHideFlags: 0

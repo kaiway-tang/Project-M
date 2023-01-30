@@ -23,14 +23,14 @@ public class Player : MobileEntity
     [SerializeField] GameObject shootingSword;
 
     int wallKickFXTimer, wallKickWindow, wallKickScreenShakeCooldown, attackKickTimer, dodgeFXActive, clingAnimationDelay;
-    int attackCooldown, attackReset, attackPhase, attackHitboxTimer;
+    int attackCooldown, attackReset, attackType, attackHitboxTimer;
     int dashRollCooldown, kickAttackCooldown;
     int manaTimer, castWindup, castCooldown, healFXTimer;
     bool refundJump, highFall, castQued, runFXActive;
 
     public int hover, deathAnimationTimer;
 
-    [SerializeField] DirectionalAttack lightAttack1, lightAttack2, heavyAttack, kickAttack;
+    [SerializeField] DirectionalAttack lightAttack1, lightAttack2, heavyAttack, kickAttack, upAttack, downAttack;
     [SerializeField] Transform cameraTargetPoint;
     int cameraTargetResetTimer;
 
@@ -189,7 +189,7 @@ public class Player : MobileEntity
         {
             if (attackReset == 1)
             {
-                attackPhase = 0;
+                attackType = 0;
             }
             attackReset--;
         }
@@ -198,15 +198,19 @@ public class Player : MobileEntity
         {
             if (attackHitboxTimer == 6)
             {
-                if (attackPhase == 0) { heavyAttack.Activate(IsFacingRight()); }
-                else if (attackPhase == 1) { lightAttack1.Activate(IsFacingRight()); }
-                else if (attackPhase == 2) { lightAttack2.Activate(IsFacingRight()); }
+                if (attackType == 0) { heavyAttack.Activate(IsFacingRight()); }
+                else if (attackType == 1) { lightAttack1.Activate(IsFacingRight()); }
+                else if (attackType == 2) { lightAttack2.Activate(IsFacingRight()); }
+                else if (attackType == 3) { upAttack.Activate(IsFacingRight()); }
+                //else if (attackType == 4) { downAttack.Activate(IsFacingRight()); }
             }
             if (attackHitboxTimer == 1)
             {
                 heavyAttack.Deactivate();
                 lightAttack1.Deactivate();
                 lightAttack2.Deactivate();
+                upAttack.Deactivate();
+                //downAttack.Deactivate();
             }
             attackHitboxTimer--;
         }
@@ -486,9 +490,23 @@ public class Player : MobileEntity
     {
         if (PlayerInput.AttackHeld() && dodgeFXActive < 1)
         {
-            if (attackCooldown < 1)
+            if (PlayerInput.UpHeld() && !PlayerInput.DownHeld())
             {
-                if (attackPhase == 0) //light attack 1
+                if (attackCooldown < 1)
+                {
+                    animator.QueAnimation(animator.UpAttack, 12);
+                    LockMovement(9);
+
+                    attackCooldown = 20;
+                    attackReset = 19;
+                    attackHitboxTimer = 9;
+
+                    attackType = 3;
+                }
+            }
+            else if (PlayerInput.DownHeld() && !PlayerInput.UpHeld())
+            {
+                if (attackCooldown < 1)
                 {
                     animator.QueAnimation(animator.LightAttack2, 12);
                     LockMovement(9);
@@ -499,36 +517,56 @@ public class Player : MobileEntity
 
                     if (PlayerInput.LeftHeld() || PlayerInput.RightHeld()) { AddForwardXVelocity(23, 23); }
                     else { AddForwardXVelocity(10, 10); }
-                    attackPhase = 1;
-                }
-                else if (attackPhase == 1) //light attack 2
-                {
-                    animator.QueAnimation(animator.LightAttack1, 15);
-                    LockMovement(12);
-
-                    attackCooldown = 15;
-                    attackReset = 20;
-                    attackHitboxTimer = 9;
-
-                    if (PlayerInput.LeftHeld() || PlayerInput.RightHeld()) { AddForwardXVelocity(23, 23); }
-                    else { AddForwardXVelocity(10, 10); }
-                    attackPhase = 2;
-                }
-                else if (attackPhase == 2) //heavy attack
-                {
-                    animator.QueAnimation(animator.HeavyAttack, 26);
-                    LockMovement(27);
-
-                    attackCooldown = 30;
-                    attackReset = 0;
-                    attackHitboxTimer = 12;
-
-                    if (!IsTouchingGround()) { SetYVelocity(-40); }
-                    else { AddForwardXVelocity(14, 14); }
-                    if (PlayerInput.LeftHeld() || PlayerInput.RightHeld()) { AddForwardXVelocity(23, 23); }
-                    attackPhase = 0;
+                    attackType = 4;
                 }
             }
+            else
+            {
+                if (attackCooldown < 1)
+                {
+                    if (attackType == 0) //light attack 1
+                    {
+                        animator.QueAnimation(animator.LightAttack2, 12);
+                        LockMovement(9);
+
+                        attackCooldown = 12;
+                        attackReset = 20;
+                        attackHitboxTimer = 11;
+
+                        if (PlayerInput.LeftHeld() || PlayerInput.RightHeld()) { AddForwardXVelocity(23, 23); }
+                        else { AddForwardXVelocity(10, 10); }
+                        attackType = 1;
+                    }
+                    else if (attackType == 1) //light attack 2
+                    {
+                        animator.QueAnimation(animator.LightAttack1, 15);
+                        LockMovement(12);
+
+                        attackCooldown = 15;
+                        attackReset = 20;
+                        attackHitboxTimer = 9;
+
+                        if (PlayerInput.LeftHeld() || PlayerInput.RightHeld()) { AddForwardXVelocity(23, 23); }
+                        else { AddForwardXVelocity(10, 10); }
+                        attackType = 2;
+                    }
+                    else if (attackType == 2) //heavy attack
+                    {
+                        animator.QueAnimation(animator.HeavyAttack, 26);
+                        LockMovement(27);
+
+                        attackCooldown = 30;
+                        attackReset = 0;
+                        attackHitboxTimer = 12;
+
+                        if (!IsTouchingGround()) { SetYVelocity(-40); }
+                        else { AddForwardXVelocity(14, 14); }
+                        if (PlayerInput.LeftHeld() || PlayerInput.RightHeld()) { AddForwardXVelocity(23, 23); }
+                        attackType = 0;
+                    }
+                }
+            }
+            
         }
 
         if (PlayerInput.DashRollHeld())
@@ -865,6 +903,7 @@ public class Player : MobileEntity
             Invoke("LoadNextScene", 2);
             Stun(999);
             HUDManager.FadeBlackCoverOpacity(1);
+            SceneSaver.self.UpdateStatus(SceneSaver.SCENE_EDGE);
         }
         if (isInVoid)
         {

@@ -5,11 +5,11 @@ using UnityEngine;
 public class TorchPuzzle : MonoBehaviour
 {
     [SerializeField] bool[] torchLit;
-    [SerializeField] SpriteRenderer[] spriteRenderers;
+    [SerializeField] ParticleSystem[] flamePtcls;
     // Start is called before the first frame update
     void Start()
     {
-        
+        ToggleAll();
     }
 
     // Update is called once per frame
@@ -64,8 +64,8 @@ public class TorchPuzzle : MonoBehaviour
     {
         for (int i = 0; i < 8; i++)
         {
-            if (torchLit[i]) { spriteRenderers[i].color = Color.white; }
-            else { spriteRenderers[i].color = Color.black; }
+            if (torchLit[i]) { flamePtcls[i].Play(); }
+            else { flamePtcls[i].Stop(); }
         }
     }
 }

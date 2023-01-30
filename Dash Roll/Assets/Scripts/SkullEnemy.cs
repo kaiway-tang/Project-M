@@ -37,6 +37,7 @@ public class SkullEnemy : Enemy
                 if (timer == 32)
                 {
                     attackTrailFX.emitting = true;
+                    ToggleFriction(OFF);
                     hurtbox.Activate(IsFacingRight());
                     AddForwardXVelocity(45, 45);
                 }
@@ -44,6 +45,7 @@ public class SkullEnemy : Enemy
                 {
                     spriteRenderer.sprite = neutralSprite;
                     attackTrailFX.emitting = false;
+                    ToggleFriction(ON);
                     hurtbox.Deactivate();
                     SetXVelocity(0);
                     timer -= Random.Range(0,5);

@@ -8,7 +8,7 @@ public class TutorialText : MonoBehaviour
     [SerializeField] Sprite alternateSprite;
     [SerializeField] Color fade;
     int process; const int NONE = 0, FADING_IN = 1, FADING_OUT = 2;
-    [SerializeField] int timer;
+    [SerializeField] int timer, delay;
     private void Start()
     {
         spriteRenderer.color = new Color(1, 1, 1, 0);
@@ -54,14 +54,30 @@ public class TutorialText : MonoBehaviour
             if (timer == 1) { FadeOut(); }
             timer--;
         }
+
+        if (delay < -1)
+        {
+            if (delay == -2)
+            {
+                FadeIn();
+            }
+            delay++;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.layer ==  1) { FadeIn(); }
+        if (col.gameObject.layer ==  1)
+        {
+            if (delay == 0) { FadeIn(); }
+            else if (delay > 0) { delay *= -1; }
+        }
     }
     private void OnTriggerExit2D(Collider2D col)
     {
-        if (col.gameObject.layer == 1) { timer = 50; }
+        if (col.gameObject.layer == 1 && delay == 0)
+        {
+            timer = 50;
+        }
     }
 }

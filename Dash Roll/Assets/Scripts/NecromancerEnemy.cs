@@ -74,11 +74,11 @@ public class NecromancerEnemy : Enemy
             {
                 if (attack == 0) //explosive fireball
                 {
-                    Instantiate(fireball, firepoint.position, Toolbox.GetQuaternionToPlayerHead(firepoint.position));
+                    Instantiate(fireball, firepoint.position, Toolbox.GetQuaternionToPlayerPredicted(firepoint.position, (int)Vector2.Distance(trfm.position, Player.trfm.position)));
                 }
                 else if (attack == 1) //triple bolt
                 {
-                    Instantiate(firebolts, firepoint.position, Toolbox.GetQuaternionToPlayerHead(firepoint.position));
+                    Instantiate(firebolts, firepoint.position, Toolbox.GetQuaternionToPlayerPredicted(firepoint.position, (int)Vector2.Distance(trfm.position, Player.trfm.position)));
                 }
                 else if (attack == 2) //meteor
                 {
@@ -108,15 +108,15 @@ public class NecromancerEnemy : Enemy
             }
             teleportCooldown--;
         }
-        else if (InBoxDistanceToPlayer(4.5f))
+        else if (InBoxDistanceToPlayer(6))
         {
             if (IsFacingRight())
             {
-                Teleport(trfm.position + Vector3.right * 12);
+                Teleport(trfm.position + Vector3.right * 16);
             }
             else
             {
-                Teleport(trfm.position + Vector3.right * -12);
+                Teleport(trfm.position + Vector3.right * -16);
             }
         }
     }
@@ -128,7 +128,6 @@ public class NecromancerEnemy : Enemy
         if (!initiated) { return; }
 
         FacePlayer();
-        ApplyXFriction(friction);
         ApplyYFriction(friction * 2);
 
         if (attackTimer > 0) { Kite(); }

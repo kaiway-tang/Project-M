@@ -29,6 +29,7 @@ public class GameInitializer : MonoBehaviour
         KickAttack.kickRingFXPooler = kickRingFXPooler;
         ShootingSword.slashFXPooler = slashFXPooler;
         ShootingSword.hitRingFXPooler = hitRingFXPooler;
+        Obelisk.healthShardPooler = healthShardPooler;
 
         HPEntity.bloodFXPooler = bloodFXPooler;
 

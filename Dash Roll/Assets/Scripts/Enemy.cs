@@ -71,7 +71,13 @@ public class Enemy : MobileEntity
             kicked--;
         }
 
+        if (everyTwo) { EveryTwo(); }
         everyTwo = !everyTwo;
+    }
+
+    void EveryTwo()
+    {
+        if (frictionToggle < 1) { ApplyXFriction(friction); }
     }
 
     protected void Die()
@@ -165,5 +171,13 @@ public class Enemy : MobileEntity
     protected bool ObstructedSightLine(Vector2 start, Vector2 end)
     {
         return Physics2D.Linecast(start, end, terrainLayerMask);
+    }
+
+    protected const int ON = -1, OFF = 1;
+    [SerializeField] int frictionToggle;
+    protected void ToggleFriction(int state)
+    {
+        frictionToggle += state;
+        if (frictionToggle < 0) { frictionToggle = 0; }
     }
 }

@@ -29,7 +29,7 @@ public class SkeletonEnemy : Enemy
         if (timer > 0)
         {
             if (timer == 49) { hurtbox.Activate(IsFacingRight()); }
-            if (timer == 47) { hurtbox.Deactivate(); }
+            if (timer == 47) { hurtbox.Deactivate(); ToggleFriction(ON); }
             if (timer == 40) { timer -= Random.Range(15, 21); }
             timer--;
         }
@@ -51,6 +51,7 @@ public class SkeletonEnemy : Enemy
                 {
                     if (Mathf.Abs(Mathf.Abs(trfm.position.x - Player.PredictedPosition(28).x) - leapRange) < 1)
                     {
+                        ToggleFriction(OFF);
                         AddForwardVelocity(leapXPower, leapYPower);
                         animator.QueAnimation(animator.Leap, 85);
                         timer = 67;

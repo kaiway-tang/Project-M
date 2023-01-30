@@ -50,7 +50,6 @@ public class BatEnemy : Enemy
         }
         else
         {
-            ApplyXFriction(friction);
             ApplyYFriction(friction);
 
             if (PlayerInSight() && InBoxDistanceToPlayer(range))

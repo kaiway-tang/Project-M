@@ -4829,7 +4829,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 0
   knockback: 0
-  speed: 0.5
+  speed: 0.6
   entityType: 0
   trfm: {fileID: 1608627101485096201}
   DestroyFX: {fileID: 367246898143231887, guid: 60fceb0acfe7f6b4e8899819359152e9, type: 3}

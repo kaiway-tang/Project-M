@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10
-  knockback: 25
+  knockback: 20
   speed: 0.4
   entityType: 0
   trfm: {fileID: 52302631453200233}

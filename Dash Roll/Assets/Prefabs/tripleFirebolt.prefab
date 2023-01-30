@@ -232,7 +232,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 25
   knockback: 10
-  speed: 0.5
+  speed: 0.6
   entityType: 0
   trfm: {fileID: 4211874320770997500}
   DestroyFX: {fileID: 6023119522122821356, guid: 866927597a7ec864da02cad368e43314, type: 3}
@@ -354,7 +354,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 25
   knockback: 10
-  speed: 0.5
+  speed: 0.6
   entityType: 0
   trfm: {fileID: 8470573185213679970}
   DestroyFX: {fileID: 6023119522122821356, guid: 866927597a7ec864da02cad368e43314, type: 3}
@@ -563,7 +563,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 52302631453200247, guid: 30eb26e0f5633ee43a741f314e475741, type: 3}
       propertyPath: speed
-      value: 0.6
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 1799349012153886998, guid: 30eb26e0f5633ee43a741f314e475741, type: 3}
       propertyPath: trfms.Array.data[0]

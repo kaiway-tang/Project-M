@@ -11,7 +11,7 @@ public class HPEntity : MonoBehaviour
     [SerializeField] HPBar hpBar;
 
     public enum EntityTypes { Enemy, Player, Neutral }
-    public enum DamageSource { Default, LightAttack1, LightAttack2, HeavyAttack, KickAttack }
+    public enum DamageSource { Default, LightAttack1, LightAttack2, HeavyAttack, UpAttack, DownAttack, KickAttack }
     DamageSource lastDamageSource;
     public const int IGNORED = -1, ALIVE = 0, DEAD = 1;
 

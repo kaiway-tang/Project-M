@@ -254,7 +254,7 @@ MonoBehaviour:
   rb: {fileID: 701133713503178362}
   knockbackFactor: 1
   touchingTerrain: 
-  friction: 1
+  friction: 1.5
   trackingRange: 16
   healthShards: 2
   spriteRenderer: {fileID: 701133713110868109}
