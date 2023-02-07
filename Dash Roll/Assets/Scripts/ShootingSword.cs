@@ -6,6 +6,7 @@ public class ShootingSword : Projectile
 {
     public static ObjectPooler slashFXPooler, hitRingFXPooler;
     bool started, embedded;
+    bool elevatorAdjust;
 
     new void Start()
     {
@@ -22,6 +23,10 @@ public class ShootingSword : Projectile
         if (!embedded)
         {
             base.FixedUpdate();
+        }
+        if (elevatorAdjust)
+        {
+            trfm.position += ElevatorManagerIII.self.riseRate;
         }
     }
 
@@ -43,5 +48,11 @@ public class ShootingSword : Projectile
                 CameraController.SetTrauma(15);
             }
         }
+    }
+
+    public void OnElevator(bool on)
+    {
+        if (on && !elevatorAdjust) { trfm.position += ElevatorManagerIII.self.riseRate * 8; }
+        elevatorAdjust = on;
     }
 }

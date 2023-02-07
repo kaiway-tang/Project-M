@@ -5,12 +5,14 @@ using UnityEngine;
 public class NecromancerEnemy : Enemy
 {
     [SerializeField] GameObject fireball, firebolts, meteor, skull;
-    [SerializeField] int attackTimer, castTime, attack, attackRange, teleportCooldown;
+    [SerializeField] int attackTimer, castTime, attack, attackRange, teleportCooldown, laserCooldown;
     [SerializeField] float speed;
     [SerializeField] NecromancerAnimator animator;
     [SerializeReference] Transform firepoint;
     [SerializeField] ParticleSystem teleportIn, teleportOut, teleportReady;
+    [SerializeField] Laser laser;
 
+    Transform laserTrfm;
     static Vector3 meteorOffset;
     Vector2 teleportDestination;
     bool inRangeAndSight, initiated;
@@ -20,6 +22,10 @@ public class NecromancerEnemy : Enemy
         base.Start();
         meteorOffset.y = 20;
         teleportCooldown = 140;
+
+        laserTrfm = laser.transform;
+        laserTrfm.parent = null;
+        laserCooldown = 300;
     }
 
 
@@ -58,10 +64,28 @@ public class NecromancerEnemy : Enemy
                     castTime = 44;
                 }
 
-                attackTimer = Random.Range(50, 70);
+                attackTimer = Random.Range(50, 110);
             }
 
             attackTimer--;
+
+            if (laserCooldown > 0)
+            {
+                if (laserCooldown < 72)
+                {
+                    if (laserCooldown % 35 == 1)
+                    {
+                        laserTrfm.position = Player.PredictedPosition(20);
+                        laser.Fire();
+                    }
+                }
+
+                laserCooldown--;
+            }
+            else
+            {
+                laserCooldown = Random.Range(250,350);
+            }
         }
 
         if (castTime > 0)

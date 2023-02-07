@@ -518,7 +518,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1426373797367380134}
-  - component: {fileID: 1426373797367380135}
   - component: {fileID: 4102644764193831351}
   m_Layer: 0
   m_Name: Forest
@@ -552,43 +551,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1426373797367380135
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1426373797367380120}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0a15a68cfca1a348a5f8b63b4c5ea2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraTrfm: {fileID: 0}
-  referencePoint: {x: 0, y: -7}
-  backgrounds:
-  - {fileID: 1426373796860313323}
-  - {fileID: 1426373797795753589}
-  - {fileID: 1426373796451700972}
-  - {fileID: 1426373797022607842}
-  - {fileID: 1426373797790675055}
-  - {fileID: 1426373797842918687}
-  - {fileID: 1426373795968567370}
-  - {fileID: 1426373797772155930}
-  - {fileID: 1426373797626598716}
-  - {fileID: 1426373796027470156}
-  rate: 1
-  ratios:
-  - {x: 0.6, y: 0.95}
-  - {x: 0.84, y: 0.95}
-  - {x: 0.86, y: 0.95}
-  - {x: 0.88, y: 0.95}
-  - {x: 0.9, y: 0.95}
-  - {x: 0.92, y: 0.95}
-  - {x: 0.94, y: 0.95}
-  - {x: 0.96, y: 0.95}
-  - {x: 0.98, y: 0.95}
-  - {x: 1, y: 0.95}
 --- !u!114 &4102644764193831351
 MonoBehaviour:
   m_ObjectHideFlags: 0

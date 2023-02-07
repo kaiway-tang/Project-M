@@ -26,7 +26,7 @@ public class Player : MobileEntity
     int attackCooldown, attackReset, attackType, attackHitboxTimer;
     int dashRollCooldown, kickAttackCooldown;
     int manaTimer, castWindup, castCooldown, healFXTimer;
-    bool refundJump, highFall, castQued, runFXActive;
+    bool refundJump, highFall, castQued, runFXActive, isDead;
 
     public int hover, deathAnimationTimer;
 
@@ -57,7 +57,7 @@ public class Player : MobileEntity
         {
             mana = 100;
             m_HP = HP;
-            maxShards = 2;
+            maxShards = 3;
 
             firstStartComplete = true;
         }
@@ -104,7 +104,7 @@ public class Player : MobileEntity
         {
             if ((int)(lastDamage * 1.2f) < 10)
             {
-                CameraController.AddTrauma(10);
+                CameraController.SetTrauma(10);
                 HUDManager.SetVignetteOpacity(.3f);
             }
             else
@@ -118,19 +118,7 @@ public class Player : MobileEntity
 
             if (HP <= 0)
             {
-                playerHPBar.SetPercentage(0);
-                HP = 0;
-
-                poisoned = 0;
-                animator.QueAnimation(animator.Death, 300);
-                DisableGravity();
-                DisableHurtbox();
-                HUDManager.SetBlackCoverOpacity(1);
-                deathAnimationTimer = 350;
-                CameraController.AddTrauma(15);
-                spriteRenderer.sortingLayerID = 94093041;
-                spriteRenderer.sortingOrder = 999;
-                Stun(325);
+                Kill();
             }
 
             tookDamage = false;
@@ -260,7 +248,7 @@ public class Player : MobileEntity
         else if (mana > 0)
         {
             AddMana(-1);
-            manaTimer = 20;
+            manaTimer = 15;
         }
 
         if (clingAnimationDelay > 0)
@@ -558,10 +546,8 @@ public class Player : MobileEntity
                         attackCooldown = 30;
                         attackReset = 0;
                         attackHitboxTimer = 12;
-
-                        if (!IsTouchingGround()) { SetYVelocity(-40); }
-                        else { AddForwardXVelocity(14, 14); }
                         if (PlayerInput.LeftHeld() || PlayerInput.RightHeld()) { AddForwardXVelocity(23, 23); }
+                        else { AddForwardXVelocity(14, 14); }
                         attackType = 0;
                     }
                 }
@@ -569,7 +555,7 @@ public class Player : MobileEntity
             
         }
 
-        if (PlayerInput.DashRollHeld())
+        if (PlayerInput.DashRollHeld() && stunned < 1)
         {
             if (dashRollCooldown < 1)
             {
@@ -654,8 +640,8 @@ public class Player : MobileEntity
         if (dodgeFXActive > 0 && PlayerInput.AttackPressed() && kickAttackCooldown < 1)
         {
             animator.QueAnimation(animator.Kick, 8);
-            if (IsFacingRight()) { Instantiate(kickFX, trfm.position + Vector3.right * -2, Quaternion.identity).transform.parent = trfm; }
-            else { Instantiate(kickFX, trfm.position + Vector3.right * 2, Quaternion.Euler(0, 0, 180)).transform.parent = trfm; }
+            if (IsFacingRight()) { Instantiate(kickFX, trfm.position + Vector3.right * -3 + Vector3.up * .5f, Quaternion.identity).transform.parent = trfm; }
+            else { Instantiate(kickFX, trfm.position + Vector3.right * 3 + Vector3.up * .5f, Quaternion.Euler(0, 0, 180)).transform.parent = trfm; }
             kickAttack.Activate(IsFacingRight());
             attackKickTimer = 8;
             kickAttackCooldown = 10;
@@ -847,6 +833,7 @@ public class Player : MobileEntity
     public static Vector2 PredictedPosition(int ticks)
     {
         vect2 = trfm.position;
+        if (ticks > 25) { ticks = 25; }
         return playerScript.averageVelocity * ticks * .02f + vect2;
     }
 
@@ -871,7 +858,7 @@ public class Player : MobileEntity
         currentShardPercent += amount;
         if (currentShardPercent > 99)
         {
-            currentShardPercent -= 100;
+            currentShardPercent -= 120;
             soulShards++;
 
             if (soulShards > maxShards)
@@ -907,6 +894,11 @@ public class Player : MobileEntity
         }
         if (isInVoid)
         {
+            if (GameManager.GetCurrentScene() == 4)
+            {
+                TakeDamage(999, HPEntity.EntityTypes.Neutral);
+            }
+
             TakeDamage(15, HPEntity.EntityTypes.Neutral);
             Stun(100);
 
@@ -935,7 +927,7 @@ public class Player : MobileEntity
         isInVoid = false;
         ReturnToLastSafePosition();
         HUDManager.FadeBlackCoverOpacity(0);
-        CameraController.self.mode = CameraController.TRACK_PLAYER;
+        CameraController.self.SetMode(CameraController.TRACK_PLAYER);
     }
 
     void EnableRunFX()
@@ -968,5 +960,27 @@ public class Player : MobileEntity
         }
 
         if (dashRollCooldown > max) { dashRollCooldown = max; }
+    }
+
+    public void Kill()
+    {
+        if (isDead) { return; }
+
+        playerHPBar.SetPercentage(0);
+        HP = 0;
+
+        poisoned = 0;
+        animator.QueAnimation(animator.Death, 300);
+        DisableGravity();
+        rb.velocity = Vector2.zero;
+        DisableHurtbox();
+        HUDManager.SetBlackCoverOpacity(1);
+        deathAnimationTimer = 350;
+        CameraController.AddTrauma(15);
+        CameraController.self.SetMode(CameraController.TRACK_PLAYER, true);
+        spriteRenderer.sortingLayerID = 94093041;
+        spriteRenderer.sortingOrder = 999;
+        Stun(325);
+        isDead = true;
     }
 }

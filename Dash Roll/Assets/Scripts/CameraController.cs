@@ -9,8 +9,8 @@ public class CameraController : MonoBehaviour
 
     public static CameraController self;
 
-    public int mode;
-    public const int TRACK_PLAYER = 0, PANNING = 1, CAMERA_STOP = 2;
+    [SerializeField] int mode;
+    public const int TRACK_PLAYER = 0, PANNING = 1, CAMERA_STOP = 2, ELEVATOR = 3;
 
     Vector3 cameraTrackingVect3;
 
@@ -34,10 +34,24 @@ public class CameraController : MonoBehaviour
         {
             cameraTrackingVect3.x = (panPositions[currentPanIndex].x - trackingTrfm.position.x) * trackingRate;
             cameraTrackingVect3.y = (panPositions[currentPanIndex].y - trackingTrfm.position.y) * trackingRate;
-        } else if (mode == CAMERA_STOP)
+        }
+        else if (mode == CAMERA_STOP)
         {
             cameraTrackingVect3.x = (lastTargetPos.x - trackingTrfm.position.x) * trackingRate;
             cameraTrackingVect3.y = (lastTargetPos.y - trackingTrfm.position.y) * trackingRate;
+        } else if (mode == ELEVATOR)
+        {
+            //trackingTrfm.position = new Vector3(trackingTrfm.position.x, ElevatorManagerIII.trfm.position.y + 3, -10);
+
+            cameraTrackingVect3.x = (targetTrfm.position.x - trackingTrfm.position.x) * trackingRate;
+
+            cameraTrackingVect3.y = (ElevatorManagerIII.trfm.position.y - 16 - trackingTrfm.position.y) * trackingRate;
+            float defaultYPos = (targetTrfm.position.y - trackingTrfm.position.y) * trackingRate;
+
+            if (cameraTrackingVect3.y < defaultYPos)
+            {
+                cameraTrackingVect3.y = defaultYPos;
+            }
         }
 
         trackingTrfm.position += cameraTrackingVect3;
@@ -45,6 +59,15 @@ public class CameraController : MonoBehaviour
         ProcessTrauma();
         ProcessSleep();
         ProcessPanning();
+    }
+
+    public void SetMode(int p_mode, bool overrideElevatorMode = false)
+    {
+        if (mode != ELEVATOR || overrideElevatorMode)
+        {
+            Debug.Log("new mode: " + p_mode);
+            mode = p_mode;
+        }
     }
 
     [SerializeField] int trauma;
@@ -153,7 +176,7 @@ public class CameraController : MonoBehaviour
 
                 if (panDurations[currentPanIndex] < 1 || priority > panPriorities[currentPanIndex]) { currentPanIndex = i; }
 
-                mode = PANNING;
+                SetMode(PANNING);
 
                 return;
             }
@@ -184,7 +207,7 @@ public class CameraController : MonoBehaviour
                 }
                 if (currentPanIndex == -1) 
                 {
-                    mode = TRACK_PLAYER;
+                    SetMode(TRACK_PLAYER);
                     currentPanIndex = 0; 
                 }
             }
@@ -194,7 +217,7 @@ public class CameraController : MonoBehaviour
     Vector3 lastTargetPos;
     public static void StopCameraTracking()
     {
-        self.mode = CAMERA_STOP;
+        self.SetMode(CAMERA_STOP);
         self.lastTargetPos = self.targetTrfm.position;
     }
 }

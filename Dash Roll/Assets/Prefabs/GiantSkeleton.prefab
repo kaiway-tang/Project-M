@@ -33,11 +33,11 @@ PrefabInstance:
       objectReference: {fileID: 7994257485592959661}
     - target: {fileID: 4090349402796171401, guid: c5c0d7a91d2c78243aa97fd62e1f1569, type: 3}
       propertyPath: HP
-      value: 150
+      value: 170
       objectReference: {fileID: 0}
     - target: {fileID: 4090349402796171401, guid: c5c0d7a91d2c78243aa97fd62e1f1569, type: 3}
       propertyPath: maxHP
-      value: 150
+      value: 170
       objectReference: {fileID: 0}
     - target: {fileID: 4090349402796171401, guid: c5c0d7a91d2c78243aa97fd62e1f1569, type: 3}
       propertyPath: speed
@@ -61,7 +61,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4090349402796171401, guid: c5c0d7a91d2c78243aa97fd62e1f1569, type: 3}
       propertyPath: knockbackFactor
-      value: 0.7
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 8494053240132772472, guid: c5c0d7a91d2c78243aa97fd62e1f1569, type: 3}
       propertyPath: m_Name

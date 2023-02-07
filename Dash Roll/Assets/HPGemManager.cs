@@ -26,7 +26,7 @@ public class HPGemManager : MonoBehaviour
         if (index >= self.gemObj.Length) { return; }
 
         vect3.x = 0; vect3.z = 0;
-        vect3.y = -2.68f * (1 - percent / 100f);
+        vect3.y = -2.68f * (1 - percent / 120f);
 
         self.fillTrfm[index].localPosition = vect3;
     }

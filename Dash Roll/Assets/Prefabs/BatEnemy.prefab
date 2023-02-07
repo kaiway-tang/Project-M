@@ -263,11 +263,14 @@ MonoBehaviour:
   spawnObjects: []
   spawnObjectsVelocity: []
   kicked: 0
+  frictionToggle: 0
   projectile: {fileID: 52302631453200245, guid: 335b76e51cc6c4f469dde6ff5eec52e3, type: 3}
   speed: 5
   range: 16
   shootingRange: 12
   timer: 0
+  timerUpperDecrement: 10
+  kiteRange: 5
 --- !u!1001 &1292307565654808322
 PrefabInstance:
   m_ObjectHideFlags: 0

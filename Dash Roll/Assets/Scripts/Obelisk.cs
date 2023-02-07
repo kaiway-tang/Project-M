@@ -22,9 +22,12 @@ public class Obelisk : MonoBehaviour
         {
             GetComponent<SpriteRenderer>().enabled = false;
         }
-        if (Toolbox.InBoxDistance(Player.trfm.position, trfm.position, 5))
+        else
         {
-            Invoke("SetShardTimer", 1);
+            if (Toolbox.InBoxDistance(Player.trfm.position, trfm.position, 5))
+            {
+                Invoke("SetShardTimer", .7f);
+            }
         }
     }
 
@@ -56,7 +59,7 @@ public class Obelisk : MonoBehaviour
 
         if (shardSpawnTimer > 0)
         {
-            if (shardSpawnTimer % 7 == 0)
+            if (shardSpawnTimer % 5 == 0)
             {
                 healthShardPooler.Instantiate(trfm.position);
             }
@@ -77,10 +80,9 @@ public class Obelisk : MonoBehaviour
                 animator.SetInteger("state", 1);
                 SceneSaver.self.UpdateStatus(SceneSaver.OBELISK);
 
-                SetShardTimer();
-
                 if (!invisible)
                 {
+                    SetShardTimer();
                     Player.PlayerHeal(999);
                     Player.AddMana(999);
                 }
@@ -97,6 +99,6 @@ public class Obelisk : MonoBehaviour
 
     void SetShardTimer()
     {
-        shardSpawnTimer = 75;
+        shardSpawnTimer = 50;
     }
 }

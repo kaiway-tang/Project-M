@@ -105,7 +105,7 @@ MonoBehaviour:
   entityType: 0
   trfm: {fileID: 52302631453200233}
   DestroyFX: {fileID: 6023119522122821356, guid: 866927597a7ec864da02cad368e43314, type: 3}
-  life: 100
+  life: 300
 --- !u!70 &52302631453200244
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

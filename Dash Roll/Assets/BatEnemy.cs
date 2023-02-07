@@ -5,7 +5,8 @@ using UnityEngine;
 public class BatEnemy : Enemy
 {
     [SerializeField] GameObject projectile;
-    [SerializeField] int speed, range, shootingRange, timer;
+    [SerializeField] int speed, range, shootingRange, timer, timerUpperDecrement, kiteRange;
+    int effectiveKiteRange;
     bool lockedOn;
     // Start is called before the first frame update
     new void Start()
@@ -28,7 +29,7 @@ public class BatEnemy : Enemy
             if (timer == 40)
             {
                 Instantiate(projectile, trfm.position + Toolbox.GetUnitVectorToPlayer(trfm.position), Toolbox.GetQuaternionToPlayerPredicted(trfm.position, 15));
-                timer -= Random.Range(0,10);
+                timer -= Random.Range(0, timerUpperDecrement);
             }
             timer--;
         }
@@ -63,22 +64,32 @@ public class BatEnemy : Enemy
     {
         FacePlayer();
 
-        if (trfm.position.y < Player.trfm.position.y + 4)
+
+        if (trfm.position.y < Player.trfm.position.y + effectiveKiteRange - 1)
         {
             AddYVelocity(speed * .7f, speed * 1.4f);
+            RandomizeKiteRange();
         }
-        else if (trfm.position.y > Player.trfm.position.y + 6)
+        else if (trfm.position.y > Player.trfm.position.y + effectiveKiteRange + 1)
         {
             AddYVelocity(-speed, -speed * 2);
+            RandomizeKiteRange();
         }
 
-        if (Mathf.Abs(trfm.position.x - Player.trfm.position.x) < 5)
+        if (Mathf.Abs(trfm.position.x - Player.trfm.position.x) < effectiveKiteRange)
         {
             AddForwardXVelocity(-speed, -speed * 2);
+            RandomizeKiteRange();
         }
-        else if (Mathf.Abs(trfm.position.x - Player.trfm.position.x) > 10)
+        else if (Mathf.Abs(trfm.position.x - Player.trfm.position.x) > effectiveKiteRange * 2)
         {
             AddForwardXVelocity(speed, speed * 2);
+            RandomizeKiteRange();
         }
+    }
+
+    void RandomizeKiteRange()
+    {
+        effectiveKiteRange = kiteRange + Random.Range(-1, 2);
     }
 }

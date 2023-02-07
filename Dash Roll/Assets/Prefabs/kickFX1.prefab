@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4384226c389f78c4eb369b4d1385ecd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  life: 5
+  life: 6
   spriteRenderer: {fileID: 2068550210854736258}
   fade: {r: 0, g: 0, b: 0, a: 0.2509804}
   trfm: {fileID: 2068550210854736257}

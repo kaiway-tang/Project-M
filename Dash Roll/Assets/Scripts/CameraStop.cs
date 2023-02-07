@@ -16,6 +16,6 @@ public class CameraStop : MonoBehaviour
 
     protected void TriggerExitedByPlayer()
     {
-        CameraController.self.mode = CameraController.TRACK_PLAYER;
+        CameraController.self.SetMode(CameraController.TRACK_PLAYER);
     }
 }

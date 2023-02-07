@@ -8,11 +8,14 @@ public class SkeletonEnemy : Enemy
     [SerializeField] float heightOffset;
     [SerializeField] DirectionalAttack hurtbox;
     [SerializeField] SkeletonAnimator animator;
+    int zoningLeapCD;
     int timer;
     // Start is called before the first frame update
     new void Start()
     {
         base.Start();
+        //zoningLeapCD = Random.Range(75, 150);
+        zoningLeapCD = Random.Range(25, 50);
     }
 
     // Update is called once per frame
@@ -24,13 +27,19 @@ public class SkeletonEnemy : Enemy
     }
     void EveryTwo()
     {
-        if (rb.velocity.y < -22) { SetYVelocity(-22); }
+        if (rb.velocity.y < -30) { SetYVelocity(-30); }
 
         if (timer > 0)
         {
             if (timer == 49) { hurtbox.Activate(IsFacingRight()); }
-            if (timer == 47) { hurtbox.Deactivate(); ToggleFriction(ON); }
-            if (timer == 40) { timer -= Random.Range(15, 21); }
+            if (timer == 47)
+            {
+                hurtbox.Deactivate(); ToggleFriction(ON);
+            }
+            if (timer == 40)
+            {
+                timer -= Random.Range(15, 21);
+            }
             timer--;
         }
         else if (InBoxDistanceToPlayer(trackingRange) && PlayerInSight())
@@ -47,17 +56,24 @@ public class SkeletonEnemy : Enemy
                     timer = 63;
                     telegraphPooler.Instantiate(trfm.position + Vector3.up * 2);
                 }
-                else
+                else if (Mathf.Abs(Mathf.Abs(trfm.position.x - Player.PredictedPosition(28).x) - leapRange) < 2)
                 {
-                    if (Mathf.Abs(Mathf.Abs(trfm.position.x - Player.PredictedPosition(28).x) - leapRange) < 1)
-                    {
-                        ToggleFriction(OFF);
-                        AddForwardVelocity(leapXPower, leapYPower);
-                        animator.QueAnimation(animator.Leap, 85);
-                        timer = 67;
-                        telegraphPooler.Instantiate(trfm.position + Vector3.up * 2);
-                    }
+                    ToggleFriction(OFF);
+                    AddForwardVelocity(leapXPower, leapYPower);
+                    animator.QueAnimation(animator.Leap, 85);
+                    timer = 67;
+                    telegraphPooler.Instantiate(trfm.position + Vector3.up * 2);
+                } else if (zoningLeapCD < 1 && Mathf.Abs(Mathf.Abs(trfm.position.x - Player.PredictedPosition(28).x) - leapRange * .6f) < 2)
+                {
+                    AddForwardVelocity(leapXPower, leapYPower);
+                    zoningLeapCD = zoningLeapCD = Random.Range(10, 60); ;
+                    timer = 40;
                 }
+            }
+
+            if (zoningLeapCD > 0)
+            {
+                zoningLeapCD--;
             }
         }
     }

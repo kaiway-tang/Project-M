@@ -167,6 +167,7 @@ MonoBehaviour:
   damagedFXObj: {fileID: 3780654266243000828, guid: 8a84b727e64826147a6fa292b82cafd0, type: 3}
   damagedFXPooler: {fileID: 0}
   isStructure: 1
+  grantsMana: 1
   standardDestroyOnDeath: 0
   reflectionTrfm: {fileID: 0}
   rb: {fileID: 8494053240132772478}
@@ -181,11 +182,14 @@ MonoBehaviour:
   spawnObjects: []
   spawnObjectsVelocity: []
   kicked: 0
+  frictionToggle: 0
   projectile: {fileID: 52302631453200245, guid: f7341880e1373674c87022f5ba9cb709, type: 3}
   loaded: {fileID: 21300000, guid: 4e609fd8867f2d74eb5d57105cbe2d4c, type: 3}
   fired: {fileID: 21300000, guid: 64112306cb0b3ba46adc1ff7165ae2d9, type: 3}
   turretTrfm: {fileID: 7560021569418689846}
   attackCooldown: 50
+  maxDecrement: 6
+  predictionMultiplier: 1.4
 --- !u!58 &8074373369496217763
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ public class Void : CameraStop
 {
     private void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.layer == 1)
+        if (col.gameObject.layer == 1 && col.GetComponent<PlayerInput>())
         {
             TriggerEnteredByPlayer();
             CameraController.StopCameraTracking();
@@ -15,7 +15,7 @@ public class Void : CameraStop
     }
     private void OnTriggerExit2D(Collider2D col)
     {
-        if (col.gameObject.layer == 1 && !Player.playerScript.reviving)
+        if (col.gameObject.layer == 1 && col.GetComponent<PlayerInput>() && !Player.playerScript.reviving)
         {
             TriggerExitedByPlayer();
             Player.playerScript.isInVoid = false;

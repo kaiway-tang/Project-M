@@ -9,7 +9,7 @@ public class Parallaxer : MonoBehaviour
 
     Vector2[] calculatedRates;
     [SerializeField] Transform cameraTrfm;
-    [SerializeField] Vector2 referencePoint;
+    public Vector2 referencePoint;
 
     Vector2 vect2;
 

@@ -7,7 +7,8 @@ public class TurretEnemy : Enemy
     [SerializeField] GameObject projectile;
     [SerializeField] Sprite loaded, fired;
     [SerializeField] Transform turretTrfm;
-    [SerializeField] int attackCooldown;
+    [SerializeField] int attackCooldown, maxDecrement;
+    [SerializeField] float predictionMultiplier;
     int attackTimer;
 
     bool every2;
@@ -35,7 +36,7 @@ public class TurretEnemy : Enemy
             }
             if (attackTimer == 20)
             {
-                attackTimer -= Random.Range(0,6);
+                attackTimer -= Random.Range(0,maxDecrement);
             }
             if (attackTimer == 10)
             {
@@ -46,7 +47,7 @@ public class TurretEnemy : Enemy
 
         if (InBoxDistanceToPlayer(trackingRange) && PlayerInSight())
         {
-            RotateTowardsPlayerPredicted(trfm, 15, .1f);
+            RotateTowardsPlayerPredicted(trfm, (int)(Vector2.Distance(trfm.position, Player.trfm.position) * predictionMultiplier), .1f);
 
             if (attackTimer < 1)
             {

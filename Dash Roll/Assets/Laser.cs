@@ -8,7 +8,8 @@ public class Laser : MonoBehaviour
     [SerializeField] SpriteRenderer pulseSpriteRenderer;
     [SerializeField] GameObject laserObj;
     static Color fade;
-    [SerializeField] int timer;
+    [SerializeField] int fireDuration;
+    int firingTimer;
     bool strobeFading;
     public bool active;
 
@@ -18,75 +19,67 @@ public class Laser : MonoBehaviour
     void Start()
     {
         fade = new Color(0, 0, 0, 0.33f);
-        timer = Random.Range(50, 200);
-        indicatorTrfmshrinkRate = new Vector3(0.01f, 0, 0);
+        indicatorTrfmshrinkRate = new Vector3(0, 0.02f, 0);
     }
 
     void FixedUpdate()
     {
-        if (active)
+        if (firingTimer > 0)
         {
-            if (timer > 0)
+            if (firingTimer > fireDuration)
             {
-                if (timer > 480)
+                indicatorTrfms[0].localPosition -= indicatorTrfmshrinkRate;
+                indicatorTrfms[1].localPosition += indicatorTrfmshrinkRate;
+            }
+            else if (firingTimer == fireDuration)
+            {
+                indicatorTrfms[0].gameObject.SetActive(false);
+                indicatorTrfms[1].gameObject.SetActive(false);
+
+                laserObj.SetActive(true);
+                pulseSpriteRenderer.gameObject.SetActive(true);
+            } else
+            {
+                if (strobeFading)
                 {
-                    indicatorTrfms[0].localPosition -= indicatorTrfmshrinkRate;
-                    indicatorTrfms[1].localPosition += indicatorTrfmshrinkRate;
+                    pulseSpriteRenderer.color -= fade;
+                }
+                else
+                {
+                    pulseSpriteRenderer.color += fade;
                 }
 
-                if (timer == 480)
+                if (firingTimer % 3 == 0)
                 {
-                    indicatorTrfms[0].gameObject.SetActive(false);
-                    indicatorTrfms[1].gameObject.SetActive(false);
-
-                    laserObj.SetActive(true);
-                    pulseSpriteRenderer.gameObject.SetActive(true);
+                    strobeFading = !strobeFading;
                 }
 
-                if (timer > 466 && timer < 480)
-                {
-                    if (strobeFading)
-                    {
-                        pulseSpriteRenderer.color -= fade;
-                    }
-                    else
-                    {
-                        pulseSpriteRenderer.color += fade;
-                    }
-
-                    if (timer % 3 == 0)
-                    {
-                        strobeFading = !strobeFading;
-                    }
-                }
-
-                if (timer == 466)
+                if (firingTimer == 1)
                 {
                     pulseSpriteRenderer.gameObject.SetActive(false);
                     laserObj.SetActive(false);
-
-                    timer -= Random.Range(250, 400);
                 }
-
-                timer--;
             }
-            else
-            {
-                indicatorTrfms[0].gameObject.SetActive(true);
-                indicatorTrfms[1].gameObject.SetActive(true);
 
-                vect3.y = 60; vect3.z = 0;
-                vect3.x = .2f;
-
-                indicatorTrfms[0].localPosition = vect3;
-                vect3.x = -.2f;
-                indicatorTrfms[1].localPosition = vect3;
-
-                pulseSpriteRenderer.color = Color.white;
-                strobeFading = true;
-
-                timer = 500;
-            }
+            firingTimer--;
         }
+    }
+
+    public void Fire()
+    {
+        indicatorTrfms[0].gameObject.SetActive(true);
+        indicatorTrfms[1].gameObject.SetActive(true);
+
+        vect3.x = 0; vect3.z = 0;
+        vect3.y = .4f;
+
+        indicatorTrfms[0].localPosition = vect3;
+        vect3.y = -.4f;
+        indicatorTrfms[1].localPosition = vect3;
+
+        pulseSpriteRenderer.color = Color.white;
+        strobeFading = true;
+
+        firingTimer = fireDuration + 20;
     }
 }
